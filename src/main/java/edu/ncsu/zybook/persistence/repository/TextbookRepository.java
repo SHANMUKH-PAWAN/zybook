@@ -21,7 +21,7 @@ public class TextbookRepository implements ITextbookRepository {
     @Transactional
     @Override
     public Textbook create(Textbook textbook){
-        String sql = "INSERT INTO Textbook (title) VALUES(?)";
+        String sql = "INSERT INTO E_Textbook (title) VALUES(?)";
         int rowsAffected = jdbcTemplate.update(sql, textbook.getTitle());
         if(rowsAffected > 0)
         {
@@ -35,7 +35,7 @@ public class TextbookRepository implements ITextbookRepository {
 
     @Override
     public Optional<Textbook> findById(int id) {
-        String sql = "SELECT * FROM Textbook WHERE uid = ?";
+        String sql = "SELECT * FROM E_Textbook WHERE uid = ?";
         try {
             Textbook textbook = jdbcTemplate.queryForObject(sql, new Object[]{id}, new TextbookRowMapper());
             return Optional.of(textbook);
@@ -47,7 +47,7 @@ public class TextbookRepository implements ITextbookRepository {
     @Transactional
     @Override
     public Optional<Textbook> update(Textbook textbook) {
-        String sql = "UPDATE Textbook SET title = ? WHERE uid = ?";
+        String sql = "UPDATE E_Textbook SET title = ? WHERE uid = ?";
         int rowsAffected = jdbcTemplate.update(sql, textbook.getTitle(), textbook.getUid());
         return rowsAffected > 0 ? Optional.of(textbook) : Optional.empty();
     }
@@ -55,7 +55,7 @@ public class TextbookRepository implements ITextbookRepository {
     @Transactional
     @Override
     public boolean delete(int id) {
-        String sql = "DELETE FROM Textbook WHERE uid = ?";
+        String sql = "DELETE FROM E_Textbook WHERE uid = ?";
         int rowsAffected = jdbcTemplate.update(sql, id);
         return rowsAffected > 0;
     }
@@ -64,13 +64,13 @@ public class TextbookRepository implements ITextbookRepository {
     public List<Textbook> findAll(int offset, int limit,String sortBy, String sortDirection) {
         String validSortDirection = sortDirection.equalsIgnoreCase("DESC") ? "DESC" : "ASC";
         String validSortBy = validateSortBy(sortBy);
-        String sql = "SELECT * FROM Textbook ORDER BY " + validSortBy + " " + validSortDirection + " OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
-        return jdbcTemplate.query(sql, new Object[]{offset,limit}, new TextbookRowMapper());
+        String sql = "SELECT * FROM E_Textbook ORDER BY " + validSortBy + " " + validSortDirection + " LIMIT ? OFFSET ?";
+        return jdbcTemplate.query(sql, new Object[]{limit,offset}, new TextbookRowMapper());
     }
 
     @Override
     public Optional<Textbook> findByTitle(String title) {
-        String sql = "SELECT * FROM Textbook WHERE title = ?";
+        String sql = "SELECT * FROM E_Textbook WHERE title = ?";
         try {
             Textbook textbook = jdbcTemplate.queryForObject(sql, new Object[]{title}, new TextbookRowMapper());
             return Optional.of(textbook);
