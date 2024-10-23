@@ -1,41 +1,14 @@
 package edu.ncsu.zybook.domain.model;
 
+import java.util.List;
+
 public class Content {
 
-    private boolean isHidden;
-    private String ownedBy;
-    private Section section;
-    private int contentId;
-
-    public int getContentId() {
-        return contentId;
-    }
-
-    public void setContentId(int contentId) {
-        this.contentId = contentId;
-    }
-
-    public boolean isHidden() {
-        return isHidden;
-    }
-
-    public void setHidden(boolean hidden) {
-        isHidden = hidden;
-    }
-
-    public String getOwnedBy() {
-        return ownedBy;
-    }
-
-    public void setOwnedBy(String ownedBy) {
-        this.ownedBy = ownedBy;
-    }
-
-    public Section getSection() {
-        return section;
-    }
-
-    public void setSection(Section section) {
-        this.section = section;
-    }
+    protected boolean isHidden;
+    protected String ownedBy;
+    protected int sectionId;
+    protected int contentId;
+    protected int tbook_id;
+    protected int chapId;
+    protected List<Activity> activities;
 }

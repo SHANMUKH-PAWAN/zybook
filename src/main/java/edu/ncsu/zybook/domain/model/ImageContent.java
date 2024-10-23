@@ -1,22 +1,10 @@
 package edu.ncsu.zybook.domain.model;
 
-public class ImageContent {
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+public class ImageContent extends Content {
     private byte[] data;
-    private Content content;
-
-    public Content getContent() {
-        return content;
-    }
-
-    public void setContent(Content content) {
-        this.content = content;
-    }
-
-    public byte[] getData() {
-        return data;
-    }
-
-    public void setData(byte[] data) {
-        this.data = data;
-    }
 }

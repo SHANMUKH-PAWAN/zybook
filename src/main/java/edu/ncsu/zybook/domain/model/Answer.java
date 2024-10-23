@@ -1,40 +1,17 @@
 package edu.ncsu.zybook.domain.model;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
 public class Answer {
     private int answerId;
     private String answerText;
     private String justification;
-    private Activity activity;
-
-    public int getAnswerId() {
-        return answerId;
+    private int sectionId;
+    private int contentId;
+    private int chapId;
+    private  int tbookId;
+    private int activityId;
     }
-
-    public void setAnswerId(int answerId) {
-        this.answerId = answerId;
-    }
-
-    public String getAnswerText() {
-        return answerText;
-    }
-
-    public void setAnswerText(String answerText) {
-        this.answerText = answerText;
-    }
-
-    public String getJustification() {
-        return justification;
-    }
-
-    public void setJustification(String justification) {
-        this.justification = justification;
-    }
-
-    public Activity getActivity() {
-        return activity;
-    }
-
-    public void setActivity(Activity activity) {
-        this.activity = activity;
-    }
-}
