@@ -53,13 +53,15 @@ CREATE TABLE Course (
 CREATE TABLE Participation(
   user_id INT UNSIGNED,
   tbook_id SMALLINT UNSIGNED NOT NULL,
-  chapter_no SMALLINT UNSIGNED NOT NULL,
-  sno SMALLINT UNSIGNED NOT NULL,
+  c_id SMALLINT UNSIGNED NOT NULL,
+  content_id SMALLINT UNSIGNED NOT NULL,
+  activity_id SMALLINT UNSIGNED NOT NULL,
+  s_id SMALLINT UNSIGNED NOT NULL,
   score SMALLINT,
   submitted_at TIMESTAMP,
-  PRIMARY KEY (user_id, tbook_id, chapter_no, sno),
-  FOREIGN KEY (tbook_id, chapter_no, sno)
-      REFERENCES Section(tbook_id, chapter_no, sno)
+  PRIMARY KEY (user_id, activity_id,content_id,s_id,c_id,tbook_id),
+  FOREIGN KEY (activity_id,content_id,s_id,c_id,tbook_id)
+      REFERENCES Activity(activity_id,content_id, s_id, c_id, t_id)
       ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -240,3 +242,9 @@ CREATE TABLE Answer (
         REFERENCES Activity(activity_id, content_id, s_id, c_id, t_id)
         ON DELETE CASCADE ON UPDATE CASCADE
     );
+-- Changeset vengatesh:21 Dropping Teaches relation
+DROP TABLE IF EXISTS Teaches;
+ALTER TABLE Course
+ADD COLUMN professor_id INT UNSIGNED
+ADD CONSTRAINT fk_teaches
+FOREIGN KEY (professor_id) REFERENCES User(user_id) ON DELETE CASCADE ON UPDATE CASCADE;
