@@ -13,7 +13,7 @@ public class Course {
     protected Date endDate;
     protected String courseType;
     protected Textbook textbook; // Reference to Textbook entity
-    protected User user;
+    protected User professor;
 
 
 

@@ -49,23 +49,9 @@ CREATE TABLE Course (
     CHECK (course_type IN ('Active', 'Evaluation'))
 );
 
--- Changeset vengatesh:5 Create Participation Table
-CREATE TABLE Participation(
-  user_id INT UNSIGNED,
-  tbook_id SMALLINT UNSIGNED NOT NULL,
-  c_id SMALLINT UNSIGNED NOT NULL,
-  content_id SMALLINT UNSIGNED NOT NULL,
-  activity_id SMALLINT UNSIGNED NOT NULL,
-  s_id SMALLINT UNSIGNED NOT NULL,
-  score SMALLINT,
-  submitted_at TIMESTAMP,
-  PRIMARY KEY (user_id, activity_id,content_id,s_id,c_id,tbook_id),
-  FOREIGN KEY (activity_id,content_id,s_id,c_id,tbook_id)
-      REFERENCES Activity(activity_id,content_id, s_id, c_id, t_id)
-      ON DELETE CASCADE ON UPDATE CASCADE
-);
 
--- Changeset vengatesh:6 Create ActiveCourse Table
+
+-- Changeset vengatesh:5 Create ActiveCourse Table
 CREATE TABLE ActiveCourse(
      course_token CHAR(7) NOT NULL UNIQUE,
      course_capacity SMALLINT NOT NULL,
@@ -75,7 +61,7 @@ CREATE TABLE ActiveCourse(
          ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
--- Changeset vengatesh:7 Create User Table
+-- Changeset vengatesh:6 Create User Table
 CREATE TABLE User(
      user_id INT UNSIGNED AUTO_INCREMENT,
      fname VARCHAR(50) NOT NULL,
@@ -87,7 +73,7 @@ CREATE TABLE User(
      PRIMARY KEY (user_id)
 );
 
--- Changeset vengatesh:8 Create Notification Table
+-- Changeset vengatesh:7 Create Notification Table
 CREATE TABLE Notification(
      user_id INT UNSIGNED,
      CourseID VARCHAR(50),
@@ -99,7 +85,7 @@ CREATE TABLE Notification(
          ON DELETE CASCADE ON UPDATE CASCADE
 );
 
--- Changeset vengatesh:9 Create UserRegistersCourse Table
+-- Changeset vengatesh:8 Create UserRegistersCourse Table
 CREATE TABLE UserRegistersCourse(
     user_id INT UNSIGNED,
     CourseID VARCHAR(50),
@@ -113,7 +99,7 @@ CREATE TABLE UserRegistersCourse(
         ON DELETE CASCADE ON UPDATE CASCADE
 );
 
--- Changeset vengatesh:10 Create Permission Table
+-- Changeset vengatesh:9 Create Permission Table
 CREATE TABLE Permission(
    permission_id SMALLINT UNSIGNED AUTO_INCREMENT,
    permission CHAR(10) NOT NULL
@@ -121,7 +107,7 @@ CREATE TABLE Permission(
    PRIMARY KEY (permission_id)
 );
 
--- Changeset vengatesh:11 Create Resource Table
+-- Changeset vengatesh:10 Create Resource Table
 CREATE TABLE Resource(
      resource_id SMALLINT UNSIGNED AUTO_INCREMENT,
      resource CHAR(20)
@@ -129,7 +115,7 @@ CREATE TABLE Resource(
      PRIMARY KEY (resource_id)
 );
 
--- Changeset vengatesh:12 Create User_Resource_Permission Table
+-- Changeset vengatesh:11 Create User_Resource_Permission Table
 CREATE TABLE User_Resource_Permission(
      user_id INT UNSIGNED NOT NULL,
      permission_id SMALLINT UNSIGNED NOT NULL,
@@ -143,7 +129,7 @@ CREATE TABLE User_Resource_Permission(
          ON DELETE CASCADE ON UPDATE CASCADE
 );
 
--- Changeset vengatesh:13 Create Assigned Table
+-- Changeset vengatesh:12 Create Assigned Table
 CREATE TABLE Assigned(
      course_id VARCHAR(50) NOT NULL,
      user_id INT UNSIGNED NOT NULL,
@@ -154,7 +140,7 @@ CREATE TABLE Assigned(
          ON DELETE CASCADE ON UPDATE CASCADE
 );
 
--- Changeset vengatesh:14 Create Teaches Table
+-- Changeset vengatesh:13 Create Teaches Table
 CREATE TABLE Teaches(
     course_id VARCHAR(50) NOT NULL,
     user_id INT UNSIGNED NOT NULL,
@@ -165,7 +151,7 @@ CREATE TABLE Teaches(
         ON DELETE CASCADE ON UPDATE CASCADE
 );
 
--- Changeset vengatesh:15 Create Trigger before_insert_chapter
+-- Changeset vengatesh:14 Create Trigger before_insert_chapter
 CREATE TRIGGER before_insert_chapter
     BEFORE INSERT ON Chapter
     FOR EACH ROW
@@ -173,7 +159,7 @@ BEGIN
     SET NEW.chapter_code = CONCAT('chap', NEW.cno);
 END;
 
--- Changeset vengatesh:16 Create Content Table
+-- Changeset vengatesh:15 Create Content Table
     CREATE TABLE Content (
      content_id SMALLINT UNSIGNED NOT NULL,
      s_id SMALLINT UNSIGNED NOT NULL,
@@ -187,7 +173,7 @@ END;
          ON DELETE CASCADE ON UPDATE CASCADE
     );
 
--- Changeset vengatesh:17 Create TextContent Table
+-- Changeset vengatesh:16 Create TextContent Table
 CREATE TABLE TextContent (
      content_id SMALLINT UNSIGNED NOT NULL,
      s_id SMALLINT UNSIGNED NOT NULL,
@@ -200,7 +186,7 @@ CREATE TABLE TextContent (
          ON DELETE CASCADE ON UPDATE CASCADE
     );
 
--- Changeset vengatesh:18 Create ImageContent Table
+-- Changeset vengatesh:17 Create ImageContent Table
 CREATE TABLE ImageContent (
   content_id SMALLINT UNSIGNED NOT NULL,
   s_id SMALLINT UNSIGNED NOT NULL,
@@ -213,7 +199,7 @@ CREATE TABLE ImageContent (
       ON DELETE CASCADE ON UPDATE CASCADE
     );
 
--- Changeset vengatesh:19 Create Activity Table
+-- Changeset vengatesh:18 Create Activity Table
 CREATE TABLE Activity (
   activity_id SMALLINT UNSIGNED NOT NULL,
   content_id SMALLINT UNSIGNED NOT NULL,
@@ -227,7 +213,7 @@ CREATE TABLE Activity (
       ON DELETE CASCADE ON UPDATE CASCADE
     );
 
--- Changeset vengatesh:20 Create Answer Table
+-- Changeset vengatesh:19 Create Answer Table
 CREATE TABLE Answer (
     answer_id SMALLINT UNSIGNED NOT NULL,
     activity_id SMALLINT UNSIGNED NOT NULL,
@@ -242,9 +228,25 @@ CREATE TABLE Answer (
         REFERENCES Activity(activity_id, content_id, s_id, c_id, t_id)
         ON DELETE CASCADE ON UPDATE CASCADE
     );
+
+-- Changeset vengatesh:20 Create Participation Table
+CREATE TABLE Participation(
+                              user_id INT UNSIGNED,
+                              tbook_id SMALLINT UNSIGNED NOT NULL,
+                              c_id SMALLINT UNSIGNED NOT NULL,
+                              content_id SMALLINT UNSIGNED NOT NULL,
+                              activity_id SMALLINT UNSIGNED NOT NULL,
+                              s_id SMALLINT UNSIGNED NOT NULL,
+                              score SMALLINT,
+                              submitted_at TIMESTAMP,
+                              PRIMARY KEY (user_id, activity_id,content_id,s_id,c_id,tbook_id),
+                              FOREIGN KEY (activity_id,content_id,s_id,c_id,tbook_id)
+                                  REFERENCES Activity(activity_id,content_id, s_id, c_id, t_id)
+                                  ON DELETE CASCADE ON UPDATE CASCADE
+);
 -- Changeset vengatesh:21 Dropping Teaches relation
 DROP TABLE IF EXISTS Teaches;
 ALTER TABLE Course
-ADD COLUMN professor_id INT UNSIGNED
+ADD COLUMN professor_id INT UNSIGNED,
 ADD CONSTRAINT fk_teaches
 FOREIGN KEY (professor_id) REFERENCES User(user_id) ON DELETE CASCADE ON UPDATE CASCADE;
