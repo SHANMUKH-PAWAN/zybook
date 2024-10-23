@@ -9,12 +9,12 @@ import java.util.List;
 @NoArgsConstructor
 public class Activity {
     private int activityId;
-    private Answer answer;
-    private Content content;
     private int sectionId;
     private int contentId;
     private int chapId;
     private  int tbookId;
+    private int answerId;
+    private String question;
 
     List<Answer> options;
 

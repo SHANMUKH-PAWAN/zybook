@@ -7,11 +7,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Answer {
     private int answerId;
+    private int activityId;
+    private int contentId;
+    private int sectionId;
+    private int chapId;
+    private int tbookId;
     private String answerText;
     private String justification;
-    private int sectionId;
-    private int contentId;
-    private int chapId;
-    private  int tbookId;
-    private int activityId;
-    }
+}
