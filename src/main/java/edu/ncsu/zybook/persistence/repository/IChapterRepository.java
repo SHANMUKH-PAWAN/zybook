@@ -10,6 +10,6 @@ public interface IChapterRepository{
     Optional<Chapter> update(Chapter chapter);
     boolean delete(Chapter chapter);
     Optional<Chapter> findById(int cno, int tbookId);
-    List<Chapter> findAllByTextbook(int offset, int limit, String sortBy, String sortDirection, int tbookId);
+    List<Chapter> findAllByTextbook(int tbookId);
     Optional<Chapter> findByTitle(String title);
 }

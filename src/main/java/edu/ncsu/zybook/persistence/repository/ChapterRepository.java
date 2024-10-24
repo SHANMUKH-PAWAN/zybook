@@ -13,8 +13,6 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
-
 @Repository
 public class ChapterRepository implements IChapterRepository {
 
@@ -76,11 +74,9 @@ public class ChapterRepository implements IChapterRepository {
 
 
     @Override
-    public List<Chapter> findAllByTextbook(int offset, int limit, String sortBy, String sortDirection, int tbook_id) {
-        String validSortDirection = sortDirection.equalsIgnoreCase("DESC") ? "DESC" : "ASC";
-        String validSortBy = validateSortBy(sortBy);
-        String sql = "SELECT * FROM Chapter WHERE tbook_id = ? ORDER BY " + validSortBy + " " + validSortDirection + "LIMIT ? OFFSET ?";
-        return jdbcTemplate.query(sql, new Object[]{tbook_id, limit, offset}, new ChapterRowMapper());
+    public List<Chapter> findAllByTextbook(int tbook_id) {
+        String sql = "SELECT * FROM Chapter WHERE tbook_id = ?";
+        return jdbcTemplate.query(sql, new Object[]{tbook_id}, new ChapterRowMapper());
     }
 
     private static class ChapterRowMapper implements RowMapper<Chapter> {
@@ -96,14 +92,4 @@ public class ChapterRepository implements IChapterRepository {
         }
     }
 
-    private String validateSortBy(String sortBy) {
-        // List of allowed columns to sort by in table
-        List<String> allowedSortColumns = List.of("cno", "title", "tbook_id", "chapter_code");
-
-        if (allowedSortColumns.contains(sortBy)) {
-            return sortBy;
-        } else {
-            return "cno";
-        }
-    }
 }

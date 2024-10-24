@@ -4,7 +4,7 @@
 -- Changeset vengatesh:1 Create E_TEXTBOOK Table
 CREATE TABLE E_Textbook (
     uid SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
-    title VARCHAR(30) NOT NULL,
+    title VARCHAR(60) NOT NULL,
     PRIMARY KEY (uid),
     UNIQUE (title)
 );
@@ -13,7 +13,7 @@ CREATE TABLE E_Textbook (
 CREATE TABLE Chapter (
     cno SMALLINT UNSIGNED NOT NULL,
     chapter_code VARCHAR(10) NOT NULL,
-    title VARCHAR(30) NOT NULL,
+    title VARCHAR(60) NOT NULL,
     isHidden TINYINT(1) NOT NULL DEFAULT 0,
     tbook_id SMALLINT UNSIGNED NOT NULL,
     UNIQUE(title, tbook_id),
@@ -166,7 +166,7 @@ END;
      c_id SMALLINT UNSIGNED NOT NULL,
      t_id SMALLINT UNSIGNED NOT NULL,
      is_hidden TINYINT DEFAULT 0,
-    content_type CHAR(10) CHECK (content_type IN ('text','image','activity'))
+     content_type CHAR(10) CHECK (content_type IN ('text','image','activity')),
      owned_by VARCHAR(15) DEFAULT 'faculty'
          CHECK (owned_by IN ('faculty', 'ta')),
      PRIMARY KEY (content_id, s_id, c_id, t_id),
@@ -252,17 +252,17 @@ CREATE TABLE Question(
 
 -- Changeset vengatesh:22 Create Answer Table
 CREATE TABLE Answer (
-                        question_id SMALLINT UNSIGNED NOT NULL,
-                        answer_id SMALLINT UNSIGNED NOT NULL,
-                        activity_id SMALLINT UNSIGNED NOT NULL,
-                        content_id SMALLINT UNSIGNED NOT NULL,
-                        s_id SMALLINT UNSIGNED NOT NULL,
-                        c_id SMALLINT UNSIGNED NOT NULL,
-                        t_id SMALLINT UNSIGNED NOT NULL,
-                        answer_text TEXT NOT NULL,
-                        justification TEXT NOT NULL,
-                        PRIMARY KEY (question_id,answer_id, activity_id, content_id, s_id, c_id, t_id),
-                        FOREIGN KEY (question_id,activity_id, content_id, s_id, c_id, t_id)
-                            REFERENCES Question(question_id,activity_id, content_id, s_id, c_id, t_id)
-                            ON DELETE CASCADE ON UPDATE CASCADE
+    question_id SMALLINT UNSIGNED NOT NULL,
+    answer_id SMALLINT UNSIGNED NOT NULL,
+    activity_id SMALLINT UNSIGNED NOT NULL,
+    content_id SMALLINT UNSIGNED NOT NULL,
+    s_id SMALLINT UNSIGNED NOT NULL,
+    c_id SMALLINT UNSIGNED NOT NULL,
+    t_id SMALLINT UNSIGNED NOT NULL,
+    answer_text TEXT NOT NULL,
+    justification TEXT NOT NULL,
+    PRIMARY KEY (question_id, answer_id, activity_id, content_id, s_id, c_id, t_id),
+    FOREIGN KEY (activity_id, content_id, s_id, c_id, t_id, question_id)
+        REFERENCES Question(activity_id, content_id, s_id, c_id, t_id, q_id)
+        ON DELETE CASCADE ON UPDATE CASCADE
 );

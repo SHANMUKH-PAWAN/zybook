@@ -40,7 +40,7 @@ public class CourseRepository implements ICourseRepository {
     }
 
     @Override
-    public Optional<Course> findById(int courseId) {
+    public Optional<Course> findById(String courseId) {
         String sql = "SELECT * FROM Course WHERE course_id = ?";
         try {
             Course course = jdbcTemplate.queryForObject(sql, new Object[]{courseId}, new CourseRowMapper());
@@ -76,7 +76,7 @@ public class CourseRepository implements ICourseRepository {
         @Override
         public Course mapRow(ResultSet rs, int rowNum) throws SQLException {
             Course course = new Course();
-            course.setCourseId(rs.getInt("course_id"));
+            course.setCourseId(rs.getString("course_id"));
             course.setTitle(rs.getString("title"));
             course.setStartDate(rs.getDate("start_date"));
             course.setEndDate(rs.getDate("end_date"));
