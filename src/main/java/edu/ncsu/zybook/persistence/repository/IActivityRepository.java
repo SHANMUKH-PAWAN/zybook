@@ -11,8 +11,6 @@ public interface IActivityRepository {
 
     Optional<Activity> findById(int activityId, int contentId, int sectionId, int chapId, int tbookId);
 
-    Optional<Activity> update(Activity activity);
-
     boolean delete(int activityId, int contentId, int sectionId, int chapId, int tbookId);
 
     List<Activity> findAllByContent(int contentId, int sectionId, int chapId, int tbookId);
