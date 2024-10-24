@@ -21,43 +21,87 @@ public class ChapterRepository implements IChapterRepository {
 
     @Override
     public Optional<Chapter> findByTitle(String chapter_code) {
-        return Optional.empty();
+        String sql = "SELECT * FROM chapter WHERE chapter_code = ?";
+        try{
+            Chapter chapter = jdbcTemplate.queryForObject(sql, new Object[]{chapter_code}, new ChapterRowMapper());
+            return Optional.of(chapter);
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     @Transactional
     @Override
     public Chapter create(Chapter chapter) {
-        String sql = "INSERT INTO Chapter (cno, chapter_code, title, isHidden, tbook_id) VALUES(?)";
-        int rowsAffected = jdbcTemplate.update(sql, chapter.getCno());
+        String sql = "INSERT INTO Chapter (cno, chapter_code, title, isHidden, tbook_id) VALUES(?, ?, ?, ?, ?)";
+        int rowsAffected = jdbcTemplate.update(sql, chapter.getCno(), chapter.getChapterCode(), chapter.getTitle(), chapter.isHidden(), chapter.getTbookId());
         if(rowsAffected > 0)
         {
-            return findById(chapter.getCno())
-                    .orElseThrow(() -> new RuntimeException("Failed to retrieve newly inserted textbook."));
+            return findByTitle(chapter.getChapterCode())
+                    .orElseThrow(() -> new RuntimeException("Failed to retrieve newly inserted chapter."));
         }
         else{
-            throw new RuntimeException("Failed to insert textbook.");
+            throw new RuntimeException("Failed to insert chapter.");
         }
     }
 
     @Transactional
     @Override
-    public Optional<Chapter> update(Chapter entity) {
-        return Optional.empty();
+    public Optional<Chapter> update(Chapter chapter) {
+        String sql = "UPDATE Chapter SET title = ?, isHidden = ?, tbook_id = ?, chapter_code = ? WHERE cno = ?";
+        int rowsAffected = jdbcTemplate.update(sql, chapter.getTitle(), chapter.isHidden(), chapter.getTbookId(), chapter.getChapterCode(), chapter.getCno());
+        return rowsAffected > 0 ? Optional.of(chapter) : Optional.empty();
     }
 
     @Transactional
     @Override
     public boolean delete(int id) {
-        return false;
+        String sql = "DELETE FROM Chapter WHERE cno = ?";
+        int rowsAffected = jdbcTemplate.update(sql, id);
+        return rowsAffected>0;
     }
 
-    @Override
+    @Transactional
     public Optional<Chapter> findById(int id) {
-        return Optional.empty();
+        String sql = "SELECT * FROM Chapter WHERE cno = ?";
+        try{
+            Chapter chapter = jdbcTemplate.queryForObject(sql, new Object[]{id}, new ChapterRowMapper());
+            return Optional.of(chapter);
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
+
     @Override
-    public List<Chapter> findAll(int offset, int limit, String sortBy, String sortDirection) {
-        return List.of();
+    public List<Chapter> findAll(int offset, int limit, String sortBy, String sortDirection, int tbook_id) {
+        String validSortDirection = sortDirection.equalsIgnoreCase("DESC") ? "DESC" : "ASC";
+        String validSortBy = validateSortBy(sortBy);
+        String sql = "SELECT * FROM Chapter WHERE tbook_id = ? ORDER BY " + validSortBy + " " + validSortDirection + "LIMIT ? OFFSET ?";
+        return jdbcTemplate.query(sql, new Object[]{tbook_id, limit, offset}, new ChapterRowMapper());
+    }
+
+    private static class ChapterRowMapper implements RowMapper<Chapter> {
+        @Override
+        public Chapter mapRow(ResultSet rs, int rowNum) throws SQLException {
+            Chapter chapter = new Chapter();
+            chapter.setCno(rs.getInt("cno"));
+            chapter.setTitle(rs.getString("title"));
+            chapter.setTbookId(rs.getInt("tbook_id"));
+            chapter.setChapterCode(rs.getString("chapter_code"));
+            chapter.setHidden(rs.getBoolean("isHidden"));
+            return chapter;
+        }
+    }
+
+    private String validateSortBy(String sortBy) {
+        // List of allowed columns to sort by in table
+        List<String> allowedSortColumns = List.of("cno", "title", "tbook_id", "chapter_code");
+
+        if (allowedSortColumns.contains(sortBy)) {
+            return sortBy;
+        } else {
+            return "cno";
+        }
     }
 }
