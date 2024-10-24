@@ -8,8 +8,8 @@ import java.util.Optional;
 public interface IChapterRepository{
     Chapter create(Chapter chapter);
     Optional<Chapter> update(Chapter chapter);
-    boolean delete(int id);
-    Optional<Chapter> findById(int id);
-    List<Chapter> findAll(int offset, int limit, String sortBy, String sortDirection, int tbook_id);
-    Optional<Chapter> findByTitle(String chapter_code);
+    boolean delete(Chapter chapter);
+    Optional<Chapter> findById(int cno, int tbookId);
+    List<Chapter> findAllByTextbook(int offset, int limit, String sortBy, String sortDirection, int tbookId);
+    Optional<Chapter> findByTitle(String title);
 }
