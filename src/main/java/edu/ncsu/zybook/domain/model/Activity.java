@@ -13,8 +13,6 @@ public class Activity {
     private int contentId;
     private int chapId;
     private  int tbookId;
-    private int answerId;
-    private String question;
 
     List<Answer> options;
 
