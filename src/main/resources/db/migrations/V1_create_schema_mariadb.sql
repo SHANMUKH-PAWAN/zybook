@@ -166,6 +166,7 @@ END;
      c_id SMALLINT UNSIGNED NOT NULL,
      t_id SMALLINT UNSIGNED NOT NULL,
      is_hidden TINYINT DEFAULT 0,
+    content_type CHAR(10) CHECK (content_type IN ('text','image','activity'))
      owned_by VARCHAR(15) DEFAULT 'faculty'
          CHECK (owned_by IN ('faculty', 'ta')),
      PRIMARY KEY (content_id, s_id, c_id, t_id),
@@ -203,8 +204,6 @@ CREATE TABLE ImageContent (
 CREATE TABLE Activity (
   activity_id SMALLINT UNSIGNED NOT NULL,
   content_id SMALLINT UNSIGNED NOT NULL,
-  question TEXT NOT NULL,
-  answer TINYINT NOT NULL,
   s_id SMALLINT UNSIGNED NOT NULL,
   c_id SMALLINT UNSIGNED NOT NULL,
   t_id SMALLINT UNSIGNED NOT NULL,
@@ -214,23 +213,7 @@ CREATE TABLE Activity (
       ON DELETE CASCADE ON UPDATE CASCADE
     );
 
--- Changeset vengatesh:19 Create Answer Table
-CREATE TABLE Answer (
-    answer_id SMALLINT UNSIGNED NOT NULL,
-    activity_id SMALLINT UNSIGNED NOT NULL,
-    content_id SMALLINT UNSIGNED NOT NULL,
-    s_id SMALLINT UNSIGNED NOT NULL,
-    c_id SMALLINT UNSIGNED NOT NULL,
-    t_id SMALLINT UNSIGNED NOT NULL,
-    answer_text TEXT NOT NULL,
-    justification TEXT NOT NULL,
-    PRIMARY KEY (answer_id, activity_id, content_id, s_id, c_id, t_id),
-    FOREIGN KEY (activity_id, content_id, s_id, c_id, t_id)
-        REFERENCES Activity(activity_id, content_id, s_id, c_id, t_id)
-        ON DELETE CASCADE ON UPDATE CASCADE
-    );
-
--- Changeset vengatesh:20 Create Participation Table
+-- Changeset vengatesh:19 Create Participation Table
 CREATE TABLE Participation(
                               user_id INT UNSIGNED,
                               tbook_id SMALLINT UNSIGNED NOT NULL,
@@ -245,9 +228,41 @@ CREATE TABLE Participation(
                                   REFERENCES Activity(activity_id,content_id, s_id, c_id, t_id)
                                   ON DELETE CASCADE ON UPDATE CASCADE
 );
--- Changeset vengatesh:21 Dropping Teaches relation
+-- Changeset vengatesh:20 Dropping Teaches relation
 DROP TABLE IF EXISTS Teaches;
 ALTER TABLE Course
 ADD COLUMN professor_id INT UNSIGNED,
 ADD CONSTRAINT fk_teaches
 FOREIGN KEY (professor_id) REFERENCES User(user_id) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- Changeset vengatesh:21 Creating Question Table
+CREATE TABLE Question(
+ activity_id SMALLINT UNSIGNED NOT NULL,
+ content_id SMALLINT UNSIGNED NOT NULL,
+ s_id SMALLINT UNSIGNED NOT NULL,
+ c_id SMALLINT UNSIGNED NOT NULL,
+ t_id SMALLINT UNSIGNED NOT NULL,
+ q_id SMALLINT UNSIGNED NOT NULL,
+ ans_id SMALLINT UNSIGNED,
+ PRIMARY KEY (activity_id, content_id, s_id, c_id, t_id,q_id),
+ FOREIGN KEY (activity_id,content_id, s_id, c_id, t_id)
+     REFERENCES Activity(activity_id,content_id, s_id, c_id, t_id)
+     ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- Changeset vengatesh:22 Create Answer Table
+CREATE TABLE Answer (
+                        question_id SMALLINT UNSIGNED NOT NULL,
+                        answer_id SMALLINT UNSIGNED NOT NULL,
+                        activity_id SMALLINT UNSIGNED NOT NULL,
+                        content_id SMALLINT UNSIGNED NOT NULL,
+                        s_id SMALLINT UNSIGNED NOT NULL,
+                        c_id SMALLINT UNSIGNED NOT NULL,
+                        t_id SMALLINT UNSIGNED NOT NULL,
+                        answer_text TEXT NOT NULL,
+                        justification TEXT NOT NULL,
+                        PRIMARY KEY (question_id,answer_id, activity_id, content_id, s_id, c_id, t_id),
+                        FOREIGN KEY (question_id,activity_id, content_id, s_id, c_id, t_id)
+                            REFERENCES Question(question_id,activity_id, content_id, s_id, c_id, t_id)
+                            ON DELETE CASCADE ON UPDATE CASCADE
+);
