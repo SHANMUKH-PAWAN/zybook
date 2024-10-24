@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class Answer {
+    private int questionId;
     private int answerId;
     private int activityId;
     private int contentId;
