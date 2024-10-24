@@ -13,6 +13,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
+
 @Repository
 public class ChapterRepository implements IChapterRepository {
 
@@ -48,24 +50,24 @@ public class ChapterRepository implements IChapterRepository {
     @Transactional
     @Override
     public Optional<Chapter> update(Chapter chapter) {
-        String sql = "UPDATE Chapter SET title = ?, isHidden = ?, tbook_id = ?, chapter_code = ? WHERE cno = ?";
-        int rowsAffected = jdbcTemplate.update(sql, chapter.getTitle(), chapter.isHidden(), chapter.getTbookId(), chapter.getChapterCode(), chapter.getCno());
+        String sql = "UPDATE Chapter SET title = ?, isHidden = ?, chapter_code = ? WHERE cno = ? AND tbook_id = ?";
+        int rowsAffected = jdbcTemplate.update(sql, chapter.getTitle(), chapter.isHidden(), chapter.getChapterCode(), chapter.getCno(), chapter.getTbookId());
         return rowsAffected > 0 ? Optional.of(chapter) : Optional.empty();
     }
 
     @Transactional
     @Override
-    public boolean delete(int id) {
-        String sql = "DELETE FROM Chapter WHERE cno = ?";
-        int rowsAffected = jdbcTemplate.update(sql, id);
+    public boolean delete(Chapter chapter) {
+        String sql = "DELETE FROM Chapter WHERE cno = ? AND tbook_id = ?";
+        int rowsAffected = jdbcTemplate.update(sql, chapter.getCno(), chapter.getTbookId());
         return rowsAffected>0;
     }
 
     @Transactional
-    public Optional<Chapter> findById(int id) {
-        String sql = "SELECT * FROM Chapter WHERE cno = ?";
+    public Optional<Chapter> findById(int cno, int tbookId) {
+        String sql = "SELECT * FROM Chapter WHERE cno = ? AND tbook_id = ?";
         try{
-            Chapter chapter = jdbcTemplate.queryForObject(sql, new Object[]{id}, new ChapterRowMapper());
+            Chapter chapter = jdbcTemplate.queryForObject(sql, new Object[]{cno, tbookId}, new ChapterRowMapper());
             return Optional.of(chapter);
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
@@ -74,7 +76,7 @@ public class ChapterRepository implements IChapterRepository {
 
 
     @Override
-    public List<Chapter> findAll(int offset, int limit, String sortBy, String sortDirection, int tbook_id) {
+    public List<Chapter> findAllByTextbook(int offset, int limit, String sortBy, String sortDirection, int tbook_id) {
         String validSortDirection = sortDirection.equalsIgnoreCase("DESC") ? "DESC" : "ASC";
         String validSortBy = validateSortBy(sortBy);
         String sql = "SELECT * FROM Chapter WHERE tbook_id = ? ORDER BY " + validSortBy + " " + validSortDirection + "LIMIT ? OFFSET ?";
