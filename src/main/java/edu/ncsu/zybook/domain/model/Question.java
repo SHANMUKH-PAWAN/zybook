@@ -2,8 +2,6 @@ package edu.ncsu.zybook.domain.model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Objects;
-
 @Data
 @NoArgsConstructor
 public class Question {
@@ -14,4 +12,5 @@ public class Question {
     private int chapter_id;
     private int question_id;
     private int answer_id;
+    private String question;
 }

@@ -244,6 +244,7 @@ CREATE TABLE Question(
  t_id SMALLINT UNSIGNED NOT NULL,
  q_id SMALLINT UNSIGNED NOT NULL,
  ans_id SMALLINT UNSIGNED,
+ question TEXT NOT NULL,
  PRIMARY KEY (activity_id, content_id, s_id, c_id, t_id,q_id),
  FOREIGN KEY (activity_id,content_id, s_id, c_id, t_id)
      REFERENCES Activity(activity_id,content_id, s_id, c_id, t_id)
