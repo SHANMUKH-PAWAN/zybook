@@ -233,7 +233,7 @@ DROP TABLE IF EXISTS Teaches;
 ALTER TABLE Course
 ADD COLUMN professor_id INT UNSIGNED,
 ADD CONSTRAINT fk_teaches
-FOREIGN KEY (professor_id) REFERENCES User(user_id) ON DELETE CASCADE ON UPDATE CASCADE;
+FOREIGN KEY (professor_id) REFERENCES User(user_id) ON DELETE CASCADE ON UPDATE CASCADE;x
 
 -- Changeset vengatesh:21 Creating Question Table
 CREATE TABLE Question(

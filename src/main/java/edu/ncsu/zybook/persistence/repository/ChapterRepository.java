@@ -48,16 +48,16 @@ public class ChapterRepository implements IChapterRepository {
     @Transactional
     @Override
     public Optional<Chapter> update(Chapter chapter) {
-        String sql = "UPDATE Chapter SET title = ?, isHidden = ?, tbook_id = ?, chapter_code = ? WHERE cno = ?";
+        String sql = "UPDATE Chapter SET title = ? AND isHidden = ? AND tbook_id = ? AND chapter_code = ? WHERE cno = ?";
         int rowsAffected = jdbcTemplate.update(sql, chapter.getTitle(), chapter.isHidden(), chapter.getTbookId(), chapter.getChapterCode(), chapter.getCno());
         return rowsAffected > 0 ? Optional.of(chapter) : Optional.empty();
     }
 
     @Transactional
     @Override
-    public boolean delete(int id) {
-        String sql = "DELETE FROM Chapter WHERE cno = ?";
-        int rowsAffected = jdbcTemplate.update(sql, id);
+    public boolean delete(int tbook_id, int chap_id) {
+        String sql = "DELETE FROM Chapter WHERE cno = ? AND tbook_id = ?";
+        int rowsAffected = jdbcTemplate.update(sql, chap_id, tbook_id);
         return rowsAffected>0;
     }
 
