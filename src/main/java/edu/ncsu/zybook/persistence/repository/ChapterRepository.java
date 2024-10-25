@@ -20,10 +20,10 @@ public class ChapterRepository implements IChapterRepository {
     JdbcTemplate jdbcTemplate;
 
     @Override
-    public Optional<Chapter> findByTitle(String title) {
-        String sql = "SELECT * FROM chapter WHERE title = ?";
+    public Optional<Chapter> findByTitle(String title, int tbookId) {
+        String sql = "SELECT * FROM chapter WHERE title = ? AND tbook_id = ?";
         try{
-            Chapter chapter = jdbcTemplate.queryForObject(sql, new Object[]{title}, new ChapterRowMapper());
+            Chapter chapter = jdbcTemplate.queryForObject(sql, new Object[]{title, tbookId}, new ChapterRowMapper());
             return Optional.of(chapter);
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
