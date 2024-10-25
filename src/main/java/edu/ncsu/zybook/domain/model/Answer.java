@@ -12,6 +12,7 @@ public class Answer {
     private int sectionId;
     private int chapId;
     private int tbookId;
+    private int questionId;
     private String answerText;
     private String justification;
 }
