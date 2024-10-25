@@ -1,14 +1,14 @@
-package edu.ncsu.zybook.persistence.repository;
+package edu.ncsu.zybook.service;
 
 import edu.ncsu.zybook.domain.model.Chapter;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface IChapterRepository{
+public interface IChapterService {
     Chapter create(Chapter chapter);
-    Optional<Chapter> update(Chapter chapter);
-    boolean delete(Chapter chapter);
+    Optional<Chapter> update(int id, Chapter chapter);
+    boolean delete(int id, Chapter chapter);
     Optional<Chapter> findById(int cno, int tbookId);
     List<Chapter> findAllByTextbook(int tbookId);
     Optional<Chapter> findByTitle(String title, int tbookId);
