@@ -1,6 +1,8 @@
 package edu.ncsu.zybook.service.impl;
 
+import edu.ncsu.zybook.domain.model.Chapter;
 import edu.ncsu.zybook.domain.model.Textbook;
+import edu.ncsu.zybook.persistence.repository.IChapterRepository;
 import edu.ncsu.zybook.persistence.repository.ITextbookRepository;
 import edu.ncsu.zybook.service.ITextbookService;
 import org.springframework.stereotype.Service;
@@ -13,9 +15,13 @@ import java.util.Optional;
 public class TextbookService implements ITextbookService {
 
     private final ITextbookRepository textbookRepository;
-    public TextbookService(ITextbookRepository textbookRepository) {
+    private final IChapterRepository chapterRepository;
+
+    public TextbookService(ITextbookRepository textbookRepository, IChapterRepository chapterRepository) {
         this.textbookRepository = textbookRepository;
+        this.chapterRepository = chapterRepository;
     }
+
 
     @Override
     public Textbook create(Textbook textbook) {
@@ -29,8 +35,15 @@ public class TextbookService implements ITextbookService {
     }
 
     @Override
-    public Optional<Textbook> findById(int id) {
-        return textbookRepository.findById(id) ;
+    public Optional<Textbook> findById( int id) {
+
+        Optional<Textbook> result = textbookRepository.findById(id);
+        if(result.isPresent()) {
+            Textbook tbook =  result.get();
+            List<Chapter> chapters = chapterRepository.findAllByTextbook(id) ; // need to add this to DTO
+            return  Optional.of(tbook);
+        }
+        return Optional.empty();
     }
 
     @Override

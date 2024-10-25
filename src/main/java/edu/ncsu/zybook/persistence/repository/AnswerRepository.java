@@ -22,8 +22,9 @@ public class AnswerRepository implements IAnswerRepository {
     @Transactional
     @Override
     public Answer create(Answer answer) {
-        String sql = "INSERT INTO Answer (answer_id, activity_id, content_id, s_id, c_id, t_id, answer_text, justification) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Answer (question_id, answer_id, activity_id, content_id, s_id, c_id, t_id, answer_text, justification) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         int rowsAffected = jdbcTemplate.update(sql,
+                answer.getQuestionId(),
                 answer.getAnswerId(),
                 answer.getActivityId(),
                 answer.getContentId(),
@@ -35,7 +36,7 @@ public class AnswerRepository implements IAnswerRepository {
         );
 
         if (rowsAffected > 0) {
-            return findById(answer.getAnswerId(), answer.getActivityId(), answer.getContentId(), answer.getSectionId(), answer.getChapId(), answer.getTbookId())
+            return findById(answer.getQuestionId(),answer.getAnswerId(), answer.getActivityId(), answer.getContentId(), answer.getSectionId(), answer.getChapId(), answer.getTbookId())
                     .orElseThrow(() -> new RuntimeException("Failed to retrieve newly inserted answer."));
         } else {
             throw new RuntimeException("Failed to insert answer.");
@@ -43,11 +44,19 @@ public class AnswerRepository implements IAnswerRepository {
     }
 
     @Override
-    public Optional<Answer> findById(int answerId, int activityId, int contentId, int sectionId, int chapId, int tbookId) {
-        String sql = "SELECT * FROM Answer WHERE answer_id = ? AND activity_id = ? AND content_id = ? AND s_id = ? AND c_id = ? AND t_id = ?";
+    public Optional<Answer> findById(int questionId, int answerId, int activityId, int contentId, int sectionId, int chapId, int textbookId) {
+        String sql = "SELECT * FROM Answer WHERE question_id = ? AND answer_id = ? AND activity_id = ? AND content_id = ? AND s_id = ? AND c_id = ? AND t_id = ?";
         try {
-            Answer answer = jdbcTemplate.queryForObject(sql, new Object[]{answerId, activityId, contentId, sectionId, chapId, tbookId}, new AnswerRowMapper());
-            return Optional.of(answer);
+            Answer answerObj = jdbcTemplate.queryForObject(sql, new Object[]{
+                    questionId,
+                    answerId,
+                    activityId,
+                    contentId,
+                    sectionId,
+                    chapId,
+                    textbookId
+            }, new AnswerRowMapper());
+            return Optional.of(answerObj);
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
@@ -56,10 +65,11 @@ public class AnswerRepository implements IAnswerRepository {
     @Transactional
     @Override
     public Optional<Answer> update(Answer answer) {
-        String sql = "UPDATE Answer SET answer_text = ?, justification = ? WHERE answer_id = ? AND activity_id = ? AND content_id = ? AND s_id = ? AND c_id = ? AND t_id = ?";
+        String sql = "UPDATE Answer SET answer_text = ?, justification = ? WHERE question_id = ? AND answer_id = ? AND activity_id = ? AND content_id = ? AND s_id = ? AND c_id = ? AND t_id = ?";
         int rowsAffected = jdbcTemplate.update(sql,
                 answer.getAnswerText(),
                 answer.getJustification(),
+                answer.getQuestionId(),
                 answer.getAnswerId(),
                 answer.getActivityId(),
                 answer.getContentId(),
@@ -72,22 +82,36 @@ public class AnswerRepository implements IAnswerRepository {
 
     @Transactional
     @Override
-    public boolean delete(int answerId, int activityId, int contentId, int sectionId, int chapId, int tbookId) {
-        String sql = "DELETE FROM Answer WHERE answer_id = ? AND activity_id = ? AND content_id = ? AND s_id = ? AND c_id = ? AND t_id = ?";
-        int rowsAffected = jdbcTemplate.update(sql, answerId, activityId, contentId, sectionId, chapId, tbookId);
+    public boolean delete(Answer answer) {
+        String sql = "DELETE FROM Answer WHERE question_id = ? AND answer_id = ? AND activity_id = ? AND content_id = ? AND s_id = ? AND c_id = ? AND t_id = ?";
+        int rowsAffected = jdbcTemplate.update(sql,
+                answer.getQuestionId(),
+                answer.getAnswerId(),
+                answer.getActivityId(),
+                answer.getContentId(),
+                answer.getSectionId(),
+                answer.getChapId(),
+                answer.getTbookId());
         return rowsAffected > 0;
     }
 
     @Override
-    public List<Answer> findAllByActivity(int activityId, int contentId, int sectionId, int chapId, int tbookId) {
-        String sql = "SELECT * FROM Answer WHERE activity_id = ? AND content_id = ? AND s_id = ? AND c_id = ? AND t_id = ? ORDER BY answer_id";
-        return jdbcTemplate.query(sql, new Object[]{activityId, contentId, sectionId, chapId, tbookId}, new AnswerRowMapper());
+    public List<Answer> findAllByQuestion(Answer answer) {
+        String sql = "SELECT * FROM Answer WHERE question_id = ? AND activity_id = ? AND content_id = ? AND s_id = ? AND c_id = ? AND t_id = ? ORDER BY answer_id";
+        return jdbcTemplate.query(sql, new Object[]{
+                answer.getQuestionId(),
+                answer.getActivityId(),
+                answer.getContentId(),
+                answer.getSectionId(),
+                answer.getChapId(),
+                answer.getTbookId()}, new AnswerRowMapper());
     }
 
     private static class AnswerRowMapper implements RowMapper<Answer> {
         @Override
         public Answer mapRow(ResultSet rs, int rowNum) throws SQLException {
             Answer answer = new Answer();
+            answer.setQuestionId(rs.getInt("question_id"));
             answer.setAnswerId(rs.getInt("answer_id"));
             answer.setActivityId(rs.getInt("activity_id"));
             answer.setContentId(rs.getInt("content_id"));

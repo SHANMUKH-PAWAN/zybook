@@ -12,9 +12,5 @@ public class Course {
     protected Date startDate;
     protected Date endDate;
     protected String courseType;
-    protected Textbook textbook; // Reference to Textbook entity
-    protected User professor;
-
-
-
+    protected int tbookId;
 }

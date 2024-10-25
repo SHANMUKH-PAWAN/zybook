@@ -24,11 +24,10 @@ public class ActivityRepository implements IActivityRepository {
     @Transactional
     @Override
     public Activity create(Activity activity) {
-        String sql = "INSERT INTO Activity (activity_id, content_id, question, s_id, c_id, t_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Activity (activity_id, content_id, s_id, c_id, t_id) VALUES (?, ?, ?, ?, ?, ?)";
         int rowsAffected = jdbcTemplate.update(sql,
                 activity.getActivityId(),
                 activity.getContentId(),
-                activity.getQuestion(),
                 activity.getSectionId(),
                 activity.getChapId(),
                 activity.getTbookId()
@@ -55,22 +54,6 @@ public class ActivityRepository implements IActivityRepository {
 
     @Transactional
     @Override
-    public Optional<Activity> update(Activity activity) {
-        String sql = "UPDATE Activity SET question = ?, answer = ? WHERE activity_id = ? AND content_id = ? AND s_id = ? AND c_id = ? AND t_id = ?";
-        int rowsAffected = jdbcTemplate.update(sql,
-                activity.getQuestion(),
-                activity.getAnswerId(),
-                activity.getActivityId(),
-                activity.getContentId(),
-                activity.getSectionId(),
-                activity.getChapId(),
-                activity.getTbookId()
-        );
-        return rowsAffected > 0 ? Optional.of(activity) : Optional.empty();
-    }
-
-    @Transactional
-    @Override
     public boolean delete(int activityId, int contentId, int sectionId, int chapId, int tbookId) {
         String sql = "DELETE FROM Activity WHERE activity_id = ? AND content_id = ? AND s_id = ? AND c_id = ? AND t_id = ?";
         int rowsAffected = jdbcTemplate.update(sql, activityId, contentId, sectionId, chapId, tbookId);
@@ -89,7 +72,6 @@ public class ActivityRepository implements IActivityRepository {
             Activity activity = new Activity();
             activity.setActivityId(rs.getInt("activity_id"));
             activity.setContentId(rs.getInt("content_id"));
-            activity.setQuestion(rs.getString("question"));
             activity.setSectionId(rs.getInt("s_id"));
             activity.setChapId(rs.getInt("c_id"));
             activity.setTbookId(rs.getInt("t_id"));
