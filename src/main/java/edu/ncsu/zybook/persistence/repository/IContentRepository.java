@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface IContentRepository {
     Content create(Content content);
     Optional<Content> update(Content content);
-    boolean delete(int tbook_id, int chap_id, int section_id, int content_id);
-    Optional<Content> findById(int id);
-    List<Content> findAll(int offset, int limit, String sortBy, String sortDirection, int tbook_id, int sectionId, int chapId);
+    boolean delete(int contentId, int sectionId, int chapId, int tbook_id);
+    Optional<Content> findById(int contentId, int sectionId, int chapId, int tbook_id);
+    List<Content> findAllBySection(int sectionId, int chapId, int tbook_id);
 }

@@ -10,9 +10,11 @@ public interface ISectionRepository {
 
     Optional<Section> findById(int tbookId, int chapterNo, int sno);
 
+    Optional<Section> findByTitle(int tbookId, int chapterId, String title );
+
     Optional<Section> update(Section section);
 
     boolean delete(int tbookId, int chapterNo, int sno);
 
-    List<Section> findAllByTextbook(int tbookId, int chapterNo);
+    List<Section> findAllByChapter(int tbookId, int chapterNo);
 }

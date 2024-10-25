@@ -81,7 +81,7 @@ public class CourseRepository implements ICourseRepository {
             course.setStartDate(rs.getDate("start_date"));
             course.setEndDate(rs.getDate("end_date"));
             course.setCourseType(rs.getString("course_type"));
-            course.setTextbookId(rs.getInt("textbook_id"));
+            course.setTbookId(rs.getInt("textbook_id"));
             return course;
         }
     }
