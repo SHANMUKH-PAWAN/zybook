@@ -1,11 +1,11 @@
-package edu.ncsu.zybook.persistence.repository;
+package edu.ncsu.zybook.service;
 
 import edu.ncsu.zybook.domain.model.Chapter;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface IChapterRepository{
+public interface IChapterService {
     Chapter create(Chapter chapter);
     Optional<Chapter> update(Chapter chapter);
     boolean delete(Chapter chapter);

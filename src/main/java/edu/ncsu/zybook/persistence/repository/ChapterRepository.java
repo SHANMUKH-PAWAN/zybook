@@ -20,10 +20,10 @@ public class ChapterRepository implements IChapterRepository {
     JdbcTemplate jdbcTemplate;
 
     @Override
-    public Optional<Chapter> findByTitle(String chapter_code) {
-        String sql = "SELECT * FROM chapter WHERE chapter_code = ?";
+    public Optional<Chapter> findByTitle(String title, int tbookId) {
+        String sql = "SELECT * FROM chapter WHERE title = ? AND tbook_id = ?";
         try{
-            Chapter chapter = jdbcTemplate.queryForObject(sql, new Object[]{chapter_code}, new ChapterRowMapper());
+            Chapter chapter = jdbcTemplate.queryForObject(sql, new Object[]{title, tbookId}, new ChapterRowMapper());
             return Optional.of(chapter);
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
@@ -37,7 +37,7 @@ public class ChapterRepository implements IChapterRepository {
         int rowsAffected = jdbcTemplate.update(sql, chapter.getCno(), chapter.getChapterCode(), chapter.getTitle(), chapter.isHidden(), chapter.getTbookId());
         if(rowsAffected > 0)
         {
-            return findByTitle(chapter.getChapterCode())
+            return findById(chapter.getCno(), chapter.getTbookId())
                     .orElseThrow(() -> new RuntimeException("Failed to retrieve newly inserted chapter."));
         }
         else{
@@ -48,16 +48,17 @@ public class ChapterRepository implements IChapterRepository {
     @Transactional
     @Override
     public Optional<Chapter> update(Chapter chapter) {
-        String sql = "UPDATE Chapter SET title = ?, isHidden = ?, chapter_code = ? WHERE cno = ? AND tbook_id = ?";
-        int rowsAffected = jdbcTemplate.update(sql, chapter.getTitle(), chapter.isHidden(), chapter.getChapterCode(), chapter.getCno(), chapter.getTbookId());
+        String sql = "UPDATE Chapter SET title = ? AND isHidden = ? AND tbook_id = ? AND chapter_code = ? WHERE cno = ?";
+        int rowsAffected = jdbcTemplate.update(sql, chapter.getTitle(), chapter.isHidden(), chapter.getTbookId(), chapter.getChapterCode(), chapter.getCno());
+
         return rowsAffected > 0 ? Optional.of(chapter) : Optional.empty();
     }
 
     @Transactional
     @Override
-    public boolean delete(Chapter chapter) {
+    public boolean delete(int tbook_id, int chap_id) {
         String sql = "DELETE FROM Chapter WHERE cno = ? AND tbook_id = ?";
-        int rowsAffected = jdbcTemplate.update(sql, chapter.getCno(), chapter.getTbookId());
+        int rowsAffected = jdbcTemplate.update(sql, chap_id, tbook_id);
         return rowsAffected>0;
     }
 

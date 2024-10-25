@@ -46,6 +46,7 @@ public class ContentRepository implements IContentRepository {
     public boolean delete(int contentId, int sectionId, int chapId, int tbook_id) {
         String sql = "DELETE FROM Content WHERE content_id = ? AND section_id = ? AND chap_id = ? AND tbook_id = ?";
         int rowsAffected = jdbcTemplate.update(sql, contentId, sectionId, chapId, tbook_id);
+
         return rowsAffected > 0;
     }
 
