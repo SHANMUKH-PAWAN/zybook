@@ -1,15 +1,11 @@
 package edu.ncsu.zybook.service.impl;
 
-import edu.ncsu.zybook.domain.model.Chapter;
 import edu.ncsu.zybook.domain.model.Content;
 import edu.ncsu.zybook.domain.model.Section;
-import edu.ncsu.zybook.domain.model.Textbook;
 import edu.ncsu.zybook.persistence.repository.IChapterRepository;
 import edu.ncsu.zybook.persistence.repository.ISectionRepository;
-import edu.ncsu.zybook.persistence.repository.ITextbookRepository;
 import edu.ncsu.zybook.persistence.repository.IContentRepository;
 import edu.ncsu.zybook.service.ISectionService;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -44,7 +40,7 @@ public class SectionService implements ISectionService {
         Optional<Section> result = sectionRepository.findById(tbookId,chapterId,sno);
         if(result.isPresent()) {
             Section section =  result.get();
-            List<Content> contents = contentRepository.findAll(tbookId,chapterId,sno) ; // need to add this to DTO
+            List<Content> contents = contentRepository.findAllBySection(sno,chapterId,tbookId); // need to add this to DTO
             return  Optional.of(section);
         }
         return Optional.empty();
