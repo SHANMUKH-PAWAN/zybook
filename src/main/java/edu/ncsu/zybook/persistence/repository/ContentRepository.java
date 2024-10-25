@@ -43,9 +43,9 @@ public class ContentRepository implements IContentRepository {
 
     @Transactional
     @Override
-    public boolean delete(int id) {
-        String sql = "DELETE FROM Content WHERE contentId = ?";
-        int rowsAffected = jdbcTemplate.update(sql, id);
+    public boolean delete(int tbook_id, int chap_id, int section_id, int content_id) {
+        String sql = "DELETE FROM Content WHERE t_id = ? AND c_id = ? AND s_id = ? AND content_id = ?";
+        int rowsAffected = jdbcTemplate.update(sql, tbook_id, chap_id, section_id, content_id);
         return rowsAffected > 0;
     }
 

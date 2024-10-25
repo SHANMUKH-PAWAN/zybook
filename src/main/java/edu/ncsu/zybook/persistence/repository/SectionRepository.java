@@ -43,8 +43,21 @@ public class SectionRepository implements ISectionRepository {
         }
     }
 
+
     @Override
-    public List<Section> findAllByTextbook(int tbookId, int chapterNo) {
+    public Optional<Section> findByTitle(int tbookId, int chapterId,String title ) {
+        String sql = "SELECT * FROM Section WHERE tbook_id = ? AND chapter_no = ? AND title = ?";
+        try {
+            Section section = jdbcTemplate.queryForObject(sql, new Object[]{tbookId, chapterId, title}, new SectionRowMapper());
+            return Optional.of(section);
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
+
+    @Override
+    public List<Section> findAllByChapter(int tbookId, int chapterNo) {
         String sql = "SELECT * FROM Section WHERE tbook_id = ? AND chapter_no = ? ORDER BY sno";
         return jdbcTemplate.query(sql, new Object[]{tbookId, chapterNo}, new SectionRowMapper());
     }
