@@ -40,8 +40,7 @@ public class TextbookService implements ITextbookService {
         Optional<Textbook> result = textbookRepository.findById(id);
         if(result.isPresent()) {
             Textbook tbook =  result.get();
-            List<Chapter> chapters = chapterRepository.findAllByTextbook(id) ;
-            tbook.setChapters(chapters);
+            List<Chapter> chapters = chapterRepository.findAllByTextbook(id) ; // need to add this to DTO
             return  Optional.of(tbook);
         }
         return Optional.empty();

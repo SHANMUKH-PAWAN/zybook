@@ -1,7 +1,6 @@
 package edu.ncsu.zybook.persistence.repository;
 
 
-import edu.ncsu.zybook.domain.model.Activity;
 import edu.ncsu.zybook.domain.model.Question;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -78,7 +77,7 @@ public class QuestionRepository implements IQuestionRepository {
             question.setActivity_id(rs.getInt("activity_id"));
             question.setQuestion_id(rs.getInt("question_id"));
             question.setContent_id(rs.getInt("content_id"));
-            question.getSection_id(rs.getInt("section_id"));
+            question.setSection_id(rs.getInt("section_id"));
             question.setChapter_id(rs.getInt("chapter_id"));
             question.setTbook_id(rs.getInt("tbook_id"));
             question.setAnswer_id(rs.getInt("isHidden"));
