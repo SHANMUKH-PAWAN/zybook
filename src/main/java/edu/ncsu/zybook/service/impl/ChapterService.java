@@ -39,7 +39,7 @@ public class ChapterService implements IChapterService {
         Optional<Chapter> result = chapterRepository.findById(cno, tbookId);
         if(result.isPresent()) {
             Chapter chapter = result.get();
-            List<Section> sections = sectionRepository.findAllByTextbook(tbookId, cno);
+            List<Section> sections = sectionRepository.findAllByChapter(tbookId, cno);
             return Optional.of(chapter);
         }
         return Optional.empty();
@@ -47,24 +47,24 @@ public class ChapterService implements IChapterService {
 
     @Override
     @Transactional
-    public Optional<Chapter> update(int id, Chapter chapter) {
-        if(chapterRepository.findById(id, chapter.getTbookId()).isPresent()){
+    public Optional<Chapter> update(Chapter chapter) {
+        if(chapterRepository.findById(chapter.getCno(), chapter.getTbookId()).isPresent()){
             return chapterRepository.update(chapter);
         }
         else{
-            throw new RuntimeException("Chapter does not exist with id:" + id);
+            throw new RuntimeException("Chapter does not exist with id:" + chapter.getCno() + "in textbook: "+chapter.getTbookId());
         }
     }
 
     @Override
     @Transactional
-    public boolean delete(int id, Chapter chapter) {
-        Optional<Chapter> result = chapterRepository.findById(id, chapter.getTbookId());
+    public boolean delete(Chapter chapter) {
+        Optional<Chapter> result = chapterRepository.findById(chapter.getCno(), chapter.getTbookId());
         if (result.isPresent()) {
             return chapterRepository.delete(chapter);
         }
         else{
-            throw new RuntimeException("Chapter does not exist with id:" + id);
+            throw new RuntimeException("Chapter does not exist with id:" + chapter.getCno() + "in textbook: "+chapter.getTbookId());
         }
     }
 
