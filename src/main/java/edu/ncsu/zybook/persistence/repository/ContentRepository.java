@@ -17,79 +17,68 @@ import java.util.Optional;
 public class ContentRepository implements IContentRepository {
 
     @Autowired
-    JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
 
     @Transactional
     @Override
     public Content create(Content content) {
-        String sql = "INSERT INTO content (contentId, isHidden, ownedBy, sectionId, tbook_id, chapId) VALUES (?, ?, ?, ?, ?, ?)";
-        int rowsAffected = jdbcTemplate.update(sql, content.getContentId(), content.isHidden(), content.getOwnedBy(), content.getSectionId(), content.getTbook_id(), content.getChapId());
+        String sql = "INSERT INTO Content (content_id, section_id, chap_id, tbook_id, content_type, owned_by, is_hidden) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        int rowsAffected = jdbcTemplate.update(sql, content.getContentId(), content.getSectionId(), content.getChapId(),
+                content.getTbook_id(), content.getContentType(), content.getOwnedBy(), content.isHidden());
         if (rowsAffected > 0) {
-            return findById(content.getContentId())
-                    .orElseThrow(() -> new RuntimeException("Failed to retrieve newly inserted content"));
-        }
-        else{
-            throw new RuntimeException("Failed to insert content");
+            return content;
+        } else {
+            throw new RuntimeException("Failed to insert content.");
         }
     }
 
     @Transactional
     @Override
     public Optional<Content> update(Content content) {
-        String sql = "UPDATE Content SET isHidden = ?, ownedBy = ?, sectionId = ?, tbook_id = ?, chapId = ? WHERE contentId = ?";
-        int rowsAffected = jdbcTemplate.update(sql, content.isHidden(), content.getOwnedBy(), content.getSectionId(), content.getTbook_id(), content.getChapId(), content.getContentId());
-        return rowsAffected > 0 ? Optional.of(content): Optional.empty();
+        String sql = "UPDATE Content SET content_type = ?, owned_by = ?, is_hidden = ? WHERE content_id = ? AND section_id = ? AND chap_id = ? AND tbook_id = ?";
+        int rowsAffected = jdbcTemplate.update(sql, content.getContentType(), content.getOwnedBy(), content.isHidden(),
+                content.getContentId(), content.getSectionId(), content.getChapId(), content.getTbook_id());
+        return rowsAffected > 0 ? Optional.of(content) : Optional.empty();
     }
 
     @Transactional
     @Override
-    public boolean delete(int tbook_id, int chap_id, int section_id, int content_id) {
-        String sql = "DELETE FROM Content WHERE t_id = ? AND c_id = ? AND s_id = ? AND content_id = ?";
-        int rowsAffected = jdbcTemplate.update(sql, tbook_id, chap_id, section_id, content_id);
+    public boolean delete(int contentId, int sectionId, int chapId, int tbook_id) {
+        String sql = "DELETE FROM Content WHERE content_id = ? AND section_id = ? AND chap_id = ? AND tbook_id = ?";
+        int rowsAffected = jdbcTemplate.update(sql, contentId, sectionId, chapId, tbook_id);
+
         return rowsAffected > 0;
     }
 
     @Override
-    public Optional<Content> findById(int id) {
-        String sql = "SELECT * FROM Content WHERE contentId = ?";
-        try{
-            Content content = jdbcTemplate.queryForObject(sql, new Object[]{id}, new ContentRowMapper());
+    public Optional<Content> findById(int contentId, int sectionId, int chapId, int tbook_id) {
+        String sql = "SELECT * FROM Content WHERE content_id = ? AND section_id = ? AND chap_id = ? AND tbook_id = ?";
+        try {
+            Content content = jdbcTemplate.queryForObject(sql, new Object[]{contentId, sectionId, chapId, tbook_id}, new ContentRowMapper());
             return Optional.of(content);
-        } catch (EmptyResultDataAccessException e){
+        } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
     }
 
     @Override
-    public List<Content> findAll(int offset, int limit, String sortBy, String sortDirection, int tbook_id, int sectionId, int chapId) {
-        String validSortDirection = sortDirection.equalsIgnoreCase("DESC") ? "DESC" : "ASC";
-        String validSortBy = validateSortBy(sortBy);
-        String sql = "SELECT * FROM Content WHERE tbook_id = ?, sectionId = ?, chapId = ? ORDER BY " + validSortBy + " " + validSortDirection + " LIMIT ? OFFSET ?";
-        return jdbcTemplate.query(sql, new Object[]{tbook_id, sectionId, chapId, limit, offset}, new ContentRowMapper());
+    public List<Content> findAllBySection(int sectionId, int chapId, int tbook_id) {
+        String sql = "SELECT * FROM Content WHERE section_id = ? AND chap_id = ? AND tbook_id = ?";
+        return jdbcTemplate.query(sql, new Object[]{sectionId, chapId, tbook_id}, new ContentRowMapper());
     }
 
     private static class ContentRowMapper implements RowMapper<Content> {
         @Override
         public Content mapRow(ResultSet rs, int rowNum) throws SQLException {
             Content content = new Content();
-            content.setContentId(rs.getInt("contentId"));
-            content.setHidden(rs.getBoolean("isHidden"));
-            content.setOwnedBy(rs.getString("ownedBy"));
-            content.setSectionId(rs.getInt("sectionId"));
-            content.setChapId(rs.getInt("chapId"));
+            content.setContentId(rs.getInt("content_id"));
+            content.setSectionId(rs.getInt("section_id"));
+            content.setChapId(rs.getInt("chap_id"));
             content.setTbook_id(rs.getInt("tbook_id"));
+            content.setContentType(rs.getString("content_type"));
+            content.setOwnedBy(rs.getString("owned_by"));
+            content.setHidden(rs.getBoolean("is_hidden"));
             return content;
-        }
-    }
-
-    private String validateSortBy(String sortBy) {
-        // List of allowed columns to sort by in table
-        List<String> allowedSortColumns = List.of("contentId", "ownedBy", "sectionId", "tbook_id", "chapId");
-
-        if (allowedSortColumns.contains(sortBy)) {
-            return sortBy;
-        } else {
-            return "contentId";
         }
     }
 }
