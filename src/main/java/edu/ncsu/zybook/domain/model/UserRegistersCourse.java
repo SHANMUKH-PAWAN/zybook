@@ -9,7 +9,6 @@ import java.security.Timestamp;
 public class UserRegistersCourse {
     private Timestamp enrollmentDate;
     private String approvalStatus;
-    private User user;
-    private ActiveCourse course;
-
+    private int userId;
+    private String courseId;
 }

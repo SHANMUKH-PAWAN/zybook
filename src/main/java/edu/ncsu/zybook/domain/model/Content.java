@@ -3,8 +3,6 @@ package edu.ncsu.zybook.domain.model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @NoArgsConstructor
 public class Content {
@@ -15,5 +13,5 @@ public class Content {
     protected int contentId;
     protected int tbook_id;
     protected int chapId;
-    protected List<Activity> activities;
+    protected String contentType;
 }

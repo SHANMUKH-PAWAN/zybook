@@ -3,8 +3,6 @@ package edu.ncsu.zybook.domain.model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @NoArgsConstructor
 public class Section {
@@ -13,5 +11,4 @@ public class Section {
     private boolean isHidden;
     private int chapId;
     private int tbookId;
-    private List<Content> contents;
 }
