@@ -36,7 +36,6 @@ public class TextbookService implements ITextbookService {
 
     @Override
     public Optional<Textbook> findById( int id) {
-
         Optional<Textbook> result = textbookRepository.findById(id);
         if(result.isPresent()) {
             Textbook tbook =  result.get();
