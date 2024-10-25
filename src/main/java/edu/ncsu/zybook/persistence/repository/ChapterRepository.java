@@ -20,10 +20,10 @@ public class ChapterRepository implements IChapterRepository {
     JdbcTemplate jdbcTemplate;
 
     @Override
-    public Optional<Chapter> findByTitle(String chapter_code) {
-        String sql = "SELECT * FROM chapter WHERE chapter_code = ?";
+    public Optional<Chapter> findByTitle(String title) {
+        String sql = "SELECT * FROM chapter WHERE title = ?";
         try{
-            Chapter chapter = jdbcTemplate.queryForObject(sql, new Object[]{chapter_code}, new ChapterRowMapper());
+            Chapter chapter = jdbcTemplate.queryForObject(sql, new Object[]{title}, new ChapterRowMapper());
             return Optional.of(chapter);
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
@@ -37,7 +37,7 @@ public class ChapterRepository implements IChapterRepository {
         int rowsAffected = jdbcTemplate.update(sql, chapter.getCno(), chapter.getChapterCode(), chapter.getTitle(), chapter.isHidden(), chapter.getTbookId());
         if(rowsAffected > 0)
         {
-            return findByTitle(chapter.getChapterCode())
+            return findById(chapter.getCno(), chapter.getTbookId())
                     .orElseThrow(() -> new RuntimeException("Failed to retrieve newly inserted chapter."));
         }
         else{
