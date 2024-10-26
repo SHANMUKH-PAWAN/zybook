@@ -51,33 +51,12 @@ public class ActiveCourseRepository implements IActiveCourseRepository {
         return rowsAffected > 0 ? Optional.of(activeCourse) : Optional.empty();
     }
 
-    @Override
-    public boolean delete(int id) {
-        return false;
-    }
-
-    @Override
-    public Optional<ActiveCourse> findById(int id) {
-        return Optional.empty();
-    }
-
     @Transactional
     @Override
     public boolean delete(String courseId) {
         String sql = "DELETE FROM ActiveCourse WHERE course_id = ?";
         int rowsAffected = jdbcTemplate.update(sql, courseId);
         return rowsAffected > 0;
-    }
-
-    @Override
-    public List<ActiveCourse> findAll(int offset, int limit, String sortBy, String sortDirection) {
-        String sql = "SELECT * FROM ActiveCourse ORDER BY " + sortBy + " " + sortDirection + " LIMIT ? OFFSET ?";
-        return jdbcTemplate.query(sql, new Object[]{limit, offset}, new ActiveCourseRowMapper());
-    }
-
-    @Override
-    public Optional<ActiveCourse> findByTitle(String title) {
-        return Optional.empty();
     }
 
     private static class ActiveCourseRowMapper implements RowMapper<ActiveCourse> {

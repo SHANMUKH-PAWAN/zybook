@@ -1,12 +1,11 @@
-package edu.ncsu.zybook.persistence.repository;
+package edu.ncsu.zybook.service;
 
 import edu.ncsu.zybook.domain.model.Course;
-import org.w3c.dom.Text;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface ICourseRepository {
+public interface ICourseService {
     Course create(Course entity);
     Optional<Course> update(Course entity);
     boolean delete(String id);
