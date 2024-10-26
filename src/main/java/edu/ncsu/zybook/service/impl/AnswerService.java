@@ -49,7 +49,7 @@ public class AnswerService implements IAnswerService {
     public boolean delete(Answer answer) {
         Optional<Answer> existingAnswer = answerRepository.findById(answer.getQuestionId(), answer.getAnswerId(), answer.getActivityId(), answer.getContentId(), answer.getSectionId(), answer.getChapId(), answer.getTbookId());
         if (existingAnswer.isPresent()) {
-            return answerRepository.delete(answer.getQuestionId(), answer.getAnswerId(), answer.getActivityId(), answer.getContentId(), answer.getSectionId(), answer.getChapId(), answer.getTbookId());
+            return answerRepository.delete(answer);
         } else {
             throw new RuntimeException("Answer not found with the provided identifiers");
         }

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Textbook List</title>
+</head>
+<body>
+<h1>Textbook List</h1>
+<a th:href="@{/textbooks/new}">Add New Textbook</a>
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="textbook : ${textbooks}">
+        <td th:text="${textbook.uid}">ID</td>
+        <td th:text="${textbook.title}">Title</td>
+        <td>
+            <a th:href="@{/textbooks/{id}(id=${textbook.uid})}">View</a>
+            <a th:href="@{/textbooks/edit/{id}(id=${textbook.uid})}">Edit</a>
+            <form th:action="@{/textbooks/{id}(id=${textbook.uid})}" th:method="delete" style="display:inline;">
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
