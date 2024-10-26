@@ -1,6 +1,8 @@
 package edu.ncsu.zybook.persistence.repository;
 
 import edu.ncsu.zybook.domain.model.Content;
+import edu.ncsu.zybook.domain.model.ImageContent;
+import edu.ncsu.zybook.domain.model.TextContent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -25,34 +27,120 @@ public class ContentRepository implements IContentRepository {
         String sql = "INSERT INTO Content (content_id, section_id, chap_id, tbook_id, content_type, owned_by, is_hidden) VALUES (?, ?, ?, ?, ?, ?, ?)";
         int rowsAffected = jdbcTemplate.update(sql, content.getContentId(), content.getSectionId(), content.getChapId(),
                 content.getTbook_id(), content.getContentType(), content.getOwnedBy(), content.isHidden());
+
+        if (rowsAffected > 0) {
+            switch (content.getContentType().toLowerCase()) {
+                case "text":
+                    if (content instanceof TextContent) return createTextContent((TextContent) content);
+                    else throw new IllegalArgumentException("Invalid content type for TextContent");
+                case "image":
+                    if (content instanceof ImageContent) return createImageContent((ImageContent) content);
+                    else throw new IllegalArgumentException("Invalid content type for ImageContent");
+                default:
+                    throw new RuntimeException("Unknown content type: " + content.getContentType());
+            }
+        } else {
+            throw new RuntimeException("Failed to insert content.");
+        }
+    }
+
+    private TextContent createTextContent(TextContent content) {
+        String sql = "INSERT INTO TextContent (content_id, s_id, c_id, t_id, data) VALUES (?, ?, ?, ?, ?)";
+        int rowsAffected = jdbcTemplate.update(sql, content.getContentId(), content.getSectionId(), content.getChapId(),
+                content.getTbook_id(), content.getData());
         if (rowsAffected > 0) {
             return content;
         } else {
-            throw new RuntimeException("Failed to insert content.");
+            throw new RuntimeException("Failed to insert Text content.");
+        }
+    }
+
+    private ImageContent createImageContent(ImageContent content) {
+        String sql = "INSERT INTO ImageContent (content_id, s_id, c_id, t_id, data) VALUES (?, ?, ?, ?, ?)";
+        int rowsAffected = jdbcTemplate.update(sql, content.getContentId(), content.getSectionId(), content.getChapId(),
+                content.getTbook_id(), content.getData());
+        if (rowsAffected > 0) {
+            return content;
+        } else {
+            throw new RuntimeException("Failed to insert Image content.");
         }
     }
 
     @Transactional
     @Override
     public Optional<Content> update(Content content) {
-        String sql = "UPDATE Content SET content_type = ?, owned_by = ?, is_hidden = ? WHERE content_id = ? AND section_id = ? AND chap_id = ? AND tbook_id = ?";
+
+        // Update the base Content table
+        String sql = "UPDATE Content SET content_type = ?, owned_by = ?, is_hidden = ? WHERE content_id = ? AND s_id = ? AND c_id = ? AND t_id = ?";
         int rowsAffected = jdbcTemplate.update(sql, content.getContentType(), content.getOwnedBy(), content.isHidden(),
                 content.getContentId(), content.getSectionId(), content.getChapId(), content.getTbook_id());
+
+        // Update specific content tables based on content type
+        switch (content.getContentType().toLowerCase()) {
+            case "text":
+                if (content instanceof TextContent) updateTextContent((TextContent) content);
+                else throw new IllegalArgumentException("Invalid content type for TextContent");
+                break;
+            case "image":
+                if (content instanceof ImageContent) updateImageContent((ImageContent) content);
+                else throw new IllegalArgumentException("Invalid content type for ImageContent");
+                break;
+            default:
+                throw new RuntimeException("Unknown content type: " + content.getContentType());
+        }
+
         return rowsAffected > 0 ? Optional.of(content) : Optional.empty();
     }
 
+    // Helper method for TextContent update
+    private void updateTextContent(TextContent content) {
+        String sql = "UPDATE TextContent SET data = ? WHERE content_id = ? AND s_id = ? AND c_id = ? AND t_id = ?";
+        jdbcTemplate.update(sql, content.getData(), content.getContentId(), content.getSectionId(), content.getChapId(), content.getTbook_id());
+    }
+
+    // Helper method for ImageContent update
+    private void updateImageContent(ImageContent content) {
+        String sql = "UPDATE ImageContent SET data = ? WHERE content_id = ? AND s_id = ? AND c_id = ? AND t_id = ?";
+        jdbcTemplate.update(sql, content.getData(), content.getContentId(), content.getSectionId(), content.getChapId(), content.getTbook_id());
+    }
+
+
     @Transactional
     @Override
-    public boolean delete(int contentId, int sectionId, int chapId, int tbook_id) {
+    public boolean delete(Content content) {
+
+        switch (content.getContentType().toLowerCase()) {
+            case "text":
+                if (content instanceof TextContent) deleteTextContent((TextContent) content);
+                else throw new IllegalArgumentException("Invalid content type for TextContent");
+                break;
+            case "image":
+                if (content instanceof ImageContent) deleteImageContent((ImageContent) content);
+                else throw new IllegalArgumentException("Invalid content type for ImageContent");
+                break;
+            default:
+                throw new RuntimeException("Unknown content type: " + content.getContentType());
+        }
+
         String sql = "DELETE FROM Content WHERE content_id = ? AND section_id = ? AND chap_id = ? AND tbook_id = ?";
-        int rowsAffected = jdbcTemplate.update(sql, contentId, sectionId, chapId, tbook_id);
+        int rowsAffected = jdbcTemplate.update(sql, content.getContentId(), content.getSectionId(), content.getChapId(), content.getTbook_id());
 
         return rowsAffected > 0;
     }
 
+    private void deleteTextContent(TextContent content) {
+        String sql = "DELETE FROM TextContent WHERE content_id = ? AND s_id = ? AND c_id = ? AND t_id = ?";
+        jdbcTemplate.update(sql, content.getContentId(), content.getSectionId(), content.getChapId(), content.getTbook_id());
+    }
+
+    private void deleteImageContent(ImageContent content) {
+        String sql = "DELETE FROM ImageContent WHERE content_id = ? AND s_id = ? AND c_id = ? AND t_id = ?";
+        jdbcTemplate.update(sql, content.getContentId(), content.getSectionId(), content.getChapId(), content.getTbook_id());
+    }
+
     @Override
     public Optional<Content> findById(int contentId, int sectionId, int chapId, int tbook_id) {
-        String sql = "SELECT * FROM Content WHERE content_id = ? AND section_id = ? AND chap_id = ? AND tbook_id = ?";
+        String sql = "SELECT * FROM Content WHERE content_id = ? AND s_id = ? AND c_id = ? AND t_id = ?";
         try {
             Content content = jdbcTemplate.queryForObject(sql, new Object[]{contentId, sectionId, chapId, tbook_id}, new ContentRowMapper());
             return Optional.of(content);
@@ -63,22 +151,62 @@ public class ContentRepository implements IContentRepository {
 
     @Override
     public List<Content> findAllBySection(int sectionId, int chapId, int tbook_id) {
-        String sql = "SELECT * FROM Content WHERE section_id = ? AND chap_id = ? AND tbook_id = ?";
-        return jdbcTemplate.query(sql, new Object[]{sectionId, chapId, tbook_id}, new ContentRowMapper());
+        String sql = "SELECT * FROM Content WHERE s_id = ? AND c_id = ? AND t_id = ?";
+//        System.out.println(" " + sectionId + " " + chapId + " "+ tbook_id );
+        List<Content> contents = jdbcTemplate.query(sql, new Object[]{sectionId, chapId, tbook_id}, new ContentRowMapper());
+//        System.out.println(contents);
+        return contents;
     }
 
-    private static class ContentRowMapper implements RowMapper<Content> {
+    private class ContentRowMapper implements RowMapper<Content> {
         @Override
         public Content mapRow(ResultSet rs, int rowNum) throws SQLException {
-            Content content = new Content();
+            String contentType = rs.getString("content_type");
+            Content content;
+
+            switch (contentType.toLowerCase()) {
+                case "text":
+                    content = new TextContent();
+                    ((TextContent) content).setData(fetchTextData(rs.getInt("content_id"), rs.getInt("s_id"), rs.getInt("c_id"), rs.getInt("t_id")));
+                    break;
+                case "image":
+                    content = new ImageContent();
+                    ((ImageContent) content).setData(fetchImageData(rs.getInt("content_id"), rs.getInt("s_id"), rs.getInt("c_id"), rs.getInt("t_id")));
+                    break;
+                default:
+                    content = new Content();  // For general "activity" content or others
+                    break;
+            }
+
             content.setContentId(rs.getInt("content_id"));
-            content.setSectionId(rs.getInt("section_id"));
-            content.setChapId(rs.getInt("chap_id"));
-            content.setTbook_id(rs.getInt("tbook_id"));
-            content.setContentType(rs.getString("content_type"));
+            content.setSectionId(rs.getInt("s_id"));
+            content.setChapId(rs.getInt("c_id"));
+            content.setTbook_id(rs.getInt("t_id"));
+            content.setContentType(contentType);
             content.setOwnedBy(rs.getString("owned_by"));
             content.setHidden(rs.getBoolean("is_hidden"));
+
             return content;
         }
+
     }
+
+
+    // Helper method to fetch text data for TextContent
+    private String fetchTextData(int contentId, int sectionId, int chapId, int tbook_id) {
+        String sql = "SELECT data FROM TextContent WHERE content_id = ? AND s_id = ? AND c_id = ? AND t_id = ?";
+        return jdbcTemplate.queryForObject(sql, new Object[]{contentId, sectionId, chapId, tbook_id}, String.class);
+    }
+
+    // Helper method to fetch image data for ImageContent
+    private byte[] fetchImageData(int contentId, int sectionId, int chapId, int tbook_id) {
+        String sql = "SELECT data FROM ImageContent WHERE content_id = ? AND s_id = ? AND c_id = ? AND t_id = ?";
+        return jdbcTemplate.queryForObject(sql, new Object[]{contentId, sectionId, chapId, tbook_id}, byte[].class);
+    }
+
 }
+
+
+
+
+

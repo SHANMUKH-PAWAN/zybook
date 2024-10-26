@@ -49,10 +49,10 @@ public class ContentService implements IContentService {
 
     @Override
     @Transactional
-    public boolean delete(int contentId, int sectionId, int chapId, int tbook_id) {
-        Optional<Content> existingContent = contentRepository.findById(contentId, sectionId, chapId, tbook_id);
+    public boolean delete(Content content) {
+        Optional<Content> existingContent = contentRepository.findById(content.getContentId(), content.getSectionId(), content.getChapId(), content.getTbook_id());
         if (existingContent.isPresent()) {
-            return contentRepository.delete(contentId, sectionId, chapId, tbook_id);
+            return contentRepository.delete(content);
         } else {
             throw new RuntimeException("Content not found for deletion.");
         }
