@@ -83,28 +83,15 @@ public class AnswerRepository implements IAnswerRepository {
     @Transactional
     @Override
     public boolean delete(Answer answer) {
-        String sql = "DELETE FROM Answer WHERE question_id = ? AND answer_id = ? AND activity_id = ? AND content_id = ? AND s_id = ? AND c_id = ? AND t_id = ?";
-        int rowsAffected = jdbcTemplate.update(sql,
-                answer.getQuestionId(),
-                answer.getAnswerId(),
-                answer.getActivityId(),
-                answer.getContentId(),
-                answer.getSectionId(),
-                answer.getChapId(),
-                answer.getTbookId());
+        String sql = "DELETE FROM Answer WHERE answer_id = ? AND question_id = ? AND activity_id = ? AND content_id = ? AND s_id = ? AND c_id = ? AND t_id = ?";
+        int rowsAffected = jdbcTemplate.update(sql, answer.getQuestionId(), answer.getAnswerId(), answer.getActivityId(), answer.getContentId(), answer.getSectionId(), answer.getChapId(), answer.getTbookId());
         return rowsAffected > 0;
     }
 
     @Override
-    public List<Answer> findAllByQuestion(Answer answer) {
+    public List<Answer> findAllByQuestion(int questionId, int activityId, int contentId, int sectionId, int chapId, int tbookId) {
         String sql = "SELECT * FROM Answer WHERE question_id = ? AND activity_id = ? AND content_id = ? AND s_id = ? AND c_id = ? AND t_id = ? ORDER BY answer_id";
-        return jdbcTemplate.query(sql, new Object[]{
-                answer.getQuestionId(),
-                answer.getActivityId(),
-                answer.getContentId(),
-                answer.getSectionId(),
-                answer.getChapId(),
-                answer.getTbookId()}, new AnswerRowMapper());
+        return jdbcTemplate.query(sql, new Object[]{questionId,activityId, contentId, sectionId, chapId, tbookId}, new AnswerRowMapper());
     }
 
     private static class AnswerRowMapper implements RowMapper<Answer> {
