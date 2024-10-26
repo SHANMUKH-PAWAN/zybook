@@ -1,21 +1,27 @@
 package edu.ncsu.zybook.web.controller;
 
+import edu.ncsu.zybook.DTO.TextbookReadDTO;
 import edu.ncsu.zybook.domain.model.Textbook;
+import edu.ncsu.zybook.mapper.TextbookReadDTOMapper;
 import edu.ncsu.zybook.service.ITextbookService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
-@RestController()
+@Controller()
 @RequestMapping("/textbooks")
 public class TextbookController {
 
     private final ITextbookService textbookService;
+    private final TextbookReadDTOMapper textbookReadDTOMapper;
 
-    public TextbookController(ITextbookService textbookService) {
+    public TextbookController(ITextbookService textbookService, TextbookReadDTOMapper textbookReadDTOMapper) {
         this.textbookService = textbookService;
+        this.textbookReadDTOMapper = textbookReadDTOMapper;
     }
 
     @GetMapping("/welcome")
@@ -24,37 +30,60 @@ public class TextbookController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Textbook> getTextbook(@PathVariable int id) {
-        Optional<Textbook> textbook = textbookService.findById(id);
-        return textbook.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public String getTextbook(@PathVariable int id, Model model) {
+        Optional<TextbookReadDTO> textbook = textbookService.findById(id);
+        if (textbook.isPresent()) {
+            model.addAttribute("textbook", textbook.get());
+            return "textbook/textbook";
+        } else {
+            return "textbook/not-found";
+        }
     }
 
     @GetMapping
-    public List<Textbook> getAllTextbooks(
+    public String getAllTextbooks(
             @RequestParam(defaultValue = "0") int offset,
             @RequestParam(defaultValue = "10") int limit,
             @RequestParam(defaultValue = "uid") String sortBy,
-            @RequestParam(defaultValue = "ASC") String sortDirection) {
+            @RequestParam(defaultValue = "ASC") String sortDirection,
+            Model model) {
         List<Textbook> textbooks = textbookService.getAllTextbooks(offset, limit, sortBy, sortDirection);
-        return textbooks;
+        model.addAttribute("textbooks", textbooks);
+        return "textbook/list";
+    }
+
+    @GetMapping("/new")
+    public String showCreateForm(Model model) {
+        model.addAttribute("textbook", new Textbook());
+        return "textbook/create";
     }
 
     @PostMapping
-    public  ResponseEntity<Void> createTextbook(@RequestBody Textbook textbook) {
-        System.out.println("Entered post!!");
+    public  String createTextbook(@ModelAttribute Textbook textbook) {
         textbookService.create(textbook);
-        return ResponseEntity.ok().build();
+        return "redirect:/textbooks";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable int id, Model model) {
+        Optional<TextbookReadDTO> textbook = textbookService.findById(id);
+        if (textbook.isPresent()) {
+            model.addAttribute("textbook", textbookReadDTOMapper.toEntity( textbook.get()));
+            return "textbook/create";
+        } else {
+            return "textbook/not-found";
+        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateTextbook(@PathVariable int id, @RequestBody Textbook textbook) {
-        textbookService.update(id,textbook);
-        return ResponseEntity.ok("Textbook updated successfully");
+    public String updateTextbook(@ModelAttribute Textbook textbook) {
+        textbookService.update(textbook);
+        return "redirect:/textbooks";
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTextbook(@PathVariable int id){
+    public String deleteTextbook(@PathVariable int id){
         textbookService.delete(id);
-        return ResponseEntity.ok().build();
+        return "redirect:/textbooks";
     }
 }

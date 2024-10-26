@@ -1,7 +1,10 @@
 package edu.ncsu.zybook.service.impl;
 
+import edu.ncsu.zybook.DTO.TextbookReadDTO;
 import edu.ncsu.zybook.domain.model.Chapter;
 import edu.ncsu.zybook.domain.model.Textbook;
+import edu.ncsu.zybook.mapper.ChapterWeakMapper;
+import edu.ncsu.zybook.mapper.TextbookReadDTOMapper;
 import edu.ncsu.zybook.persistence.repository.IChapterRepository;
 import edu.ncsu.zybook.persistence.repository.ITextbookRepository;
 import edu.ncsu.zybook.service.ITextbookService;
@@ -10,16 +13,22 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TextbookService implements ITextbookService {
 
     private final ITextbookRepository textbookRepository;
     private final IChapterRepository chapterRepository;
+    private final TextbookReadDTOMapper textbookReadDTOMapper;
 
-    public TextbookService(ITextbookRepository textbookRepository, IChapterRepository chapterRepository) {
+    private final ChapterWeakMapper chapterWeakMapper;
+
+    public TextbookService(ITextbookRepository textbookRepository, IChapterRepository chapterRepository, TextbookReadDTOMapper textbookReadDTOMapper, ChapterWeakMapper chapterWeakMapper) {
         this.textbookRepository = textbookRepository;
         this.chapterRepository = chapterRepository;
+        this.textbookReadDTOMapper = textbookReadDTOMapper;
+        this.chapterWeakMapper = chapterWeakMapper;
     }
 
 
@@ -35,23 +44,31 @@ public class TextbookService implements ITextbookService {
     }
 
     @Override
-    public Optional<Textbook> findById( int id) {
+    public Optional<TextbookReadDTO> findById(int id) {
 
         Optional<Textbook> result = textbookRepository.findById(id);
         if(result.isPresent()) {
+
             Textbook tbook =  result.get();
-            List<Chapter> chapters = chapterRepository.findAllByTextbook(id) ; // need to add this to DTO
-            return  Optional.of(tbook);
+            List<Chapter> chapters = chapterRepository.findAllByTextbook(id);
+
+            TextbookReadDTO tbookDTO = textbookReadDTOMapper.toDTO(tbook);
+            tbookDTO.setChapters( chapters.stream().map(chapterWeakMapper::toDTO).collect(Collectors.toList()));
+            System.out.println("Reached here");
+            return  Optional.of(tbookDTO);
         }
         return Optional.empty();
     }
 
     @Override
-    public Optional<Textbook> update(int id, Textbook textbook) {
-        if(textbookRepository.findById(textbook.getUid()).isPresent())
+    public Optional<Textbook> update(Textbook textbook) {
+        System.out.println("DEBUG start");
+        if(textbookRepository.findById(textbook.getUid()).isPresent()) {
+            System.out.println("DEBUG end");
             return textbookRepository.update(textbook);
+        }
         else
-            throw new RuntimeException("There is no textbook with  id: "+id);
+            throw new RuntimeException("There is no textbook with  id: "+textbook.getUid());
     }
 
     @Override
