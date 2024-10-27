@@ -12,5 +12,5 @@ public class Course {
     protected Date startDate;
     protected Date endDate;
     protected String courseType;
-    protected int tbookId;
+    protected Integer tbookId;
 }

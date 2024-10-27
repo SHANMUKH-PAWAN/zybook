@@ -6,8 +6,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class ChapterWeakDTO {
-    private int cno;
+    private Integer cno;
     private String chapterCode;
     private String title;
-    private boolean isHidden;
+    private boolean hidden;
 }

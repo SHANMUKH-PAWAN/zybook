@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
-@Controller()
+@Controller
 @RequestMapping("/textbooks")
 public class TextbookController {
 
@@ -22,11 +22,6 @@ public class TextbookController {
     public TextbookController(ITextbookService textbookService, TextbookReadDTOMapper textbookReadDTOMapper) {
         this.textbookService = textbookService;
         this.textbookReadDTOMapper = textbookReadDTOMapper;
-    }
-
-    @GetMapping("/welcome")
-    public String Welcome(){
-        return "Welcome to DBMS Zybook !!";
     }
 
     @GetMapping("/{id}")

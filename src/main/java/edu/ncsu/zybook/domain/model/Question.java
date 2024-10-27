@@ -5,12 +5,12 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class Question {
-    private int activity_id;
-    private int content_id;
-    private int section_id;
-    private int tbook_id;
-    private int chapter_id;
-    private int question_id;
-    private int answer_id;
+    private Integer activity_id;
+    private Integer content_id;
+    private Integer section_id;
+    private Integer tbook_id;
+    private Integer chapter_id;
+    private Integer question_id;
+    private Integer answer_id;
     private String question;
 }

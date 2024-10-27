@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Notification {
     private String message;
-    private int userId;
+    private Integer userId;
     private String courseId;
 
 }
