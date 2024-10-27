@@ -1,7 +1,10 @@
 package edu.ncsu.zybook.service.impl;
 
+import edu.ncsu.zybook.DTO.TextbookReadDTO;
 import edu.ncsu.zybook.domain.model.Chapter;
 import edu.ncsu.zybook.domain.model.Textbook;
+import edu.ncsu.zybook.mapper.ChapterWeakMapper;
+import edu.ncsu.zybook.mapper.TextbookReadDTOMapper;
 import edu.ncsu.zybook.persistence.repository.IChapterRepository;
 import edu.ncsu.zybook.persistence.repository.ITextbookRepository;
 import edu.ncsu.zybook.service.ITextbookService;
@@ -10,16 +13,22 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TextbookService implements ITextbookService {
 
     private final ITextbookRepository textbookRepository;
     private final IChapterRepository chapterRepository;
+    private final TextbookReadDTOMapper textbookReadDTOMapper;
 
-    public TextbookService(ITextbookRepository textbookRepository, IChapterRepository chapterRepository) {
+    private final ChapterWeakMapper chapterWeakMapper;
+
+    public TextbookService(ITextbookRepository textbookRepository, IChapterRepository chapterRepository, TextbookReadDTOMapper textbookReadDTOMapper, ChapterWeakMapper chapterWeakMapper) {
         this.textbookRepository = textbookRepository;
         this.chapterRepository = chapterRepository;
+        this.textbookReadDTOMapper = textbookReadDTOMapper;
+        this.chapterWeakMapper = chapterWeakMapper;
     }
 
 
@@ -46,11 +55,14 @@ public class TextbookService implements ITextbookService {
     }
 
     @Override
-    public Optional<Textbook> update(int id, Textbook textbook) {
-        if(textbookRepository.findById(textbook.getUid()).isPresent())
+    public Optional<Textbook> update(Textbook textbook) {
+        System.out.println("DEBUG start");
+        if(textbookRepository.findById(textbook.getUid()).isPresent()) {
+            System.out.println("DEBUG end");
             return textbookRepository.update(textbook);
+        }
         else
-            throw new RuntimeException("There is no textbook with  id: "+id);
+            throw new RuntimeException("There is no textbook with  id: "+textbook.getUid());
     }
 
     @Override

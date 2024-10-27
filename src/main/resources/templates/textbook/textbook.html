@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Textbook Details</title>
+</head>
+<body>
+<h1>Textbook Details</h1>
+<p><strong>ID:</strong> <span th:text="${textbook.uid}">ID</span></p>
+<p><strong>Title:</strong> <span th:text="${textbook.title}">Title</span></p>
+
+<a th:href="@{/chapters/new(tbookId=${textbook.uid})}">Add New Chapter</a>
+<h2>Chapters</h2>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>Chapter ID</th>
+        <th>Chapter Code</th>
+        <th>Chapter Title</th>
+        <th>Hidden</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="chapter : ${textbook.chapters}">
+        <td th:text="${chapter.cno}">Chapter ID</td>
+        <td th:text="${chapter.chapterCode}">Chapter Code</td>
+        <td th:text="${chapter.title}">Chapter Title</td>
+        <td th:text="${chapter.hidden}">Hidden</td>
+        <td>
+
+            <a th:href="@{/chapters/chapter(tbookId=${textbook.uid}, chapId=${chapter.cno})}">View</a>
+            <a th:href="@{/chapters/edit(tbookId=${textbook.uid}, chapId=${chapter.cno})}">Edit</a>
+            <form th:action="@{/chapters(tbookId=${textbook.uid}, chapId=${chapter.cno})}" method="post" th:method="delete" style="display:inline;">
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<a th:href="@{/textbooks}">Back</a>
+</body>
+</html>

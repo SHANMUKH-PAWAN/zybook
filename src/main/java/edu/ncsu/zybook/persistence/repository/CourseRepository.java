@@ -21,8 +21,15 @@ public class CourseRepository implements ICourseRepository {
 
     @Override
     public Optional<Course> findByTitle(String title) {
-        return Optional.empty();
+        String sql = "SELECT * FROM course WHERE title = ?";
+        try{
+            Course course = jdbcTemplate.queryForObject(sql, new Object[]{title}, new CourseRepository.CourseRowMapper());
+            return Optional.of(course);
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
+
 
     @Transactional
     @Override
@@ -60,7 +67,7 @@ public class CourseRepository implements ICourseRepository {
 
     @Transactional
     @Override
-    public boolean delete(int courseId) {
+    public boolean delete(String courseId) {
         String sql = "DELETE FROM Course WHERE course_id = ?";
         int rowsAffected = jdbcTemplate.update(sql, courseId);
         return rowsAffected > 0;

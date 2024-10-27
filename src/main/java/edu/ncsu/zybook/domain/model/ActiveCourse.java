@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 public class ActiveCourse extends Course {
 
     private String courseToken;
-    private int courseCapacity;
+    private Integer courseCapacity;
     private String courseID;
 }

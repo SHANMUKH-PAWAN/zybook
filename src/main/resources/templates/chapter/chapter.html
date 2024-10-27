@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Chapter Details</title>
+</head>
+<body>
+<h1>Chapter Details</h1>
+<p><strong>ID:</strong> <span th:text="${chapter.cno}">ID</span></p>
+<p><strong>Chapter Code:</strong> <span th:text="${chapter.chapterCode}">Code</span></p>
+<p><strong>Title:</strong> <span th:text="${chapter.title}">Title</span></p>
+<p><strong>Hidden:</strong> <span th:text="${chapter.hidden}">Hidden</span></p>
+<p><strong>Text Book:</strong> <span th:text="${chapter.tbookId}">Code</span></p>
+
+<a th:href="@{/section/new(tbookId=${chapter.tbookId}, chapId=${chapter.cno})}">Add New Section</a>
+
+<h2>Sections</h2>
+<table border="1">
+    <thead>
+    <tr>
+        <th>Section ID</th>
+        <th>Section Title</th>
+        <th>Hidden</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="section : ${chapter.sections}" th:if="${chapter.sections != null}">
+        <td th:text="${section.sno}">Section ID</td>
+        <td th:text="${section.title}">Section Title</td>
+        <td th:text="${section.hidden}">Hidden</td>
+        <td>
+            <a th:href="@{/sections/section(tbookId=${chaptertbookId}, chapId=${chapter.cno}, sectionId=${section.sno})}">View</a>
+            <a th:href="@{/sections/edit(tbookId=${chapter.tbookId}, chapId=${chapter.cno}, sectionId=${section.sno})}">Edit</a>
+            <form th:action="@{/sections/section(tbookId=${chaptertbookId}, chapId=${chapter.cno}, sectionId=${section.sno})}" method="post" th:method="delete" style="display:inline;">
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<a th:href="@{/textbooks/{tbookId}(tbookId=${chapter.tbookId})}">Back</a>
+</body>
+</html>

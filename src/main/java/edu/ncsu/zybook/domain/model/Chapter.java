@@ -6,9 +6,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class Chapter {
-    private int cno;
+    private Integer cno;
     private String chapterCode;
     private String title;
-    private boolean isHidden;
-    private int  tbookId;
+    private boolean hidden;
+    private Integer  tbookId;
 }

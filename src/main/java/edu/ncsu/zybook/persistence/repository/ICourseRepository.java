@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface ICourseRepository {
     Course create(Course entity);
     Optional<Course> update(Course entity);
-    boolean delete(int id);
+    boolean delete(String id);
     Optional<Course> findById(String id);
     List<Course> findAll(int offset, int limit, String sortBy, String sortDirection);
     Optional<Course> findByTitle(String title);

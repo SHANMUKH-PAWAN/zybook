@@ -10,5 +10,5 @@ public interface IAnswerRepository {
     Optional<Answer> findById(int questionId,int answerId, int activityId, int contentId, int sectionId, int chapId, int tbookId);
     Optional<Answer> update(Answer answer);
     boolean delete(Answer answer);
-    List<Answer> findAllByQuestion(Answer answer);
+    List<Answer> findAllByQuestion(int questionId, int activityId, int contentId, int sectionId, int chapId, int tbookId);
 }
