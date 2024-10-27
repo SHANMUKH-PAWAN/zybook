@@ -29,7 +29,7 @@ public class UserController {
         userService.create(user);
         return ResponseEntity.ok().build();
     }
-    @PostMapping
+    @PutMapping
     public ResponseEntity<String> updateUser( @RequestBody User user) {
         userService.update(user);
         return ResponseEntity.ok("User updated successfully");

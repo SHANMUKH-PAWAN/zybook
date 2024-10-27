@@ -6,12 +6,13 @@ import edu.ncsu.zybook.domain.model.User;
 import edu.ncsu.zybook.persistence.repository.IUserRepository;
 import edu.ncsu.zybook.persistence.repository.UserRepository;
 import edu.ncsu.zybook.service.IUserService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
-
+@Service
 public class UserService implements IUserService {
     private IUserRepository userRepository;
 
