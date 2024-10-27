@@ -44,10 +44,14 @@ public class TextbookService implements ITextbookService {
     }
 
     @Override
-    public Optional<Textbook> findById(int id) {
-
-        return textbookRepository.findById(id);
-
+    public Optional<Textbook> findById( int id) {
+        Optional<Textbook> result = textbookRepository.findById(id);
+        if(result.isPresent()) {
+            Textbook tbook =  result.get();
+            List<Chapter> chapters = chapterRepository.findAllByTextbook(id) ; // need to add this to DTO
+            return  Optional.of(tbook);
+        }
+        return Optional.empty();
     }
 
     @Override
