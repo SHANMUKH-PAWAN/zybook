@@ -1,7 +1,10 @@
 package edu.ncsu.zybook.service.impl;
 
+import edu.ncsu.zybook.DTO.ChapterReadDTO;
 import edu.ncsu.zybook.domain.model.Chapter;
 import edu.ncsu.zybook.domain.model.Section;
+import edu.ncsu.zybook.mapper.ChapterReadDTOMapper;
+import edu.ncsu.zybook.mapper.SectionWeakMapper;
 import edu.ncsu.zybook.persistence.repository.IChapterRepository;
 import edu.ncsu.zybook.persistence.repository.ISectionRepository;
 import edu.ncsu.zybook.service.IChapterService;
@@ -10,16 +13,22 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ChapterService implements IChapterService {
 
     private final IChapterRepository chapterRepository;
     private final ISectionRepository sectionRepository;
+    private final SectionWeakMapper sectionWeakMapper;
 
-    public ChapterService(IChapterRepository chapterRepository, ISectionRepository sectionRepository) {
+    private final ChapterReadDTOMapper chapterReadDTOMapper;
+
+    public ChapterService(IChapterRepository chapterRepository, ISectionRepository sectionRepository, SectionWeakMapper sectionWeakMapper, ChapterReadDTOMapper chapterReadDTOMapper) {
         this.chapterRepository = chapterRepository;
         this.sectionRepository = sectionRepository;
+        this.sectionWeakMapper = sectionWeakMapper;
+        this.chapterReadDTOMapper = chapterReadDTOMapper;
     }
 
     @Override
@@ -35,14 +44,7 @@ public class ChapterService implements IChapterService {
 
     @Override
     public Optional<Chapter> findById (int cno, int tbookId) {
-
-        Optional<Chapter> result = chapterRepository.findById(cno, tbookId);
-        if(result.isPresent()) {
-            Chapter chapter = result.get();
-            List<Section> sections = sectionRepository.findAllByChapter(tbookId, cno);
-            return Optional.of(chapter);
-        }
-        return Optional.empty();
+        return chapterRepository.findById(cno, tbookId);
     }
 
     @Override
@@ -58,13 +60,13 @@ public class ChapterService implements IChapterService {
 
     @Override
     @Transactional
-    public boolean delete(Chapter chapter) {
-        Optional<Chapter> result = chapterRepository.findById(chapter.getCno(), chapter.getTbookId());
+    public boolean delete(int tbookId, int cno) {
+        Optional<Chapter> result = chapterRepository.findById(cno, tbookId);
         if (result.isPresent()) {
-            return chapterRepository.delete(chapter);
+            return chapterRepository.delete(tbookId, cno);
         }
         else{
-            throw new RuntimeException("Chapter does not exist with id:" + chapter.getCno() + "in textbook: "+chapter.getTbookId());
+            throw new RuntimeException("Chapter does not exist with id:" + cno + "in textbook: "+ tbookId);
         }
     }
 

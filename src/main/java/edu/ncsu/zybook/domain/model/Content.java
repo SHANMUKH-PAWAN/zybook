@@ -9,9 +9,9 @@ public class Content {
 
     protected boolean isHidden;
     protected String ownedBy;
-    protected int sectionId;
-    protected int contentId;
-    protected int tbook_id;
-    protected int chapId;
+    protected Integer sectionId;
+    protected Integer contentId;
+    protected Integer tbook_id;
+    protected Integer chapId;
     protected String contentType;
 }

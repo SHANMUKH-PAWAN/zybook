@@ -55,9 +55,9 @@ public class ChapterRepository implements IChapterRepository {
 
     @Transactional
     @Override
-    public boolean delete(Chapter chapter) {
+    public boolean delete(int tbookId, int cno) {
         String sql = "DELETE FROM Chapter WHERE cno = ? AND tbook_id = ?";
-        int rowsAffected = jdbcTemplate.update(sql, chapter.getCno(), chapter.getTbookId());
+        int rowsAffected = jdbcTemplate.update(sql, cno, tbookId);
         return rowsAffected>0;
     }
 

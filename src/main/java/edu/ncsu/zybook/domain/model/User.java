@@ -11,6 +11,6 @@ public class User {
     private String email;
     private String password;
     private String roleName;
-    private int userId;
+    private Integer userId;
 
 }

@@ -6,11 +6,13 @@ import edu.ncsu.zybook.persistence.repository.IChapterRepository;
 import edu.ncsu.zybook.persistence.repository.ISectionRepository;
 import edu.ncsu.zybook.persistence.repository.IContentRepository;
 import edu.ncsu.zybook.service.ISectionService;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class SectionService implements ISectionService {
 
     private final IChapterRepository chapterRepository;

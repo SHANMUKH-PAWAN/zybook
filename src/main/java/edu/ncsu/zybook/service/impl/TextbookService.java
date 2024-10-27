@@ -54,7 +54,6 @@ public class TextbookService implements ITextbookService {
 
             TextbookReadDTO tbookDTO = textbookReadDTOMapper.toDTO(tbook);
             tbookDTO.setChapters( chapters.stream().map(chapterWeakMapper::toDTO).collect(Collectors.toList()));
-            System.out.println("Reached here");
             return  Optional.of(tbookDTO);
         }
         return Optional.empty();

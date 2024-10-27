@@ -5,7 +5,7 @@ import org.w3c.dom.Text;
 
 import java.util.Optional;
 
-public interface IActiveCourseRepository extends BaseRepository<ActiveCourse> {
-    Optional<ActiveCourse> findByTitle(String title);
+public interface IActiveCourseRepository extends ICourseRepository {
+//    Optional<ActiveCourse> findByTitle(String title);
 }
 
