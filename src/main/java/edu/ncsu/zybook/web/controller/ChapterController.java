@@ -47,10 +47,10 @@ public class ChapterController {
             @RequestParam("tbookId") int textbookId,
             @RequestParam("chapId") int chapterId,
             Model model) {
-        Optional<Chapter> chapter = iChapterService.findById(chapterId,  chapterId);
+        Optional<Chapter> chapter = iChapterService.findById(chapterId,  textbookId);
         if (chapter.isPresent()) {
-            Optional<TextbookReadDTO> tbook = iTextbookService.findById(textbookId);
-            tbook.ifPresent(textbookReadDTO -> model.addAttribute("textbook", textbookReadDTOMapper.toEntity(textbookReadDTO)));
+            Optional<Textbook> tbook = iTextbookService.findById(textbookId);
+            tbook.ifPresent(textbook -> model.addAttribute("textbook", textbook));
             model.addAttribute("chapter", chapter.get());
             return "chapter/create";
         } else {
@@ -93,8 +93,8 @@ public class ChapterController {
     public String showCreateForm(@RequestParam("tbookId") Integer textbookId, Model model) {
         Chapter chapter = new Chapter();
         chapter.setTbookId(textbookId);
-        Optional<TextbookReadDTO> tbook = iTextbookService.findById(textbookId);
-        tbook.ifPresent(textbookReadDTO -> model.addAttribute("textbook", textbookReadDTOMapper.toEntity(textbookReadDTO)));
+        Optional<Textbook> tbook = iTextbookService.findById(textbookId);
+        tbook.ifPresent(textbook -> model.addAttribute("textbook", tbook.get()));
         model.addAttribute("chapter", chapter);
         return "chapter/create";
     }
@@ -104,7 +104,6 @@ public class ChapterController {
                                  @RequestParam("chapId") int chapterId,
                                  @ModelAttribute Chapter chapter) {
         iChapterService.update(chapter);
-        System.out.println("PUUUUUUUUUUUUUUUUUUUUUUT");
         return "redirect:/textbooks/" + textbookId;
     }
 
