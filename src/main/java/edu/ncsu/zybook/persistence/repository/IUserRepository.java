@@ -10,5 +10,5 @@ public interface IUserRepository {
     User create(User user);
     Optional<User> update(User user);
     boolean delete(int id);
-    List<User> getAllUsers(int offset, int limit, String sortBy, String sortDirection);
+    List<User> getAllUsers();
 }
