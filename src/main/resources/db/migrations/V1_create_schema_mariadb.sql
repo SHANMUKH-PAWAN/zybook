@@ -267,3 +267,7 @@ CREATE TABLE Answer (
         REFERENCES Question(activity_id, content_id, s_id, c_id, t_id, q_id)
         ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+--Changeset vengatesh:23 Alter Activity Table
+ALTER TABLE Activity
+ADD COLUMN isHidden TINYINT(1) NOT NULL DEFAULT 0;

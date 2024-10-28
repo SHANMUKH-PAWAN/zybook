@@ -34,7 +34,8 @@ public class UserService implements IUserService {
     public Optional<User> findById(int id) {
         Optional<User> result = userRepository.findById(id);
         if(result.isPresent()) {
-            return result;
+            User user = result.get();
+            return Optional.of(user);
         }
         return Optional.empty();
     }
