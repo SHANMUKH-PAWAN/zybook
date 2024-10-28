@@ -9,9 +9,6 @@ import lombok.NoArgsConstructor;
 public class ContentWeakDTO {
     boolean isHidden;
     String ownedBy;
-    Integer sectionId;
     Integer contentId;
-    Integer tbook_id;
-    Integer chapId;
     String contentType;
 }

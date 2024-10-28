@@ -63,69 +63,77 @@ public class SectionController {
             Optional<Chapter> chap = iChapterService.findById(chapterId, textbookId);
             tbook.ifPresent(textbook -> model.addAttribute("textbook", textbook));
             chap.ifPresent(chapter -> model.addAttribute("chapter", chapter));
-            model.addAttribute("chapter", chap.get());
-            return "chapter/create";
+            model.addAttribute("section", section.get());
+            return "section/create";
         } else {
-            return "chapter/not-found";
+            return "section/not-found";
         }
     }
 
-    @GetMapping()
-    public String getAllChapters(@RequestParam("tbookId") int tbookId, Model model) {
-        List<Chapter> chapters = iChapterService.findAllByTextbook(tbookId);
-        model.addAttribute("chapters", chapters);
-        return "chapter/list";
+    @GetMapping
+    public String getAllSections(@RequestParam("tbookId") int tbookId, @RequestParam("chapId") int chapterId, Model model) {
+        List<Section> sections = iSectionService.findAllByChapter(tbookId, chapterId);
+        model.addAttribute("sections", sections);
+        return "section/list";
     }
 
-    @GetMapping("/chapter")
-    public String getChapter(
+    @GetMapping("/section")
+    public String getSection(
             @RequestParam("tbookId") int textbookId,
             @RequestParam("chapId") int chapterId,
+            @RequestParam("sno") int sectionId,
             Model model) {
-        Optional<Chapter> chapter = iChapterService.findById(chapterId, textbookId);
-        if (chapter.isPresent()) {
-            List<Section> sections = iSectionService.findAllByChapter(textbookId,chapterId);
-            ChapterReadDTO chapterReadDTO = chapterReadDTOMapper.toDTO(chapter.get());
-            chapterReadDTO.setSections(sections.stream().map(sectionWeakMapper::toDTO).collect(Collectors.toList()));
-            model.addAttribute("chapter", chapterReadDTO );
-            System.out.println(Arrays.toString(chapterReadDTO.getSections().toArray()));
-            return "chapter/chapter";
+        Optional<Section> section = iSectionService.findById(textbookId, chapterId, sectionId);
+        if (section.isPresent()) {
+            List<Content> contents = iContentService.getAllContentBySection(sectionId, chapterId, textbookId);
+            SectionReadDTO sectionReadDTO = sectionReadDTOMapper.toDTO(section.get());
+            sectionReadDTO.setContents(contents.stream().map(contentWeakMapper::toDTO).collect(Collectors.toList()));
+            model.addAttribute("section", sectionReadDTO );
+            System.out.println(Arrays.toString(sectionReadDTO.getContents().toArray()));
+            return "section/section";
         } else {
-            return "chapter/not-found";
+            return "section/not-found";
         }
     }
 
     @PostMapping
-    public  String createChapter(@ModelAttribute Chapter chapter) {
-        iChapterService.create(chapter);
-        return "redirect:/textbooks/"+ chapter.getTbookId();
+    public  String createSection(@ModelAttribute Section section) {
+        iSectionService.create(section);
+        return "redirect:/chapters/"+ section.getChapId();
     }
 
     @GetMapping("/new")
-    public String showCreateForm(@RequestParam("tbookId") Integer textbookId, Model model) {
-        Chapter chapter = new Chapter();
-        chapter.setTbookId(textbookId);
+    public String showCreateForm(@RequestParam("tbookId") Integer textbookId,
+                                 @RequestParam("chapId") Integer chapterId,
+                                 Model model) {
+        Section section = new Section();
+        section.setTbookId(textbookId);
+        section.setChapId(chapterId);
         Optional<Textbook> tbook = iTextbookService.findById(textbookId);
+        Optional<Chapter> chap = iChapterService.findById(chapterId, textbookId);
         tbook.ifPresent(textbook -> model.addAttribute("textbook", tbook.get()));
-        model.addAttribute("chapter", chapter);
-        return "chapter/create";
+        chap.ifPresent(chapter -> model.addAttribute("chapter", chapter));
+        model.addAttribute("section", section);
+        return "section/create";
     }
 
     @PutMapping("/update")
-    public String updateChapter( @RequestParam("tbookId") int textbookId,
+    public String updateSection( @RequestParam("tbookId") int textbookId,
                                  @RequestParam("chapId") int chapterId,
-                                 @ModelAttribute Chapter chapter) {
-        iChapterService.update(chapter);
-        return "redirect:/textbooks/" + textbookId;
+                                 @RequestParam("sno") int sectionId,
+                                 @ModelAttribute Section section) {
+        iSectionService.update(section);
+        return "redirect:/chapters/" + chapterId;
     }
 
     @DeleteMapping
-    public String deleteChapter(
+    public String deleteSection(
             @RequestParam("tbookId") int textbookId,
-            @RequestParam("chapId") int chapterId
+            @RequestParam("chapId") int chapterId,
+            @RequestParam("sno") int sectionId
     ){
-        iChapterService.delete(textbookId,chapterId);
-        return "redirect:/textbooks/"+textbookId;
+        iSectionService.delete(textbookId,chapterId,sectionId);
+        return "redirect:/chapters/"+chapterId;
     }
 
 

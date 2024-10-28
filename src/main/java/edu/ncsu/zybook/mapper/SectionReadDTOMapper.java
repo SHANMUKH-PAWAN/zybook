@@ -7,5 +7,5 @@ import edu.ncsu.zybook.domain.model.Section;
 @Mapper(componentModel = "spring")
 public interface SectionReadDTOMapper {
     Section toEntity(SectionReadDTO sectionReadDTO);
-    SectionReadDTO toDto(Section section);
+    SectionReadDTO toDTO(Section section);
 }

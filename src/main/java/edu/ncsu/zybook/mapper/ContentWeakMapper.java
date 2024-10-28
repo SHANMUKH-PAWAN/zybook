@@ -6,5 +6,5 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface ContentWeakMapper {
-    ContentWeakDTO toContentWeakDTO(Content content);
+    ContentWeakDTO toDTO(Content content);
 }
