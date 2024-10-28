@@ -61,7 +61,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public List<User> getAllUsers(int offset, int limit, String sortBy, String sortDirection) {
-        return userRepository.getAllUsers(offset, limit, sortBy, sortDirection);
+    public List<User> getAllUsers() {
+        return userRepository.getAllUsers();
     }
 }

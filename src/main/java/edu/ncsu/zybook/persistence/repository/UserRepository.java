@@ -59,11 +59,9 @@ public class UserRepository implements IUserRepository{
     }
 
     @Override
-    public List<User> getAllUsers(int offset, int limit, String sortBy, String sortDirection) {
-        String validSortDirection = sortDirection.equalsIgnoreCase("DESC") ? "DESC" : "ASC";
-        String validSortBy = validateSortBy(sortBy);
-        String sql = "SELECT * FROM User ORDER BY " + validSortBy + " " + validSortDirection + " LIMIT ? OFFSET ?";
-        return jdbcTemplate.query(sql, new Object[]{limit,offset}, new UserRepository.UserRowMapper());
+    public List<User> getAllUsers() {
+        String sql = "SELECT * FROM User";
+        return jdbcTemplate.query(sql, new UserRepository.UserRowMapper());
     }
 
     private static class UserRowMapper implements RowMapper<User> {
@@ -76,16 +74,6 @@ public class UserRepository implements IUserRepository{
             user.setEmail(rs.getString("email"));
             user.setPassword(rs.getString("password"));
             return user;
-        }
-    }
-    private String validateSortBy(String sortBy) {
-        // List of allowed columns to sort by in table
-        List<String> allowedSortColumns = List.of("user_id", "fname","lname","email","role");
-
-        if (allowedSortColumns.contains(sortBy)) {
-            return sortBy;
-        } else {
-            return "user_id";
         }
     }
 }

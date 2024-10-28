@@ -1,52 +1,76 @@
 package edu.ncsu.zybook.web.controller;
 
-import edu.ncsu.zybook.domain.model.Textbook;
 import edu.ncsu.zybook.domain.model.User;
 import edu.ncsu.zybook.service.IUserService;
-import edu.ncsu.zybook.service.impl.UserService;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
-@RestController
-@RequestMapping("/user")
+@Controller
+@RequestMapping("/users")
+
 public class UserController {
+
     private final IUserService userService;
 
     public UserController(IUserService userService) {
         this.userService = userService;
     }
+
+
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUser(@PathVariable int id) {
+    public String getUser(@PathVariable int id, Model model) {
         Optional<User> user = userService.findById(id);
-        return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-    }
-    @PostMapping
-    public  ResponseEntity<Void> createUser(@RequestBody User user) {
-        System.out.println("Entered post!!");
-        userService.create(user);
-        return ResponseEntity.ok().build();
-    }
-    @PutMapping
-    public ResponseEntity<String> updateUser( @RequestBody User user) {
-        userService.update(user);
-        return ResponseEntity.ok("User updated successfully");
-    }
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTextbook(@PathVariable int id){
-        userService.delete(id);
-        return ResponseEntity.ok().build();
+        if (user.isPresent()) {
+            model.addAttribute("user", user.get());
+            return "user/user";
+        } else {
+            return "user/not-found";
+        }
     }
 
     @GetMapping
-    public List<User> getAllUsers(
-            @RequestParam(defaultValue = "0") int offset,
-            @RequestParam(defaultValue = "10") int limit,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(defaultValue = "ASC") String sortDirection) {
-        List<User> users = userService.getAllUsers(offset, limit, sortBy, sortDirection);
-        return users;
+    public String getAllUsers(Model model) {
+        List<User> users = userService.getAllUsers();
+        model.addAttribute("users", users);
+        return "user/list";
+    }
+
+    @GetMapping("/new")
+    public String showCreateForm(Model model) {
+        model.addAttribute("user", new User());
+        return "user/create";
+    }
+
+    @PostMapping
+    public String createUser(@ModelAttribute User user) {
+        userService.create(user);
+        return "redirect:/users";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable int id, Model model) {
+        Optional<User> user = userService.findById(id);
+        if (user.isPresent()) {
+            model.addAttribute("user", user.get());
+            return "user/create";
+        } else {
+            return "user/not-found";
+        }
+    }
+
+    @PutMapping("/{id}")
+    public String updateUser(@ModelAttribute User user) {
+        userService.update(user);
+        return "redirect:/users";
+    }
+
+    @DeleteMapping("/{id}")
+    public String deleteUser(@PathVariable int id) {
+        userService.delete(id);
+        return "redirect:/users";
     }
 }
