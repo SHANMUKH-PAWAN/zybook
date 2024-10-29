@@ -13,4 +13,5 @@ public class Question {
     private Integer question_id;
     private Integer answer_id;
     private String question;
+    private Integer isHidden;
 }

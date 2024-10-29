@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Activity Details</title>
+</head>
+<body>
+<!--div to add a new question and answer-->
+
+<div class="container">
+    <h1 th:text="'Activity: ' + ${activity.activityId}"></h1>
+
+    <div th:if="${activity.questions.isEmpty()}">
+        <p>No questions available for this activity.</p>
+    </div>
+
+    <div th:unless="${activity.questions.isEmpty()}">
+        <ul>
+            <li th:each="question, qStat : ${activity.questions}">
+                <div class="question-block">
+                    <h2 th:text="'Q' + ${question.questionId} + '. ' + ${question.question}"></h2>
+
+                    <ul class="answer-list">
+                        <li th:each="answer : ${question.answers}" class="answer-item">
+                            <span th:text="${answer.answerText}"></span>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <a href="/activities" class="btn btn-secondary">Back to Activities</a>
+</div>
+</body>
+</html>

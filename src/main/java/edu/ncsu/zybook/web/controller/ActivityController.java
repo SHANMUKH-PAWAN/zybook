@@ -1,30 +1,110 @@
 package edu.ncsu.zybook.web.controller;
 
-import edu.ncsu.zybook.domain.model.User;
+import edu.ncsu.zybook.DTO.ActivityDTO;
+import edu.ncsu.zybook.DTO.AnswerDTO;
+import edu.ncsu.zybook.DTO.ChapterReadDTO;
+import edu.ncsu.zybook.DTO.QuestionDTO;
+import edu.ncsu.zybook.domain.model.*;
+import edu.ncsu.zybook.mapper.ActivityDTOMapper;
+import edu.ncsu.zybook.mapper.AnswerDTOMapper;
+import edu.ncsu.zybook.mapper.QuestionDTOMapper;
 import edu.ncsu.zybook.service.IActivityService;
+import edu.ncsu.zybook.service.IAnswerService;
+import edu.ncsu.zybook.service.IQuestionService;
+import edu.ncsu.zybook.service.IUserService;
 import edu.ncsu.zybook.service.impl.ActivityService;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-@RestController()
+@Controller()
 @RequestMapping("/activity")
 public class ActivityController {
-    private final IActivityService activityService;
+    IActivityService iActivityService;
+    IQuestionService iQuestionService;
+    IAnswerService iAnswerService;
 
-    public ActivityController(IActivityService activityService) {
-        this.activityService = activityService;
+    ActivityDTOMapper activityDTOMapper;
+    QuestionDTOMapper questionDTOMapper;
+    AnswerDTOMapper answerDTOMapper;
+
+    public ActivityController(IActivityService iActivityService, IQuestionService iQuestionService, IAnswerService iAnswerService,ActivityDTOMapper activityDTOMapper, QuestionDTOMapper questionDTOMapper) {
+        this.iActivityService = iActivityService;
+        this.iQuestionService = iQuestionService;
+        this.iAnswerService = iAnswerService;
+        this.activityDTOMapper = activityDTOMapper;
+        this.questionDTOMapper = questionDTOMapper;
     }
-    @GetMapping("/{id}")
-    public ResponseEntity<User> getActivity(@PathVariable int id) {
-        Optional<User> user = activityService.findById(id);
-        return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    @GetMapping("/all")
+    public String getAllActivities(@RequestParam("tbookId") int textbookId,
+                                   @RequestParam("chapId") int chapterId,
+                                   @RequestParam("sectionId") int sectionId,
+                                   @RequestParam("contentId") int contentId,
+                                   Model model) {
+        List<Activity> allActivites= iActivityService.findAllByContent(contentId, chapterId, sectionId, textbookId);
+        model.addAttribute("allActivites", allActivites);
+        return "redirect:content/"+contentId;
+    }
+    @GetMapping
+    public String getActivity(@RequestParam("tbookId") int textbookId,
+                                            @RequestParam("chapId") int chapterId,
+                                            @RequestParam("sectionId") int sectionId,
+                                            @RequestParam("contentId") int contentId,
+                                            @RequestParam("activityId") int activityId,
+                                            Model model) {
+        System.out.println("DEeeeeBuG entered");
+        Optional<Activity> activity = iActivityService.findById(activityId,contentId,sectionId,chapterId,textbookId);
+
+        if(activity.isPresent()) {
+//            System.out.println("DEeeeeBuG");
+            List<Question> questions= iQuestionService.findAllByActivity(activityId,contentId,sectionId,chapterId, textbookId);
+            ActivityDTO activityDTO = activityDTOMapper.toDTO(activity.get());
+            List<QuestionDTO> questionDTOs = new ArrayList<>();
+            for(Question question : questions) {
+                List<Answer> answers = iAnswerService.findAllByQuestion(question.getQuestion_id(),question.getActivity_id(),question.getContent_id(),question.getSection_id(),question.getChapter_id(),question.getTbook_id());
+                QuestionDTO questionDTO = questionDTOMapper.toDTO(question);
+                questionDTO.setAnswers(answers.stream().map(answerDTOMapper::toDTO).collect(Collectors.toList()).toArray(new AnswerDTO[0]));
+                questionDTOs.add(questionDTO);
+            }
+            activityDTO.setQuestions(questionDTOs);
+            model.addAttribute("activity", activityDTO);
+
+            return "activity/activity"; // return question template for each activity
+        }
+        //return activity not found
+        return "activity/not-found";
     }
     @PostMapping
-    public  ResponseEntity<Void> createUser(@RequestBody User user) {
-        System.out.println("Entered post!!");
-        userService.create(user);
-        return ResponseEntity.ok().build();
+    public  String createActivity(@ModelAttribute Activity activity) {
+        System.out.println("Entered create activity post!!");
+        iActivityService.create(activity);
+        //return to view content page to list all activities
+        return "redirect:/contents?sectionId=" + activity.getSectionId() +
+                "&chapId=" + activity.getChapId() +
+                "&tbookId=" + activity.getTbookId();
+    }
+    @DeleteMapping
+    public  String deleteActivity(@RequestParam("tbookId") int textbookId,
+                                                @RequestParam("chapId") int chapterId,
+                                                @RequestParam("sectionId") int sectionId,
+                                                @RequestParam("contentId") int contentId,
+                                                @RequestParam("activityId") int activityId,
+                                                Model model) {
+        iActivityService.delete(activityId,contentId,sectionId,chapterId,textbookId);
+
+        return "redirect:/content/"+ contentId;
+    }
+    @GetMapping("/new")
+    public String showCreateForm(Model model) {
+        model.addAttribute("activity", new Activity());
+        return "activity/create";
     }
 }

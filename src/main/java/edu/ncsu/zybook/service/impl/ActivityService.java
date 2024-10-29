@@ -4,10 +4,12 @@ import edu.ncsu.zybook.domain.model.Activity;
 import edu.ncsu.zybook.domain.model.Chapter;
 import edu.ncsu.zybook.persistence.repository.IActivityRepository;
 import edu.ncsu.zybook.service.IActivityService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class ActivityService implements IActivityService {
 
     private final IActivityRepository activityRepository;
