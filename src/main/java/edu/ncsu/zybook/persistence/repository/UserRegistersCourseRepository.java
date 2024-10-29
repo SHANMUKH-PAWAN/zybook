@@ -1,0 +1,78 @@
+package edu.ncsu.zybook.persistence.repository;
+
+import edu.ncsu.zybook.domain.model.UserRegistersCourse;
+import org.springframework.stereotype.Repository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.security.Timestamp;
+import java.util.List;
+import java.util.Optional;
+
+@Repository
+public class UserRegistersCourseRepository implements IUserRegistersCourseRepository {
+
+    @Autowired
+    JdbcTemplate jdbcTemplate;
+
+    @Transactional
+    @Override
+    public UserRegistersCourse create(UserRegistersCourse userRegistersCourse) {
+        String sql = "INSERT INTO UserRegistersCourse (user_id, CourseId, enrollment_date, approval_status) VALUES(?, ?, ?, ?)";
+        int rowsAffected = jdbcTemplate.update(sql, userRegistersCourse.getUserId(), userRegistersCourse.getCourseId(), userRegistersCourse.getEnrollmentDate(), userRegistersCourse.getApprovalStatus());
+        if (rowsAffected > 0) {
+            return findById(userRegistersCourse.getUserId(), userRegistersCourse.getCourseId())
+                    .orElseThrow(() -> new RuntimeException("Failed to retrieve newly inserted UserRegistersCourse."));
+        } else {
+            throw new RuntimeException("Failed to insert UserRegistersCourse.");
+        }
+    }
+
+    @Override
+    public Optional<UserRegistersCourse> findById(int userId, String courseId) {
+        String sql = "SELECT * FROM UserRegistersCourse WHERE userId = ? AND courseId = ?";
+        try {
+            UserRegistersCourse userRegistersCourse = jdbcTemplate.queryForObject(sql, new Object[]{userId, courseId}, new UserRegistersCourseRepository.UserRegistersCourseRowMapper());
+            return Optional.of(userRegistersCourse);
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<UserRegistersCourse> update(UserRegistersCourse userRegistersCourse) {
+        String sql = "UPDATE UserRegisterCourse SET approval_status = ? WHERE user_id = ? AND courseId = ?";
+        int rowsAffected = jdbcTemplate.update(sql, userRegistersCourse.getApprovalStatus(), userRegistersCourse.getUserId(), userRegistersCourse.getCourseId());
+        return rowsAffected > 0 ? Optional.of(userRegistersCourse) : Optional.empty();
+    }
+
+    @Override
+    public boolean delete(int userId, String courseId) {
+        String sql = "DELETE FROM UserRegistersCourse WHERE user_id = ? AND courseId = ?";
+        int rowsAffected = jdbcTemplate.update(sql, userId, courseId);
+        return rowsAffected > 0;
+    }
+
+    @Override
+    public List<UserRegistersCourse> findAllByUser(int userId) {
+        String sql = "SELECT * FROM UserRegisters WHERE user_id = ? ORDER BY enrollment_date DESC";
+        return jdbcTemplate.query(sql, new Object[]{userId}, new UserRegistersCourseRepository.UserRegistersCourseRowMapper());
+    }
+
+    private static class UserRegistersCourseRowMapper implements RowMapper<UserRegistersCourse> {
+        @Override
+        public UserRegistersCourse mapRow(ResultSet rs, int rowNum) throws SQLException {
+            UserRegistersCourse userRegistersCourse = new UserRegistersCourse();
+            userRegistersCourse.setUserId(rs.getInt("user_id"));
+            userRegistersCourse.setCourseId(rs.getString("courseId"));
+            userRegistersCourse.setEnrollmentDate(rs.getObject("enrollment_date", Timestamp.class));
+            userRegistersCourse.setApprovalStatus(rs.getString("approval_status"));
+            return userRegistersCourse;
+        }
+    }
+}
