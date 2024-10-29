@@ -82,9 +82,9 @@ public class AnswerRepository implements IAnswerRepository {
 
     @Transactional
     @Override
-    public boolean delete(Answer answer) {
-        String sql = "DELETE FROM Answer WHERE answer_id = ? AND question_id = ? AND activity_id = ? AND content_id = ? AND s_id = ? AND c_id = ? AND t_id = ?";
-        int rowsAffected = jdbcTemplate.update(sql, answer.getQuestionId(), answer.getAnswerId(), answer.getActivityId(), answer.getContentId(), answer.getSectionId(), answer.getChapId(), answer.getTbookId());
+    public boolean delete(int questionId, int answerId, int activityId, int contentId, int sectionId, int chapId, int tbookId) {
+        String sql = "DELETE FROM Answer WHERE question_id = ? AND  answer_id = ? AND activity_id = ? AND content_id = ? AND s_id = ? AND c_id = ? AND t_id = ?";
+        int rowsAffected = jdbcTemplate.update(sql, questionId, answerId, activityId, contentId, sectionId, chapId, tbookId);
         return rowsAffected > 0;
     }
 

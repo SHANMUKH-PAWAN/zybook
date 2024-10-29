@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Activity Details</title>
+</head>
+<body>
+<!--div to add a new question and answer-->
+
+<div class="container">
+    <h1 th:text="'Activity: ' + ${activity.activityId}"></h1>
+
+    <div th:if="${activity.questions.isEmpty()}">
+        <p>No questions available for this activity.</p>
+    </div>
+
+    <div th:unless="${activity.questions.isEmpty()}">
+        <ul>
+            <li th:each="question, qStat : ${activity.questions}">
+                <div class="question-block">
+                    <h2 th:text="'Q' + ${question.question_id} + '. ' + ${question.question}"></h2>
+                    <form th:action="@{/question(questionId=${question.question_id},activityId=${activity.activityId},contentId=${activity.contentId},sectionId=${activity.sectionId},chapterId=${activity.chapId},tbookId=${activity.tbookId})}" th:method="delete" style="display:inline;">
+                        <button type="submit">Delete</button>
+                    </form>
+                    <ul class="answer-list">
+                        <li th:each="answer : ${question.answers}" class="answer-item">
+                            <span th:text="${answer.answerText}"></span>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <a th:href="@{/contents(sectionId=${activity.sectionId},chapId=${activity.chapId},tbookId=${activity.tbookId})}">Back to Contents</a>
+</div>
+</body>
+</html>

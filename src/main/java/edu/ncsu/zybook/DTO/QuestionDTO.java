@@ -1,10 +1,16 @@
-package edu.ncsu.zybook.domain.model;
+package edu.ncsu.zybook.DTO;
+
+import edu.ncsu.zybook.domain.model.Answer;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Collection;
+import java.util.List;
+
 @Data
 @NoArgsConstructor
-public class Question {
+public class QuestionDTO {
+    private AnswerDTO[] answers;
     private Integer activity_id;
     private Integer content_id;
     private Integer section_id;
