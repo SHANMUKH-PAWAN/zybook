@@ -7,10 +7,9 @@
 
 <h2> Chapter: <span th:text="${chapter.title}">Chapter title</span></h2>
 <h2 th:text="${section.sno == null ? 'Add New Section' : 'Edit Section'}">Form Title</h2>
-<form th:action="${section.sno == null ? '/sections' : '/sections/update?tbookId=' + section.tbookId + '&chapId=' + section.cno + '&sno=' + section.sno}"
+<form th:action="${section.sno == null ? '/sections?tbookId=' + section.tbookId + '&chapId=' + section.chapId : '/sections/update?tbookId=' + section.tbookId + '&chapId=' + section.chapId + '&sno=' + section.sno}"
       th:object="${section}"
       th:method="${section.sno == null ? 'post' : 'put'}">
-
 
     <!-- Hidden field to store the chapter ID if editing an existing section -->
     <input type="hidden" th:field="*{chapId}"/>
@@ -40,7 +39,7 @@
     <button type="submit">Save</button>
 </form>
 <br>
-<a th:href="@{/chapters/{chapId}(chapId=${section.chapId})}">Back to List</a>
+<a th:href="@{/chapters/chapter(tbookId=${section.tbookId}, chapId=${section.chapId})}">Back to List</a>
 
 </body>
 </html>

@@ -21,7 +21,7 @@ public class ContentService implements IContentService {
     @Override
     public Content create(Content content) {
         Optional<Content> existingContent = contentRepository.findById(
-                content.getContentId(), content.getSectionId(), content.getChapId(), content.getTbook_id()
+                content.getContentId(), content.getSectionId(), content.getChapId(), content.getTbookId()
         );
         if (existingContent.isEmpty()) {
             return contentRepository.create(content);
@@ -38,7 +38,7 @@ public class ContentService implements IContentService {
     @Override
     public Optional<Content> update(Content content) {
         Optional<Content> existingContent = contentRepository.findById(
-                content.getContentId(), content.getSectionId(), content.getChapId(), content.getTbook_id()
+                content.getContentId(), content.getSectionId(), content.getChapId(), content.getTbookId()
         );
         if (existingContent.isPresent()) {
             return contentRepository.update(content);
@@ -50,7 +50,7 @@ public class ContentService implements IContentService {
     @Override
     @Transactional
     public boolean delete(Content content) {
-        Optional<Content> existingContent = contentRepository.findById(content.getContentId(), content.getSectionId(), content.getChapId(), content.getTbook_id());
+        Optional<Content> existingContent = contentRepository.findById(content.getContentId(), content.getSectionId(), content.getChapId(), content.getTbookId());
         if (existingContent.isPresent()) {
             return contentRepository.delete(content);
         } else {

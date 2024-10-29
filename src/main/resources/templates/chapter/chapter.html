@@ -11,7 +11,7 @@
 <p><strong>Hidden:</strong> <span th:text="${chapter.hidden}">Hidden</span></p>
 <p><strong>Text Book:</strong> <span th:text="${chapter.tbookId}">Code</span></p>
 
-<a th:href="@{/section/new(tbookId=${chapter.tbookId}, chapId=${chapter.cno})}">Add New Section</a>
+<a th:href="@{/sections/new(tbookId=${chapter.tbookId}, chapId=${chapter.cno})}">Add New Section</a>
 
 <h2>Sections</h2>
 <table border="1">
@@ -29,9 +29,9 @@
         <td th:text="${section.title}">Section Title</td>
         <td th:text="${section.hidden}">Hidden</td>
         <td>
-            <a th:href="@{/sections/section(tbookId=${chaptertbookId}, chapId=${chapter.cno}, sectionId=${section.sno})}">View</a>
-            <a th:href="@{/sections/edit(tbookId=${chapter.tbookId}, chapId=${chapter.cno}, sectionId=${section.sno})}">Edit</a>
-            <form th:action="@{/sections/section(tbookId=${chaptertbookId}, chapId=${chapter.cno}, sectionId=${section.sno})}" method="post" th:method="delete" style="display:inline;">
+            <a th:href="@{/sections/section(tbookId=${chapter.tbookId}, chapId=${chapter.cno}, sno=${section.sno})}">View</a>
+            <a th:href="@{/sections/edit(tbookId=${chapter.tbookId}, chapId=${chapter.cno}, sno=${section.sno})}">Edit</a>
+            <form th:action="@{/sections(tbookId=${chapter.tbookId}, chapId=${chapter.cno}, sno=${section.sno})}" method="post" th:method="delete" style="display:inline;">
                 <button type="submit">Delete</button>
             </form>
         </td>
