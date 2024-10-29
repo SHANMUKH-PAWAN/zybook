@@ -10,6 +10,6 @@ public interface ICourseService {
     Optional<Course> update(Course entity);
     boolean delete(String id);
     Optional<Course> findById(String id);
-    List<Course> findAll(int offset, int limit, String sortBy, String sortDirection);
+    List<Course> findAll();
     Optional<Course> findByTitle(String title);
 }

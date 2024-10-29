@@ -67,8 +67,8 @@ public class CourseService implements ICourseService {
     }
 
     @Override
-    public List<Course> findAll(int offset, int limit, String sortBy, String sortDirection) {
-        List<Course> result = courseRepository.findAll(offset, limit, sortBy, sortDirection);
+    public List<Course> findAll() {
+        List<Course> result = courseRepository.findAll();
         return result;
     }
 

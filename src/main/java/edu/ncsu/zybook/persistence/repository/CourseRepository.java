@@ -74,9 +74,9 @@ public class CourseRepository implements ICourseRepository {
     }
 
     @Override
-    public List<Course> findAll(int offset, int limit, String sortBy, String sortDirection) {
-        String sql = "SELECT * FROM Course ORDER BY " + sortBy + " " + sortDirection + " LIMIT ? OFFSET ?";
-        return jdbcTemplate.query(sql, new Object[]{limit, offset}, new CourseRowMapper());
+    public List<Course> findAll() {
+        String sql = "SELECT * FROM Course";
+        return jdbcTemplate.query(sql, new CourseRowMapper());
     }
 
     private static class CourseRowMapper implements RowMapper<Course> {
