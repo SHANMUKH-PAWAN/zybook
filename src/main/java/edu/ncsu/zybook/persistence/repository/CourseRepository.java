@@ -48,9 +48,12 @@ public class CourseRepository implements ICourseRepository {
 
     @Override
     public Optional<Course> findById(String courseId) {
+        System.out.println("DEBUGGGGG "+ courseId);
         String sql = "SELECT * FROM Course WHERE course_id = ?";
         try {
             Course course = jdbcTemplate.queryForObject(sql, new Object[]{courseId}, new CourseRowMapper());
+
+            System.out.println("DEBUGGGGG 1234s"+course.getCourseId());
             return Optional.of(course);
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();

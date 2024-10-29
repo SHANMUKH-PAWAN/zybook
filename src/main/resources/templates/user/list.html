@@ -23,9 +23,9 @@
         <td th:text="${user.fname}">First Name</td>
         <td th:text="${user.lname}">Last Name</td>
         <td th:text="${user.email}">Email</td>
-        <td th:text="${user.role}">Role</td>
+        <td th:text="${user.roleName}">Role</td>
         <td>
-            <a th:href="@{/users/{id}(id=${users.userId})}">View</a>
+            <a th:href="@{/users/{id}(id=${user.userId})}">View</a>
             <a th:href="@{/users/edit/{id}(id=${user.userId})}">Edit</a>
             <form th:action="@{/users/{id}(id=${user.userId})}" th:method="delete" style="display:inline;">
                 <button type="submit">Delete</button>

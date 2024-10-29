@@ -30,13 +30,24 @@ public class UserRepository implements IUserRepository{
         }
     }
 
+    public Optional<User> findByEmail(String email) {
+        String sql = "SELECT * FROM user WHERE email = ?";
+        try{
+            User user = jdbcTemplate.queryForObject(sql, new Object[]{email}, new UserRepository.UserRowMapper());
+            return Optional.of(user);
+        }
+        catch(EmptyResultDataAccessException e){
+            return Optional.empty();
+        }
+    }
+
     @Override
     public User create(User user) {
         String sql = "INSERT INTO User (fname,lname,email,password,role_name) VALUES(?,?,?,?,?)";
-        int rowsAffected = jdbcTemplate.update(sql, user.getUserId());
+        int rowsAffected = jdbcTemplate.update(sql, user.getFname(), user.getLname(), user.getEmail(), user.getPassword(),user.getRoleName());
         if(rowsAffected > 0)
         {
-            return findById(user.getUserId())
+            return findByEmail(user.getEmail())
                     .orElseThrow(() -> new RuntimeException("Failed to retrieve newly inserted User."));
         }
         else{
@@ -46,8 +57,8 @@ public class UserRepository implements IUserRepository{
 
     @Override
     public Optional<User> update(User user) {
-        String sql = "UPDATE User SET fname = ?, SET lname = ? WHERE user_id = ?";
-        int rowsAffected = jdbcTemplate.update(sql, user.getFname(), user.getLname());
+        String sql = "UPDATE User SET fname = ?, lname = ? WHERE user_id = ?";
+        int rowsAffected = jdbcTemplate.update(sql, user.getFname(), user.getLname(), user.getUserId());
         return rowsAffected > 0 ? Optional.of(user) : Optional.empty();
     }
 
