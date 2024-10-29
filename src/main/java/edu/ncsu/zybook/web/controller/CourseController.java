@@ -78,7 +78,7 @@ public class CourseController {
     }
 
     @GetMapping
-    public String getAllUsers(Model model) {
+    public String getAllCourses(Model model) {
         List<Course> courses = courseService.findAll();
         model.addAttribute("courses", courses);
         return "course/list";
