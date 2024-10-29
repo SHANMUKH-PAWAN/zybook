@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>All Contents</title>
+</head>
+<body>
+<h1>All Contents</h1>
+
+<a th:href="@{/contents/new/text(tbookId=${tbookId}, chapId=${chapId}, sectionId=${sectionId})}">Create New Text Content</a><br>
+<a th:href="@{/contents/new/image(tbookId=${tbookId}, chapId=${chapId}, sectionId=${sectionId})}">Create New Image Content</a><br>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>Content ID</th>
+        <th>Type</th>
+        <th>Owned By</th>
+        <th>Hidden</th>
+        <th>Data</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="content : ${allContents}">
+        <td th:text="${content.contentId}">Content ID</td>
+        <td th:text="${content.contentType}">Content Type</td>
+        <td th:text="${content.ownedBy}">Owned By</td>
+        <td th:text="${content.isHidden} ? 'Yes' : 'No'">Hidden</td>
+        <td>
+            <!-- Display text data if the content is of type TEXT -->
+            <span th:if="${content.contentType == 'text'}">
+                <span th:text="${content.data}">Text Data</span>
+            </span>
+
+            <!-- Display image if the content is of type IMAGE -->
+            <span th:if="${content.contentType == 'image'}">
+                <span th:text="${content.data != null ? 'Data is available' : 'No data'}"></span>
+                <img th:src="@{'data:image/png;base64,'+'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAEElEQVR42mP8z/C/HwADAgH/kCy+VgAAAABJRU5ErkJggg=='}"
+                alt="Image Content" style="max-width: 100px; max-height: 100px;"/>
+            </span>
+
+        </td>
+        <td>
+            <a th:href="@{/contents/edit(contentId=${content.contentId})}">Edit</a>
+            <form th:action="@{/contents/delete(contentId=${content.contentId})}" method="post" style="display:inline;">
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

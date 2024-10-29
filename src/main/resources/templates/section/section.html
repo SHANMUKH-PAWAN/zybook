@@ -11,7 +11,7 @@
 <p><strong>Chapter ID:</strong> <span th:text="${section.chapId}">ID</span></p>
 <p><strong>Text Book:</strong> <span th:text="${section.tbookId}">Code</span></p>
 
-<a th:href="@{/content/new(tbookId=${section.tbookId}, chapId=${section.cno}, sno=${section.sno})}">Add New Content</a>
+<a th:href="@{/content/new(tbookId=${section.tbookId}, chapId=${section.chapId}, sno=${section.sno})}">Add New Content</a>
 
 <h2>Contents</h2>
 <table border="1">
@@ -29,16 +29,16 @@
         <td th:text="${content.contentType}">Content Type</td>
         <td th:text="${content.hidden}">Hidden</td>
         <td>
-            <a th:href="@{/contents/content(tbookId=${chapter.tbookId}, chapId=${chapter.cno}, sectionId=${section.sno}, contentId=${content.contentId})}">View</a>
-            <a th:href="@{/contents/edit(tbookId=${chapter.tbookId}, chapId=${chapter.cno}, sectionId=${section.sno}, contentId=${content.contentId})}">Edit</a>
-            <form th:action="@{/contents/content(tbookId=${chapter.tbookId}, chapId=${chapter.cno}, sectionId=${section.sno}, contentId=${content.contentId})}" method="post" th:method="delete" style="display:inline;">
-                <button type="submit">Delete</button>
-            </form>
+<!--            <a th:href="@{/contents/content(tbookId=${chapter.tbookId}, chapId=${chapter.cno}, sectionId=${section.sno}, contentId=${content.contentId})}">View</a>-->
+<!--            <a th:href="@{/contents/edit(tbookId=${chapter.tbookId}, chapId=${chapter.cno}, sectionId=${section.sno}, contentId=${content.contentId})}">Edit</a>-->
+<!--            <form th:action="@{/contents/content(tbookId=${chapter.tbookId}, chapId=${chapter.cno}, sectionId=${section.sno}, contentId=${content.contentId})}" method="post" th:method="delete" style="display:inline;">-->
+<!--                <button type="submit">Delete</button>-->
+<!--            </form>-->
         </td>
     </tr>
     </tbody>
 </table>
 
-<a th:href="@{/chapters/chapter(tbookId=${textbook.uid}, chapId=${chapter.cno})}">Back</a>
+<!--<a th:href="@{/chapters/chapter(tbookId=${textbook.uid}, chapId=${chapter.cno})}">Back</a>-->
 </body>
 </html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Create Image Content</title>
+</head>
+<body>
+<h1>Create New Image Content</h1>
+
+<form th:action="@{/contents/image(tbookId=${imageContent.tbookId}, sectionId=${imageContent.sectionId}, chapId=${imageContent.chapId})}"
+      method="post" enctype="multipart/form-data" th:object="${imageContent}">
+
+    <!-- Hidden fields for associated section and textbook details -->
+    <input type="hidden" th:field="*{sectionId}" />
+    <input type="hidden" th:field="*{tbookId}" />
+    <input type="hidden" th:field="*{chapId}" />
+
+    <!-- Field for Image Content Data -->
+    <div>
+        <label for="imageData">Image File:</label>
+        <input type="file" id="imageData" name="data" required /> <!-- Ensure it's marked as required -->
+    </div>
+
+    <!-- Common fields -->
+    <div>
+        <label for="ownedBy">Owned By:</label>
+        <input type="text" id="ownedBy" th:field="*{ownedBy}" />
+    </div>
+
+    <div>
+        <label for="isHidden">Hidden:</label>
+        <input type="checkbox" id="isHidden" th:field="*{hidden}" />
+    </div>
+
+    <br>
+    <button type="submit">Create Image Content</button>
+</form>
+
+<a th:href="@{/sections/(tbookId=${imageContent.tbookId}, chapId=${imageContent.chapId}, sectionId=imageContent.sectionId)}">Back to Section</a>
+</body>
+</html>

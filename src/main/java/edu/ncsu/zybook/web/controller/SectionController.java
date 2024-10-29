@@ -83,23 +83,27 @@ public class SectionController {
             @RequestParam("chapId") int chapterId,
             @RequestParam("sno") int sectionId,
             Model model) {
-        Optional<Section> section = iSectionService.findById(textbookId, chapterId, sectionId);
-        if (section.isPresent()) {
-            List<Content> contents = iContentService.getAllContentBySection(sectionId, chapterId, textbookId);
-            SectionReadDTO sectionReadDTO = sectionReadDTOMapper.toDTO(section.get());
-            sectionReadDTO.setContents(contents.stream().map(contentWeakMapper::toDTO).collect(Collectors.toList()));
-            model.addAttribute("section", sectionReadDTO );
-            System.out.println(Arrays.toString(sectionReadDTO.getContents().toArray()));
-            return "section/section";
-        } else {
-            return "section/not-found";
-        }
+        return "redirect:/contents?tbookId="+textbookId+"&chapId="+chapterId+"&sectionId="+sectionId;
+
+//        Optional<Section> section = iSectionService.findById(textbookId, chapterId, sectionId);
+//        if (section.isPresent()) {
+//            List<Content> contents = iContentService.getAllContentBySection(sectionId, chapterId, textbookId);
+//            SectionReadDTO sectionReadDTO = sectionReadDTOMapper.toDTO(section.get());
+//            sectionReadDTO.setContents(contents.stream().map(contentWeakMapper::toDTO).collect(Collectors.toList()));
+//            model.addAttribute("section", sectionReadDTO );
+//            System.out.println(Arrays.toString(sectionReadDTO.getContents().toArray()));
+//            return "section/section";
+//        } else {
+//            return "section/not-found";
+//        }
     }
 
     @PostMapping
-    public  String createSection(@ModelAttribute Section section) {
+    public  String createSection(@RequestParam("tbookId") int textbookId,
+                                 @RequestParam("chapId") int chapterId,
+                                 @ModelAttribute Section section) {
         iSectionService.create(section);
-        return "redirect:/chapters/"+ section.getChapId();
+        return "redirect:/chapters/chapter?tbookId=" + textbookId + "&chapId=" + chapterId ;
     }
 
     @GetMapping("/new")
@@ -123,7 +127,7 @@ public class SectionController {
                                  @RequestParam("sno") int sectionId,
                                  @ModelAttribute Section section) {
         iSectionService.update(section);
-        return "redirect:/chapters/" + chapterId;
+        return "redirect:/chapters/chapter?tbookId=" + textbookId + "&chapId=" + chapterId;
     }
 
     @DeleteMapping
@@ -133,7 +137,7 @@ public class SectionController {
             @RequestParam("sno") int sectionId
     ){
         iSectionService.delete(textbookId,chapterId,sectionId);
-        return "redirect:/chapters/"+chapterId;
+        return "redirect:/chapters/chapter?tbookId="+textbookId+"&chapId="+chapterId;
     }
 
 

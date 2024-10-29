@@ -7,11 +7,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Content {
 
-    protected boolean isHidden;
+    protected boolean hidden;
     protected String ownedBy;
     protected Integer sectionId;
     protected Integer contentId;
-    protected Integer tbook_id;
+    protected Integer tbookId;
     protected Integer chapId;
     protected String contentType;
 }
