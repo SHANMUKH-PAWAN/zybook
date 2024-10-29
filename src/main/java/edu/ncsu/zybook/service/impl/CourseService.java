@@ -1,8 +1,6 @@
 package edu.ncsu.zybook.service.impl;
 
-import edu.ncsu.zybook.domain.model.Chapter;
 import edu.ncsu.zybook.domain.model.Course;
-import edu.ncsu.zybook.domain.model.Section;
 import edu.ncsu.zybook.service.ICourseService;
 import edu.ncsu.zybook.persistence.repository.ICourseRepository;
 import org.springframework.stereotype.Service;
@@ -35,7 +33,9 @@ public class CourseService implements ICourseService {
     @Override
     @Transactional
     public Optional<Course> update(Course course) {
+        System.out.println("DEBBBBUG 0987"+course.getCourseId());
         if(courseRepository.findById(course.getCourseId()).isPresent()){
+            System.out.println("DEBBBBUG ISIDE IF");
             return courseRepository.update(course);
         }
         else{

@@ -9,6 +9,7 @@ public interface IUserService {
     User create(User user);
     Optional<User> findById(int id);
     Optional<User> update(User user);
+    Optional<User> findByEmail(String email);
     boolean delete(int id);
     List<User> getAllUsers();
 }

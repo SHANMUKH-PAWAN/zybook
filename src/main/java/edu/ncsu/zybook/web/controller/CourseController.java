@@ -2,7 +2,6 @@ package edu.ncsu.zybook.web.controller;
 
 import edu.ncsu.zybook.domain.model.Course;
 import edu.ncsu.zybook.domain.model.Textbook;
-import edu.ncsu.zybook.domain.model.User;
 import edu.ncsu.zybook.service.ICourseService;
 import edu.ncsu.zybook.service.ITextbookService;
 import org.springframework.stereotype.Controller;
@@ -67,6 +66,7 @@ public class CourseController {
 
     @PutMapping("/update")
     public String updateCourse(@ModelAttribute Course course) {
+        System.out.println(course);
         courseService.update(course);
         return "redirect:/courses";
     }
@@ -83,6 +83,4 @@ public class CourseController {
         model.addAttribute("courses", courses);
         return "course/list";
     }
-
 }
-
