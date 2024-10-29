@@ -10,4 +10,8 @@ import java.util.List;
 public class ActivityDTO {
     private List<QuestionDTO> questions;
     private Integer activityId;
+    private Integer sectionId;
+    private Integer contentId;
+    private Integer chapId;
+    private  Integer tbookId;
 }

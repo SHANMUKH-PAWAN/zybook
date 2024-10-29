@@ -36,12 +36,13 @@ public class ActivityController {
     QuestionDTOMapper questionDTOMapper;
     AnswerDTOMapper answerDTOMapper;
 
-    public ActivityController(IActivityService iActivityService, IQuestionService iQuestionService, IAnswerService iAnswerService,ActivityDTOMapper activityDTOMapper, QuestionDTOMapper questionDTOMapper) {
+    public ActivityController(IActivityService iActivityService, IQuestionService iQuestionService, IAnswerService iAnswerService,ActivityDTOMapper activityDTOMapper, QuestionDTOMapper questionDTOMapper, AnswerDTOMapper answerDTOMapper) {
         this.iActivityService = iActivityService;
         this.iQuestionService = iQuestionService;
         this.iAnswerService = iAnswerService;
         this.activityDTOMapper = activityDTOMapper;
         this.questionDTOMapper = questionDTOMapper;
+        this.answerDTOMapper = answerDTOMapper;
     }
     @GetMapping("/all")
     public String getAllActivities(@RequestParam("tbookId") int textbookId,
@@ -51,9 +52,10 @@ public class ActivityController {
                                    Model model) {
         List<Activity> allActivites= iActivityService.findAllByContent(contentId, chapterId, sectionId, textbookId);
         model.addAttribute("allActivites", allActivites);
-        return "redirect:content/"+contentId;
+        return "content/list";
     }
     @GetMapping
+//    http://localhost:8080/activity/chapId=1&sectionId=1&contentId=1&activityId=1
     public String getActivity(@RequestParam("tbookId") int textbookId,
                                             @RequestParam("chapId") int chapterId,
                                             @RequestParam("sectionId") int sectionId,
@@ -66,14 +68,17 @@ public class ActivityController {
         if(activity.isPresent()) {
 //            System.out.println("DEeeeeBuG");
             List<Question> questions= iQuestionService.findAllByActivity(activityId,contentId,sectionId,chapterId, textbookId);
+            System.out.println("Questions from serrvice"+ Arrays.toString(questions.toArray()));
             ActivityDTO activityDTO = activityDTOMapper.toDTO(activity.get());
             List<QuestionDTO> questionDTOs = new ArrayList<>();
             for(Question question : questions) {
                 List<Answer> answers = iAnswerService.findAllByQuestion(question.getQuestion_id(),question.getActivity_id(),question.getContent_id(),question.getSection_id(),question.getChapter_id(),question.getTbook_id());
                 QuestionDTO questionDTO = questionDTOMapper.toDTO(question);
-                questionDTO.setAnswers(answers.stream().map(answerDTOMapper::toDTO).collect(Collectors.toList()).toArray(new AnswerDTO[0]));
+                AnswerDTO[] answerDTO = answers.stream().map(answerDTOMapper::toDTO).collect(Collectors.toList()).toArray(new AnswerDTO[0]);
+                questionDTO.setAnswers(answerDTO);
                 questionDTOs.add(questionDTO);
             }
+            System.out.println("DEeeeeBuG exited:"+ Arrays.toString(questionDTOs.toArray()));
             activityDTO.setQuestions(questionDTOs);
             model.addAttribute("activity", activityDTO);
 
@@ -103,8 +108,17 @@ public class ActivityController {
         return "redirect:/content/"+ contentId;
     }
     @GetMapping("/new")
-    public String showCreateForm(Model model) {
-        model.addAttribute("activity", new Activity());
+    public String showCreateForm(@RequestParam("tbookId") int textbookId,
+                                 @RequestParam("chapId") int chapterId,
+                                 @RequestParam("sectionId") int sectionId,
+                                 @RequestParam("contentId") int contentId,
+                                 Model model) {
+        Activity activity = new Activity();
+        activity.setTbookId(textbookId);
+        activity.setChapId(chapterId);
+        activity.setSectionId(sectionId);
+        activity.setContentId(contentId);
+        model.addAttribute("activity", activity);
         return "activity/create";
     }
 }

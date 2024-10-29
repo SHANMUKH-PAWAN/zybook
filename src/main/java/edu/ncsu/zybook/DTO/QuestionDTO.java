@@ -11,13 +11,13 @@ import java.util.List;
 @NoArgsConstructor
 public class QuestionDTO {
     private AnswerDTO[] answers;
+    private Integer activity_id;
+    private Integer content_id;
+    private Integer section_id;
+    private Integer tbook_id;
+    private Integer chapter_id;
+    private Integer question_id;
+    private Integer answer_id;
     private String question;
     private Integer isHidden;
-    private Integer answerId;
-    private Integer questionId;
-    private Integer activityId;
-    private Integer contentId;
-    private Integer sectionId;
-    private Integer chapterId;
-    private Integer tbookId;
 }

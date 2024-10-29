@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title th:text="Add New Activity">Form</title>
+    <title th:text="'Add New Activity'">Form</title>
 </head>
 <body>
 
 <h2> <span>Adding New Activity</span></h2>
-<form th:action= "/activity"
+<form th:action= "@{/activity(contentId=${activity.contentId},sectionId=${activity.sectionId},chapId=${activity.chapId},tbookId=${activity.tbookId})}"
       th:object="${activity}"
-      th:method= "post">
+      th:method= "'post'">
 
     <div>
         <label for="aid">Activity Number:</label>
@@ -19,7 +19,7 @@
     <button type="submit">Save</button>
 </form>
 <br>
-<a th:href="@{/contents/(sectionId=${activity.sectionId},chapId=${activity.chapId},tbookId=${activity.tbookId})}">Back to List</a>
+<a th:href="@{/contents(sectionId=${activity.sectionId},chapId=${activity.chapId},tbookId=${activity.tbookId})}">Back to List</a>
 
 </body>
 </html>

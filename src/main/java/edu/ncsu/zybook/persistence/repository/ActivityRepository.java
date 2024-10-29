@@ -24,7 +24,7 @@ public class ActivityRepository implements IActivityRepository {
     @Transactional
     @Override
     public Activity create(Activity activity) {
-        String sql = "INSERT INTO Activity (activity_id, content_id, s_id, c_id, t_id) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Activity (activity_id, content_id, s_id, c_id, t_id) VALUES (?, ?, ?, ?, ?)";
         int rowsAffected = jdbcTemplate.update(sql,
                 activity.getActivityId(),
                 activity.getContentId(),
