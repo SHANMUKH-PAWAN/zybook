@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Course Details</title>
+</head>
+<body>
+<h1>Course Details</h1>
+<p><strong>Course ID:</strong> <span th:text="${course.courseId}">Course ID</span></p>
+<p><strong>Title:</strong> <span th:text="${course.title}">Title</span></p>
+<p><strong>Start Date:</strong> <span th:text="${course.startDate}">Start Date</span></p>
+<p><strong>End Date:</strong> <span th:text="${course.endDate}">End Date</span></p>
+<p><strong>Course Type:</strong> <span th:text="${course.courseType}">Course Type</span></p>
+
+<div th:if="${textbook != null}">
+    <table border="1">
+        <thead>
+        <tr>
+            <th>Textbook ID</th>
+            <th>Title</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td th:text="${textbook.uid}">Textbook ID</td>
+            <td th:text="${textbook.title}">Textbook Title</td>
+            <td>
+                <a th:href="@{/textbooks/{id}(id=${textbook.uid})}">View Textbook Details</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<br>
+<a th:href="@{/textbooks/new(courseId=${course.courseId})}">Add New Textbook</a>
+<br>
+<a th:href="@{/courses}">Back to List</a>
+</body>
+</html>

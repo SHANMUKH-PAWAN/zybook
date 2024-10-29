@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Course List</title>
+</head>
+<body>
+<h1>Course List</h1>
+<a th:href="@{/courses/new}">Add New Course</a>
+<table border="1">
+    <thead>
+    <tr>
+        <th>Course ID</th>
+        <th>Title</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Course Type</th>
+        <th>Textbook ID</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="course : ${courses}">
+        <td th:text="${course.courseId}">Course ID</td>
+        <td th:text="${course.title}">Title</td>
+        <td th:text="${course.startDate}">Start Date</td>
+        <td th:text="${course.endDate}">End Date</td>
+        <td th:text="${course.courseType}">Course Type</td>
+        <td th:text="${course.tbookId}">Textbook ID</td>
+        <td>
+            <a th:href="@{/courses/{id}(id=${course.courseId})}">View</a>
+            <a th:href="@{/courses/edit/{id}(id=${course.courseId})}">Edit</a>
+            <form th:action="@{/courses/{id}(id=${course.courseId})}" th:method="delete" style="display:inline;">
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

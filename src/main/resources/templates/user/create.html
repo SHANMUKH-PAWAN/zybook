@@ -9,7 +9,6 @@
 <form th:action="${user.userId == null ? '/users' : '/users/update?userId=' + user.userId}"
       th:object="${user}"
       th:method="${user.userId == null ? 'post' : 'put'}">
-
     <div>
         <label for="userId">User ID:</label>
         <input type="text" id="userId" th:field="*{userId}" required/>
@@ -34,7 +33,6 @@
         <label for="userPassword">User Password:</label>
         <input type="text" id="userPassword" th:field="*{password}" required/>
     </div>
-
     <div>
         <label for="userRoleName">User Role:</label>
         <select id="userRoleName" th:field="*{roleName}" required>
@@ -50,6 +48,5 @@
 </form>
 <br>
 <a th:href="@{/users}">Back to List</a>
-
 </body>
 </html>

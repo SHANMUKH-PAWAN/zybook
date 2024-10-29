@@ -17,9 +17,9 @@ public class UserController {
     private final IUserService userService;
 
     public UserController(IUserService userService) {
+
         this.userService = userService;
     }
-
 
     @GetMapping("/{id}")
     public String getUser(@PathVariable int id, Model model) {
