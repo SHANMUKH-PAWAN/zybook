@@ -193,7 +193,7 @@ CREATE TABLE ImageContent (
   s_id SMALLINT UNSIGNED NOT NULL,
   c_id SMALLINT UNSIGNED NOT NULL,
   t_id SMALLINT UNSIGNED NOT NULL,
-  data BLOB NOT NULL,
+  data MEDIUMBLOB NOT NULL,
   PRIMARY KEY (content_id, s_id, c_id, t_id),
   FOREIGN KEY (content_id, s_id, c_id, t_id)
       REFERENCES Content(content_id, s_id, c_id, t_id)

@@ -34,8 +34,15 @@ public class ContentController {
     }
 
     @GetMapping("/new/text")
-    public String showTextContentForm(Model model) {
-        model.addAttribute("textContent", new TextContent());
+    public String showTextContentForm(@RequestParam int tbookId,
+                                      @RequestParam int chapId,
+                                      @RequestParam int sectionId,
+                                      Model model) {
+        TextContent content = new TextContent();
+        content.setTbookId(tbookId);
+        content.setChapId(chapId);
+        content.setSectionId(sectionId);
+        model.addAttribute("textContent", content);
         return "content/createTextContent";
     }
 
@@ -52,47 +59,52 @@ public class ContentController {
         return "content/createImageContent";
     }
 
-    @PostMapping
-    public String createContent(@RequestBody Content content) {
-        try {
-            Content createdContent = contentService.create(content);
-            return "Helloworld";
-        } catch (RuntimeException e) {
-            return "None"; // need to fix this later;
-        }
-    }
+//    @PostMapping
+//    public String createContent(@RequestBody Content content) {
+//        try {
+//            Content createdContent = contentService.create(content);
+//            return "Helloworld";
+//        } catch (RuntimeException e) {
+//            return "None"; // need to fix this later;
+//        }
+//    }
 
     @PostMapping("/text")
     public String createTextContent(@RequestParam("tbookId") int textbookId,
                                     @RequestParam("chapId") int chapterId,
-                                    @RequestParam("sno") int sectionId,
+                                    @RequestParam("sectionId") int sectionId,
                                     @ModelAttribute TextContent content) {
+
+        content.setContentType("text");
         Content createdContent = contentService.create(content);
-        return "redirect:/sections/" + content.getSectionId();
+        return "redirect:/contents?tbookId="+textbookId+"&chapId="+chapterId+"&sectionId="+sectionId;
     }
 
     @PostMapping("/image")
     public String createImageContent(@RequestParam("tbookId") int textbookId,
                                      @RequestParam("chapId") int chapterId,
                                      @RequestParam("sectionId") int sectionId,
-                                     @RequestParam("data") MultipartFile file,
+                                     @RequestParam("image") MultipartFile file,
                                      @ModelAttribute ImageContent content) {
 
         try {
+
+            String contentType = file.getContentType();
+            if (!"image/png".equals(contentType) && !"image/jpeg".equals(contentType)) {
+                throw new IllegalArgumentException("File must be a PNG or JPEG image");
+            }
+
             // Convert MultipartFile to byte array
             byte[] imageData = file.getBytes();
 
             // Set the image data into the content object
             content.setData(imageData);
+            content.setContentType("image");
 
-            // Set the other fields if necessary
-            content.setTbookId(textbookId);
-            content.setChapId(chapterId);
-            content.setSectionId(sectionId);
-
+//            System.out.println(content);
             // Create the content
             Content createdContent = contentService.create(content);
-            return "redirect:/sections/" + content.getSectionId();
+            return "redirect:/contents?tbookId="+textbookId+"&chapId="+chapterId+"&sectionId="+sectionId;
         } catch (IOException e) {
             // Handle the exception (e.g., log it and return an error view)
             e.printStackTrace();
@@ -100,35 +112,140 @@ public class ContentController {
         }
     }
 
-    @GetMapping("/{contentId}/{sectionId}/{chapId}/{tbookId}")
-    public ResponseEntity<Content> getContentById(
-            @PathVariable int contentId,
-            @PathVariable int sectionId,
-            @PathVariable int chapId,
-            @PathVariable int tbookId) {
-        Optional<Content> content = contentService.findById(contentId, sectionId, chapId, tbookId);
-        return content.map(ResponseEntity::ok).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
+//    @GetMapping("/{contentId}/{sectionId}/{chapId}/{tbookId}")
+//    public ResponseEntity<Content> getContentById(
+//            @PathVariable int contentId,
+//            @PathVariable int sectionId,
+//            @PathVariable int chapId,
+//            @PathVariable int tbookId) {
+//        Optional<Content> content = contentService.findById(contentId, sectionId, chapId, tbookId);
+//        return content.map(ResponseEntity::ok).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+//    }
 
-    @PutMapping
-    public ResponseEntity<Content> updateContent(@RequestBody Content content) {
-        try {
-            Optional<Content> updatedContent = contentService.update(content);
-            return updatedContent.map(ResponseEntity::ok)
-                    .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-        } catch (RuntimeException e) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+//    @PutMapping
+//    public ResponseEntity<Content> updateContent(@RequestBody Content content) {
+//        try {
+//            Optional<Content> updatedContent = contentService.update(content);
+//            return updatedContent.map(ResponseEntity::ok)
+//                    .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+//        } catch (RuntimeException e) {
+//            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+//        }
+//    }
+
+    @GetMapping("/edit/text")
+    public String editTextContentForm(@RequestParam("tbookId") int textbookId,
+                                      @RequestParam("chapId") int chapterId,
+                                      @RequestParam("sectionId") int sectionId,
+                                       @RequestParam("contentId") int contentId,
+                                       Model model) {
+        Optional<Content> result = contentService.findById(contentId,sectionId, chapterId, textbookId);
+
+        if (result.isPresent()) {
+            // Add the found content to the model with a cast to TextContent if needed
+            TextContent textContent = (TextContent) result.get();
+            System.out.println("In Object " + textContent);
+            model.addAttribute("textContent", textContent );
+            return "content/createTextContent";
+        } else {
+            // Redirect to an error or "not found" page if the content is missing
+            return "section/not-found";
         }
     }
 
-    @DeleteMapping
-    public ResponseEntity<Void> deleteContent(@RequestBody Content content) {
+    @GetMapping("/edit/image")
+    public String editImageContentForm(@RequestParam("tbookId") int textbookId,
+                                       @RequestParam("chapId") int chapterId,
+                                       @RequestParam("sectionId") int sectionId,
+                                       @RequestParam("contentId") int contentId,
+                                      Model model) {
+        Optional<Content> result = contentService.findById(contentId,sectionId, chapterId, textbookId);
+
+        if (result.isPresent()) {
+
+            ContentReadDTO contentReadDTO = contentReadDTOMapper.toDTO((ImageContent) result.get());
+            // Add the found content to the model with a cast to TextContent if needed
+            model.addAttribute("imageContent", contentReadDTO);
+
+            return "content/createImageContent";
+        } else {
+            // Redirect to an error or "not found" page if the content is missing
+            return "section/not-found";
+        }
+    }
+
+
+
+    @PutMapping("/text")
+    public String updateTextContent(@RequestParam("tbookId") int textbookId,
+                                    @RequestParam("chapId") int chapterId,
+                                    @RequestParam("sectionId") int sectionId,
+                                    @RequestParam("contentId") int contentId,
+                                    @ModelAttribute TextContent content
+    ) {
         try {
-            boolean deleted = contentService.delete(content);
-            return deleted ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
-                    : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//            System.out.println(content);
+            Content baseContent = content;
+//            System.out.println(baseContent);
+            content.setContentType("text");
+            Optional<Content> updatedContent = contentService.update(content);
+            if (updatedContent.isPresent()) {
+                // Redirect to a content view page after update
+                return "redirect:/contents?tbookId=" + textbookId + "&chapId=" + chapterId + "&sectionId=" + sectionId;
+            }
+            else return "section/not-found";
+
+            } catch (RuntimeException e) {
+            return "section/not-found";
+        }
+    }
+
+    @PutMapping("/image")
+    public String updateImageContent(@RequestParam("tbookId") int textbookId,
+                                     @RequestParam("chapId") int chapterId,
+                                     @RequestParam("sectionId") int sectionId,
+                                     @RequestParam("image") MultipartFile file,
+                                     @RequestParam("contentId") int contentId,
+                                     @ModelAttribute ImageContent content) {
+
+        try {
+
+            String contentType = file.getContentType();
+            if (!"image/png".equals(contentType) && !"image/jpeg".equals(contentType)) {
+                throw new IllegalArgumentException("File must be a PNG or JPEG image");
+            }
+
+            // Convert MultipartFile to byte array
+            byte[] imageData = file.getBytes();
+
+            // Set the image data into the content object
+            content.setData(imageData);
+            content.setContentType("image");
+
+//            System.out.println(content);
+            // Create the content
+            Optional<Content> createdContent = contentService.update(content);
+            return "redirect:/contents?tbookId="+textbookId+"&chapId="+chapterId+"&sectionId="+sectionId;
+        } catch (IOException e) {
+            // Handle the exception (e.g., log it and return an error view)
+            e.printStackTrace();
+            return "error"; // Redirect or return an error view
+        }
+    }
+
+
+    @DeleteMapping
+    public String deleteContent(@RequestParam int sectionId,
+                                @RequestParam int chapId,
+                                @RequestParam int tbookId,
+                                @RequestParam int contentId
+    ) {
+        try {
+            boolean deleted = contentService.delete(contentId, sectionId, chapId, tbookId);
+            return deleted ?"redirect:/contents?tbookId="+tbookId+"&chapId="+chapId+"&sectionId="+sectionId
+                    : "section/not-found.html";
         } catch (RuntimeException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return "section/not-found.html";
         }
     }
 
@@ -143,11 +260,9 @@ public class ContentController {
                 {
                     if (e instanceof TextContent){
                         TextContent t = (TextContent)e ;
-                        System.out.println(t.getData() );
                     }
                     else if (e instanceof ImageContent) {
                         ImageContent i = (ImageContent) e;
-                        System.out.println(i.getData());
                     }
                 }
                 );
@@ -163,7 +278,6 @@ public class ContentController {
                 }
         ).collect(Collectors.toList());
 
-        contentReadDTOS.forEach(content -> System.out.println(content.getData()));
         model.addAttribute("allContents", contentReadDTOS);
         model.addAttribute("sectionId", sectionId);
         model.addAttribute("chapId", chapId);

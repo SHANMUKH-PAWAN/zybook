@@ -37,6 +37,8 @@ public class ContentService implements IContentService {
 
     @Override
     public Optional<Content> update(Content content) {
+
+//        System.out.println("Content Service Layer: " + content);
         Optional<Content> existingContent = contentRepository.findById(
                 content.getContentId(), content.getSectionId(), content.getChapId(), content.getTbookId()
         );
@@ -49,10 +51,10 @@ public class ContentService implements IContentService {
 
     @Override
     @Transactional
-    public boolean delete(Content content) {
-        Optional<Content> existingContent = contentRepository.findById(content.getContentId(), content.getSectionId(), content.getChapId(), content.getTbookId());
+    public boolean delete(int contentId, int sectionId, int chapId, int tbook_id) {
+        Optional<Content> existingContent = contentRepository.findById(contentId, sectionId, chapId, tbook_id);
         if (existingContent.isPresent()) {
-            return contentRepository.delete(content);
+            return contentRepository.delete(contentId, sectionId, chapId, tbook_id);
         } else {
             throw new RuntimeException("Content not found for deletion.");
         }
