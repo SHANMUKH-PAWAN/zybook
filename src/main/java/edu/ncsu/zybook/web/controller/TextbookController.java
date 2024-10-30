@@ -76,7 +76,7 @@ public class TextbookController {
     public String showEditForm(@PathVariable int id, Model model) {
         Optional<Textbook> textbook = textbookService.findById(id);
         if (textbook.isPresent()) {
-            model.addAttribute("textbook", textbook);
+            model.addAttribute("textbook", textbook.get());
             return "textbook/create";
         } else {
             return "textbook/not-found";
