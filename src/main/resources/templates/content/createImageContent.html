@@ -1,23 +1,43 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Create Image Content</title>
+    <title th:text="${imageContent.contentId} != null ? 'Update Image Content' : 'Create Image Content'">Image Content</title>
 </head>
 <body>
-<h1>Create New Image Content</h1>
+<h1 th:text="${imageContent.contentId} != null ? 'Update Image Content' : 'Create Image Content'">Image Content</h1>
 
-<form th:action="@{/contents/image(tbookId=${imageContent.tbookId}, sectionId=${imageContent.sectionId}, chapId=${imageContent.chapId})}"
-      method="post" enctype="multipart/form-data" th:object="${imageContent}">
+<form th:action="${imageContent.contentId} != null ? @{/contents/image(tbookId=${imageContent.tbookId}, sectionId=${imageContent.sectionId}, chapId=${imageContent.chapId}, contentId = ${imageContent.contentId})} : @{/contents/image(tbookId=${imageContent.tbookId}, sectionId=${imageContent.sectionId}, chapId=${imageContent.chapId})}"
+      method="post" enctype="multipart/form-data"
+      th:object="${imageContent}"
+      th:method="${imageContent.contentId == null ? 'post' : 'put'}">
 
     <!-- Hidden fields for associated section and textbook details -->
     <input type="hidden" th:field="*{sectionId}" />
     <input type="hidden" th:field="*{tbookId}" />
     <input type="hidden" th:field="*{chapId}" />
 
+    <!-- Conditionally show Content ID (hidden for create) -->
+    <div th:if="${imageContent.contentId == null}">
+        <label for="contentId">Content ID:</label>
+        <input type="text" id="contentId" th:field="*{contentId}" />
+    </div>
+
+    <div th:if="${imageContent.contentId != null}">
+        <input type="hidden" th:field="*{contentId}" />
+    </div>
+
     <!-- Field for Image Content Data -->
     <div>
         <label for="imageData">Image File:</label>
-        <input type="file" id="imageData" name="data" required /> <!-- Ensure it's marked as required -->
+        <input type="file" id="imageData" name="image" accept=".png, .jpeg, .jpg" th:if="${imageContent.contentId == null}" required />
+
+        <!-- Optional: Show existing image for update -->
+        <div th:if="${imageContent.contentId != null}">
+            <input type="file" id="editImageData" name="image" accept=".png, .jpeg, .jpg" th:if="${imageContent.contentId != null}" required />
+            <img th:src="@{'data:image/png;base64,'+${imageContent.data}}"
+                 alt="Image Content" style="max-width: 100px; max-height: 100px;"/>
+            <p>If you'd like to replace the image, upload a new one.</p>
+        </div>
     </div>
 
     <!-- Common fields -->
@@ -32,9 +52,11 @@
     </div>
 
     <br>
-    <button type="submit">Create Image Content</button>
+    <button type="submit" th:text="${imageContent.contentId} != null ? 'Update Image Content' : 'Create Image Content'">
+        Submit
+    </button>
 </form>
 
-<a th:href="@{/sections/(tbookId=${imageContent.tbookId}, chapId=${imageContent.chapId}, sectionId=imageContent.sectionId)}">Back to Section</a>
+<a th:href="@{/sections/section(tbookId=${imageContent.tbookId}, sno=${imageContent.sectionId}, chapId=${imageContent.chapId})}">Back to Section</a>
 </body>
 </html>

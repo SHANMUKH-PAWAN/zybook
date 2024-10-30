@@ -25,7 +25,7 @@ public class ContentRepository implements IContentRepository {
     @Transactional
     @Override
     public Content create(Content content) {
-        String sql = "INSERT INTO Content (content_id, section_id, chap_id, tbook_id, content_type, owned_by, is_hidden) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Content (content_id, s_id, c_id, t_id, content_type, owned_by, is_hidden) VALUES (?, ?, ?, ?, ?, ?, ?)";
         int rowsAffected = jdbcTemplate.update(sql, content.getContentId(), content.getSectionId(), content.getChapId(),
                 content.getTbookId(), content.getContentType(), content.getOwnedBy(), content.isHidden());
 
@@ -108,25 +108,27 @@ public class ContentRepository implements IContentRepository {
 
     @Transactional
     @Override
-    public boolean delete(Content content) {
-
-        switch (content.getContentType().toLowerCase()) {
-            case "text":
-                if (content instanceof TextContent) deleteTextContent((TextContent) content);
-                else throw new IllegalArgumentException("Invalid content type for TextContent");
-                break;
-            case "image":
-                if (content instanceof ImageContent) deleteImageContent((ImageContent) content);
-                else throw new IllegalArgumentException("Invalid content type for ImageContent");
-                break;
-            default:
-                throw new RuntimeException("Unknown content type: " + content.getContentType());
+    public boolean delete(int contentId, int sectionId, int chapId, int tbook_id) {
+        Optional<Content> searchRes = findById(contentId, sectionId,chapId, tbook_id);
+        if(searchRes.isPresent()) {
+            Content content = searchRes.get();
+            switch (content.getContentType().toLowerCase()) {
+                case "text":
+                    if (content instanceof TextContent) deleteTextContent((TextContent) content);
+                    else throw new IllegalArgumentException("Invalid content type for TextContent");
+                    break;
+                case "image":
+                    if (content instanceof ImageContent) deleteImageContent((ImageContent) content);
+                    else throw new IllegalArgumentException("Invalid content type for ImageContent");
+                    break;
+                default:
+                    throw new RuntimeException("Unknown content type: " + content.getContentType());
+            }
+            String sql = "DELETE FROM Content WHERE content_id = ? AND s_id = ? AND c_id = ? AND t_id = ?";
+            int rowsAffected = jdbcTemplate.update(sql, content.getContentId(), content.getSectionId(), content.getChapId(), content.getTbookId());
+            return rowsAffected > 0;
         }
-
-        String sql = "DELETE FROM Content WHERE content_id = ? AND section_id = ? AND chap_id = ? AND tbook_id = ?";
-        int rowsAffected = jdbcTemplate.update(sql, content.getContentId(), content.getSectionId(), content.getChapId(), content.getTbookId());
-
-        return rowsAffected > 0;
+        return false;
     }
 
     private void deleteTextContent(TextContent content) {
@@ -203,14 +205,6 @@ public class ContentRepository implements IContentRepository {
     private byte[] fetchImageData(int contentId, int sectionId, int chapId, int tbookId) {
         String sql = "SELECT data FROM ImageContent WHERE content_id = ? AND s_id = ? AND c_id = ? AND t_id = ?";
         byte[] imageData = jdbcTemplate.queryForObject(sql, new Object[]{contentId, sectionId, chapId, tbookId}, byte[].class);
-
-        // Debug statement to print the length of the image data and the first few bytes
-        if (imageData != null) {
-            System.out.println("Fetched image data length: " + imageData.length);
-            System.out.println("First few bytes: " + Arrays.toString(Arrays.copyOf(imageData, imageData.length)));
-        } else {
-            System.out.println("No image data found for contentId: " + contentId + ", sectionId: " + sectionId + ", chapId: " + chapId + ", tbookId: " + tbookId);
-        }
 
         return imageData;
     }

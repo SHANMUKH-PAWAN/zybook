@@ -76,7 +76,7 @@ public class ChapterController {
             ChapterReadDTO chapterReadDTO = chapterReadDTOMapper.toDTO(chapter.get());
             chapterReadDTO.setSections(sections.stream().map(sectionWeakMapper::toDTO).collect(Collectors.toList()));
             model.addAttribute("chapter", chapterReadDTO );
-            System.out.println(Arrays.toString(chapterReadDTO.getSections().toArray()));
+//            System.out.println(Arrays.toString(chapterReadDTO.getSections().toArray()));
             return "chapter/chapter";
         } else {
             return "chapter/not-found";

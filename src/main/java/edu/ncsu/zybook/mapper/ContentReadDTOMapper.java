@@ -22,8 +22,6 @@ public interface ContentReadDTOMapper {
     // Define a custom mapping method for byte[] to Base64 String conversion
     @Named("byteArrayToBase64")
     default String byteArrayToBase64(byte[] data) {
-        System.out.println("Data "+data);
-        System.out.println("Encoddddd "+Base64.getEncoder().encodeToString( (byte[]) data));
         return data != null ? Base64.getEncoder().encodeToString(data) : null;
     }
 }
