@@ -84,6 +84,7 @@ public class UserRepository implements IUserRepository{
             user.setLname(rs.getString("lname"));
             user.setEmail(rs.getString("email"));
             user.setPassword(rs.getString("password"));
+            user.setRoleName(rs.getString("role_name"));
             return user;
         }
     }
