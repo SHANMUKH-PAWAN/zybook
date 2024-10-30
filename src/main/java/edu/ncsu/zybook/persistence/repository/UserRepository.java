@@ -30,6 +30,17 @@ public class UserRepository implements IUserRepository{
         }
     }
 
+    public Optional<User> findByEmail(String email) {
+        String sql = "SELECT * FROM user WHERE email = ?";
+        try{
+            User user = jdbcTemplate.queryForObject(sql, new Object[]{email}, new UserRepository.UserRowMapper());
+            return Optional.of(user);
+        }
+        catch(EmptyResultDataAccessException e){
+            return Optional.empty();
+        }
+    }
+
     @Override
     public User create(User user) {
         String sql = "INSERT INTO User (fname,lname,email,password,role_name) VALUES(?,?,?,?,?)";
@@ -46,8 +57,8 @@ public class UserRepository implements IUserRepository{
 
     @Override
     public Optional<User> update(User user) {
-        String sql = "UPDATE User SET fname = ?, SET lname = ? WHERE user_id = ?";
-        int rowsAffected = jdbcTemplate.update(sql, user.getFname(), user.getLname());
+        String sql = "UPDATE User SET fname = ?, lname = ? WHERE user_id = ?";
+        int rowsAffected = jdbcTemplate.update(sql, user.getFname(), user.getLname(), user.getUserId());
         return rowsAffected > 0 ? Optional.of(user) : Optional.empty();
     }
 
@@ -64,18 +75,6 @@ public class UserRepository implements IUserRepository{
         return jdbcTemplate.query(sql, new UserRepository.UserRowMapper());
     }
 
-    @Override
-    public Optional<User> findByEmail(String email) {
-        String sql = "SELECT * FROM User WHERE email = ?";
-        try{
-            User user = jdbcTemplate.queryForObject(sql, new Object[]{email}, new UserRepository.UserRowMapper());
-            return Optional.of(user);
-        }
-        catch(EmptyResultDataAccessException e){
-            return Optional.empty();
-        }
-    }
-
     private static class UserRowMapper implements RowMapper<User> {
         @Override
         public User mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -85,6 +84,7 @@ public class UserRepository implements IUserRepository{
             user.setLname(rs.getString("lname"));
             user.setEmail(rs.getString("email"));
             user.setPassword(rs.getString("password"));
+            user.setRoleName(rs.getString("role_name"));
             return user;
         }
     }

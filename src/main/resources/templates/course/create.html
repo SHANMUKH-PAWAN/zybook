@@ -10,7 +10,7 @@
       th:object="${course}"
       th:method="${course.courseId == null ? 'post' : 'put'}">
 
-    <div>
+    <div th:if="${course.courseId == null}">
         <label for="courseId">Course ID:</label>
         <input type="text" id="courseId" th:field="*{courseId}" required/>
     </div>
