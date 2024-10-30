@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.security.Timestamp;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,7 +35,7 @@ public class UserRegistersCourseRepository implements IUserRegistersCourseReposi
 
     @Override
     public Optional<UserRegistersCourse> findById(int userId, String courseId) {
-        String sql = "SELECT * FROM UserRegistersCourse WHERE userId = ? AND courseId = ?";
+        String sql = "SELECT * FROM UserRegistersCourse WHERE user_id = ? AND CourseId = ?";
         try {
             UserRegistersCourse userRegistersCourse = jdbcTemplate.queryForObject(sql, new Object[]{userId, courseId}, new UserRegistersCourseRepository.UserRegistersCourseRowMapper());
             return Optional.of(userRegistersCourse);

@@ -10,5 +10,6 @@ public interface IUserRepository {
     User create(User user);
     Optional<User> update(User user);
     boolean delete(int id);
+    Optional<User> findByEmail(String email);
     List<User> getAllUsers();
 }

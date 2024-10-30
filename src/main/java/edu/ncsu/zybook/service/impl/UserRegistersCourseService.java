@@ -32,6 +32,7 @@ public class UserRegistersCourseService implements IUserRegistersCourseService {
         else {
             throw new RuntimeException("UserRegistersCourse already exists");
         }
+        //return userRegistersCourseRepository.create(userRegistersCourse);
     }
 
     @Override

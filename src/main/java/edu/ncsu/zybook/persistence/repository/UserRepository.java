@@ -33,10 +33,10 @@ public class UserRepository implements IUserRepository{
     @Override
     public User create(User user) {
         String sql = "INSERT INTO User (fname,lname,email,password,role_name) VALUES(?,?,?,?,?)";
-        int rowsAffected = jdbcTemplate.update(sql, user.getUserId());
+        int rowsAffected = jdbcTemplate.update(sql, user.getFname(), user.getLname(), user.getEmail(), user.getPassword(), user.getRoleName());
         if(rowsAffected > 0)
         {
-            return findById(user.getUserId())
+            return findByEmail(user.getEmail())
                     .orElseThrow(() -> new RuntimeException("Failed to retrieve newly inserted User."));
         }
         else{
@@ -62,6 +62,18 @@ public class UserRepository implements IUserRepository{
     public List<User> getAllUsers() {
         String sql = "SELECT * FROM User";
         return jdbcTemplate.query(sql, new UserRepository.UserRowMapper());
+    }
+
+    @Override
+    public Optional<User> findByEmail(String email) {
+        String sql = "SELECT * FROM User WHERE email = ?";
+        try{
+            User user = jdbcTemplate.queryForObject(sql, new Object[]{email}, new UserRepository.UserRowMapper());
+            return Optional.of(user);
+        }
+        catch(EmptyResultDataAccessException e){
+            return Optional.empty();
+        }
     }
 
     private static class UserRowMapper implements RowMapper<User> {

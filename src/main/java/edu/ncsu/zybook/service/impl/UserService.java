@@ -21,7 +21,7 @@ public class UserService implements IUserService {
     }
     @Override
     public User create(User user) {
-        Optional<User> result= userRepository.findById(user.getUserId());
+        Optional<User> result= userRepository.findByEmail(user.getEmail());
         if(result.isEmpty()) {
             return userRepository.create(user);
         }
@@ -58,6 +58,16 @@ public class UserService implements IUserService {
         else{
             return false;
         }
+    }
+
+    @Override
+    public Optional<User> findByEmail(String email) {
+        Optional<User> result = userRepository.findByEmail(email);
+        if(result.isPresent()) {
+            User user = result.get();
+            return Optional.of(user);
+        }
+        return Optional.empty();
     }
 
     @Override

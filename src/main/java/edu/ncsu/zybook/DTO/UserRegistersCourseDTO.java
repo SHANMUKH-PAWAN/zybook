@@ -3,7 +3,7 @@ package edu.ncsu.zybook.DTO;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.security.Timestamp;
+import java.sql.Timestamp;
 
 @Data
 @NoArgsConstructor
