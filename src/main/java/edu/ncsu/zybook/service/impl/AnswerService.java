@@ -46,10 +46,10 @@ public class AnswerService implements IAnswerService {
 
     @Transactional
     @Override
-    public boolean delete(Answer answer) {
-        Optional<Answer> existingAnswer = answerRepository.findById(answer.getQuestionId(), answer.getAnswerId(), answer.getActivityId(), answer.getContentId(), answer.getSectionId(), answer.getChapId(), answer.getTbookId());
+    public boolean delete(int questionId, int answerId, int activityId, int contentId, int sectionId, int chapId, int tbookId) {
+        Optional<Answer> existingAnswer = answerRepository.findById(questionId, answerId, activityId, contentId, sectionId, chapId, tbookId);
         if (existingAnswer.isPresent()) {
-            return answerRepository.delete(answer);
+            return answerRepository.delete(questionId, answerId, activityId, contentId, sectionId, chapId, tbookId);
         } else {
             throw new RuntimeException("Answer not found with the provided identifiers");
         }

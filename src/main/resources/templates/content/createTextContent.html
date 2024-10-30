@@ -6,12 +6,22 @@
 <body>
 <h1>Create New Text Content</h1>
 
-<form th:action="@{/contents/text}" method="post" th:object="${textContent}">
-
+    <form th:action="${textContent.contentId == null ? '/contents/text?sectionId='+textContent.sectionId+'&'+'tbookId='+textContent.tbookId+'&chapId='+textContent.chapId : '/contents/text?sectionId='+textContent.sectionId+'&'+'tbookId='+textContent.tbookId+'&chapId='+textContent.chapId+'&contentId='+textContent.contentId}"
+            th:object="${textContent}"
+            th:method="${textContent.contentId == null ? 'post' : 'put'}">
     <!-- Hidden fields for associated section and textbook details -->
     <input type="hidden" th:field="*{sectionId}" />
-    <input type="hidden" th:field="*{tbook_id}" />
+    <input type="hidden" th:field="*{tbookId}" />
     <input type="hidden" th:field="*{chapId}" />
+
+    <div th:if="${textContent.contentId == null}">
+        <label for="contentId">Content ID:</label>
+        <input type="text" id="contentId" th:field="*{contentId}" />
+    </div>
+
+    <div th:if="${textContent.contentId != null}">
+        <input type="hidden" th:field="*{contentId}" />
+    </div>
 
     <!-- Field for Text Content Data -->
     <div>
@@ -34,7 +44,7 @@
     <button type="submit">Create Text Content</button>
 </form>
 
-<a th:href="@{/sections/{sectionId}(sectionId=${textContent.sectionId})}">Back to Section</a>
+<a th:href="@{/sections/section(tbookId=${textContent.tbookId}, sno=${textContent.sectionId}, chapId=${textContent.chapId})}">Back to Section</a>
 
 </body>
 </html>

@@ -35,14 +35,25 @@
             <!-- Display image if the content is of type IMAGE -->
             <span th:if="${content.contentType == 'image'}">
                 <span th:text="${content.data != null ? 'Data is available' : 'No data'}"></span>
-                <img th:src="@{'data:image/png;base64,'+'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAEElEQVR42mP8z/C/HwADAgH/kCy+VgAAAABJRU5ErkJggg=='}"
+                <img th:src="@{'data:image/png;base64,'+${content.data}}"
                 alt="Image Content" style="max-width: 100px; max-height: 100px;"/>
             </span>
 
         </td>
         <td>
-            <a th:href="@{/contents/edit(contentId=${content.contentId})}">Edit</a>
-            <form th:action="@{/contents/delete(contentId=${content.contentId})}" method="post" style="display:inline;">
+            <span th:if="${content.contentType == 'text'}">
+    <a th:href="@{/contents/edit/text(tbookId=${tbookId}, chapId=${chapId}, sectionId=${sectionId}, contentId=${content.contentId})}">
+        Edit Text
+    </a>
+</span>
+
+            <span th:if="${content.contentType == 'image'}">
+    <a th:href="@{/contents/edit/image(tbookId=${tbookId}, chapId=${chapId}, sectionId=${sectionId}, contentId=${content.contentId})}">
+        Edit Image
+    </a>
+</span>
+
+            <form th:action="@{/contents(tbookId=${tbookId}, chapId=${chapId}, sectionId=${sectionId}, contentId=${content.contentId})}" th:method="delete" style="display:inline;">
                 <button type="submit">Delete</button>
             </form>
         </td>

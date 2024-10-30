@@ -9,6 +9,6 @@ public interface IContentService {
     Content create(Content content);
     Optional<Content> findById(int contentId, int sectionId, int chapId, int tbookId);
     Optional<Content> update(Content content);
-    boolean delete(Content content);
+    boolean delete(int contentId, int sectionId, int chapId, int tbook_id);
     List<Content> getAllContentBySection(int sectionId, int chapId, int tbookId);
 }
