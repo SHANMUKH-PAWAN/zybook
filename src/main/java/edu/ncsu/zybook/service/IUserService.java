@@ -11,6 +11,5 @@ public interface IUserService {
     Optional<User> update(User user);
     Optional<User> findByEmail(String email);
     boolean delete(int id);
-    Optional<User> findByEmail(String email);
     List<User> getAllUsers();
 }
