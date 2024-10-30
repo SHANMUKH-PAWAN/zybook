@@ -44,7 +44,7 @@ public class UserRepository implements IUserRepository{
     @Override
     public User create(User user) {
         String sql = "INSERT INTO User (fname,lname,email,password,role_name) VALUES(?,?,?,?,?)";
-        int rowsAffected = jdbcTemplate.update(sql, user.getFname(), user.getLname(), user.getEmail(), user.getPassword(),user.getRoleName());
+        int rowsAffected = jdbcTemplate.update(sql, user.getFname(), user.getLname(), user.getEmail(), user.getPassword(), user.getRoleName());
         if(rowsAffected > 0)
         {
             return findByEmail(user.getEmail())
@@ -84,6 +84,7 @@ public class UserRepository implements IUserRepository{
             user.setLname(rs.getString("lname"));
             user.setEmail(rs.getString("email"));
             user.setPassword(rs.getString("password"));
+            user.setRoleName(rs.getString("role_name"));
             return user;
         }
     }
