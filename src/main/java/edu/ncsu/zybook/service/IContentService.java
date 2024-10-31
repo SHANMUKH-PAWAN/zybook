@@ -11,4 +11,6 @@ public interface IContentService {
     Optional<Content> update(Content content);
     boolean delete(int contentId, int sectionId, int chapId, int tbook_id);
     List<Content> getAllContentBySection(int sectionId, int chapId, int tbookId);
+    int getNextContentId(int contentId, int sectionId, int chapId, int tbook_id);
+    int getPreviousContentId(int contentId, int sectionId, int chapId, int tbook_id);
 }

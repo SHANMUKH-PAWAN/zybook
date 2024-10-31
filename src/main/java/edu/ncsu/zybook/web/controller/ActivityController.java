@@ -95,6 +95,7 @@ public class ActivityController {
                 "&chapId=" + activity.getChapId() +
                 "&tbookId=" + activity.getTbookId();
     }
+
     @DeleteMapping
     public  String deleteActivity(@RequestParam("tbookId") int textbookId,
                                                 @RequestParam("chapId") int chapterId,

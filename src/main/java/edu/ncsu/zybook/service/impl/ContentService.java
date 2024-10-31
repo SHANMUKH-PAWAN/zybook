@@ -64,5 +64,19 @@ public class ContentService implements IContentService {
     public List<Content> getAllContentBySection(int sectionId, int chapId, int tbookId) {
         return contentRepository.findAllBySection(sectionId, chapId, tbookId);
     }
+
+    @Override
+    public int getNextContentId(int contentId, int sectionId, int chapId, int tbook_id) {
+        int size = getAllContentBySection(sectionId, chapId, tbook_id).size();
+        if(contentId >= size) return -1;
+        return contentId + 1;
+    }
+
+    @Override
+    public int getPreviousContentId(int contentId, int sectionId, int chapId, int tbook_id) {
+        int size = getAllContentBySection(sectionId, chapId, tbook_id).size();
+        if(contentId <= 1) return -1;
+        return contentId - 1;
+    }
 }
 
