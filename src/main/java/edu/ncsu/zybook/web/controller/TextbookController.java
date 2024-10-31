@@ -9,6 +9,7 @@ import edu.ncsu.zybook.service.IChapterService;
 import edu.ncsu.zybook.service.ITextbookService;
 import edu.ncsu.zybook.service.impl.ChapterService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -60,6 +61,7 @@ public class TextbookController {
         return "textbook/list";
     }
 
+    @PreAuthorize("hasRole('PROFESSOR')")
     @GetMapping("/new")
     public String showCreateForm(Model model) {
         model.addAttribute("textbook", new Textbook());
