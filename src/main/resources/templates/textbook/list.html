@@ -1,11 +1,15 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <title>Textbook List</title>
 </head>
 <body>
 <h1>Textbook List</h1>
+
+<div sec:authorize="hasRole('ADMIN')">
 <a th:href="@{/textbooks/new}">Add New Textbook</a>
+</div>
+
 <table border="1">
     <thead>
     <tr>
@@ -20,7 +24,9 @@
         <td th:text="${textbook.title}">Title</td>
         <td>
             <a th:href="@{/textbooks/{id}(id=${textbook.uid})}">View</a>
+            <div sec:authorize="hasRole('ADMIN') OR hasRole('PROFESSOR')">
             <a th:href="@{/textbooks/edit/{id}(id=${textbook.uid})}">Edit</a>
+            </div>
             <form th:action="@{/textbooks/{id}(id=${textbook.uid})}" th:method="delete" style="display:inline;">
                 <button type="submit">Delete</button>
             </form>
