@@ -61,19 +61,21 @@ public class TextbookController {
         return "textbook/list";
     }
 
-    @PreAuthorize("hasRole('PROFESSOR')")
+    @PreAuthorize("hasAnyRole('PROFESSOR', 'ADMIN')")
     @GetMapping("/new")
     public String showCreateForm(Model model) {
         model.addAttribute("textbook", new Textbook());
         return "textbook/create";
     }
 
+    @PreAuthorize("hasAnyRole('PROFESSOR', 'ADMIN')")
     @PostMapping
     public  String createTextbook(@ModelAttribute Textbook textbook) {
         textbookService.create(textbook);
         return "redirect:/textbooks";
     }
 
+    @PreAuthorize("hasAnyRole('PROFESSOR', 'ADMIN')")
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable int id, Model model) {
         Optional<Textbook> textbook = textbookService.findById(id);
@@ -85,12 +87,14 @@ public class TextbookController {
         }
     }
 
+    @PreAuthorize("hasAnyRole('PROFESSOR', 'ADMIN')")
     @PutMapping("/{id}")
     public String updateTextbook(@ModelAttribute Textbook textbook) {
         textbookService.update(textbook);
         return "redirect:/textbooks";
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @DeleteMapping("/{id}")
     public String deleteTextbook(@PathVariable int id){
         textbookService.delete(id);
