@@ -7,7 +7,7 @@
 <h1>Textbook List</h1>
 
 <div sec:authorize="hasRole('ADMIN')">
-<a th:href="@{/textbooks/new}">Add New Textbook</a>
+    <a th:href="@{/textbooks/new}">Add New Textbook</a>
 </div>
 
 <table border="1">
@@ -25,11 +25,15 @@
         <td>
             <a th:href="@{/textbooks/{id}(id=${textbook.uid})}">View</a>
             <div sec:authorize="hasRole('ADMIN') OR hasRole('PROFESSOR')">
-            <a th:href="@{/textbooks/edit/{id}(id=${textbook.uid})}">Edit</a>
+                <div sec:authorize="hasAnyRole('ADMIN', 'PROFESSOR')">
+                    <a th:href="@{/textbooks/edit/{id}(id=${textbook.uid})}">Edit</a>
+                </div>
             </div>
-            <form th:action="@{/textbooks/{id}(id=${textbook.uid})}" th:method="delete" style="display:inline;">
-                <button type="submit">Delete</button>
-            </form>
+            <div sec:authorize="hasRole('ADMIN')">
+                <form th:action="@{/textbooks/{id}(id=${textbook.uid})}" th:method="delete" style="display:inline;">
+                    <button type="submit">Delete</button>
+                </form>
+            </div>
         </td>
     </tr>
     </tbody>

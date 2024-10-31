@@ -31,7 +31,7 @@ public class UserRepository implements IUserRepository{
     }
 
     public Optional<User> findByEmail(String email) {
-        String sql = "SELECT * FROM user WHERE email = ?";
+        String sql = "SELECT * FROM User WHERE email = ?";
         try{
             User user = jdbcTemplate.queryForObject(sql, new Object[]{email}, new UserRepository.UserRowMapper());
             return Optional.of(user);
