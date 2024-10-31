@@ -271,3 +271,19 @@ CREATE TABLE Answer (
 --Changeset vengatesh:23 Alter Activity Table
 ALTER TABLE Activity
 ADD COLUMN isHidden TINYINT(1) NOT NULL DEFAULT 0;
+
+--Changeset vengatesh:24 Create Participation Table
+CREATE Table User_Participation(
+    user_id INT UNSIGNED NOT NULL,
+    activity_id SMALLINT UNSIGNED NOT NULL,
+    content_id SMALLINT UNSIGNED NOT NULL,
+    s_id SMALLINT UNSIGNED NOT NULL,
+    c_id SMALLINT UNSIGNED NOT NULL,
+    t_id SMALLINT UNSIGNED NOT NULL,
+    q_id SMALLINT UNSIGNED NOT NULL,
+    ans_id SMALLINT UNSIGNED,
+    score SMALLINT UNSIGNED,
+    PRIMARY KEY (user_id,activity_id,content_id,s_id,c_id,t_id,q_id),
+    FOREIGN KEY (user_id) REFERENCES User(user_id) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (activity_id,content_id,s_id,c_id,t_id,q_id) REFERENCES Question(activity_id,content_id,s_id,c_id,t_id,q_id) ON UPDATE CASCADE ON DELETE CASCADE
+);

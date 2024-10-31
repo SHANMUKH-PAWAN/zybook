@@ -1,6 +1,7 @@
 package edu.ncsu.zybook.DTO;
 
 import edu.ncsu.zybook.domain.model.Answer;
+import edu.ncsu.zybook.domain.model.Section;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -20,4 +21,7 @@ public class QuestionDTO {
     private Integer answer_id;
     private String question;
     private Integer isHidden;
+    private Answer answer;
+    private Integer userResponse;
+    private String justification;
 }
