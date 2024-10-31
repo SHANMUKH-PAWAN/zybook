@@ -68,7 +68,6 @@ public class ActivityController {
         if(activity.isPresent()) {
 //            System.out.println("DEeeeeBuG");
             List<Question> questions= iQuestionService.findAllByActivity(activityId,contentId,sectionId,chapterId, textbookId);
-            System.out.println("Questions from serrvice"+ Arrays.toString(questions.toArray()));
             ActivityDTO activityDTO = activityDTOMapper.toDTO(activity.get());
             List<QuestionDTO> questionDTOs = new ArrayList<>();
             for(Question question : questions) {

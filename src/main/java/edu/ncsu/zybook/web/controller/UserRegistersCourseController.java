@@ -1,0 +1,97 @@
+package edu.ncsu.zybook.web.controller;
+
+import edu.ncsu.zybook.DTO.UserWeakDTO;
+import edu.ncsu.zybook.domain.model.*;
+import edu.ncsu.zybook.mapper.UserWeakDTOMapper;
+import edu.ncsu.zybook.service.ICourseService;
+import edu.ncsu.zybook.service.IUserRegistersCourseService;
+import edu.ncsu.zybook.service.IUserService;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import org.springframework.ui.Model;
+
+import java.sql.Timestamp;
+
+@Controller
+@RequestMapping("/enrollment")
+public class UserRegistersCourseController {
+    IUserService userService;
+    ICourseService courseService;
+    IUserRegistersCourseService userRegistersCourseService;
+    UserWeakDTOMapper userWeakDTOMapper;
+
+    public UserRegistersCourseController(IUserService userService, ICourseService courseService, IUserRegistersCourseService userRegistersCourseService, UserWeakDTOMapper userWeakDTOMapper) {
+        this.userService = userService;
+        this.courseService = courseService;
+        this.userRegistersCourseService = userRegistersCourseService;
+        this.userWeakDTOMapper = userWeakDTOMapper;
+
+    }
+
+    @GetMapping("/new")
+    public String showCreateForm(Model model) {
+        model.addAttribute("userWeakDTO", new UserWeakDTO());
+        return "enrollment/create";
+    }
+
+    @PostMapping("/register")
+    public String registerUser(@ModelAttribute UserWeakDTO userWeakDTO, Model model) {
+        // Check if user exists by email
+        Optional<User> user = userService.findByEmail(userWeakDTO.getEmail());
+        UserRegistersCourse registration = new UserRegistersCourse();
+
+        if (user.isPresent()) {
+            User registeruser = user.get();
+            registration.setUserId(registeruser.getUserId());
+            registration.setCourseId(userWeakDTO.getCourseId());
+            registration.setEnrollmentDate(new Timestamp(System.currentTimeMillis()));
+            registration.setApprovalStatus("Approved");
+        }
+        else{
+            User newuser = new User();
+            newuser.setFname(userWeakDTO.getFname());
+            newuser.setLname(userWeakDTO.getLname());
+            newuser.setEmail(userWeakDTO.getEmail());
+            newuser.setPassword("test");
+            newuser.setRoleName("student");
+            //newuser.setUserId(2);
+            User createdUser = userService.create(newuser);
+
+            registration.setUserId(createdUser.getUserId());
+            registration.setCourseId(userWeakDTO.getCourseId());
+            registration.setEnrollmentDate(new Timestamp(System.currentTimeMillis()));
+            registration.setApprovalStatus("Approved");
+        }
+
+        userRegistersCourseService.create(registration);
+        model.addAttribute("message", "Enrollment successful!");
+
+        return "redirect:/enrollment/new";
+    }
+
+
+//    @GetMapping("/{id}")
+//    public String getAllCourses(@PathVariable int id, Model model) {
+//        List <UserRegistersCourse> courses = userRegistersCourseService.findAllByUser(id);
+//        model.addAttribute("courses", courses);
+//        return "enrollments/list";
+//    }
+//
+//    @GetMapping("/{userId}/{courseId}")
+//    public String getEnrollment(@PathVariable int userId, @PathVariable String courseId, Model model) {
+//        Optional<UserRegistersCourse> userRegistersCourse = userRegistersCourseService.findById(userId, courseId);
+//        if (userRegistersCourse.isPresent()) {
+//            model.addAttribute("enrollment", userRegistersCourse.get());
+//            return "enrollments/enrollment";
+//        } else{
+//            return "enrollments/not-found";
+//        }
+//    }
+}

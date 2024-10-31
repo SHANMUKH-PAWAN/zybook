@@ -21,7 +21,7 @@ public class UserService implements IUserService {
     }
     @Override
     public User create(User user) {
-        Optional<User> result= userRepository.findById(user.getUserId());
+        Optional<User> result= userRepository.findByEmail(user.getEmail());
         if(result.isEmpty()) {
             return userRepository.create(user);
         }
