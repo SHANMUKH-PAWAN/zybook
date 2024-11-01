@@ -33,7 +33,7 @@
 
         <!-- Optional: Show existing image for update -->
         <div th:if="${imageContent.contentId != null}">
-            <input type="file" id="editImageData" name="image" accept=".png, .jpeg, .jpg" th:if="${imageContent.contentId != null}" required />
+            <input type="file" id="editImageData" name="image" accept=".png,.gif, .jpeg, .jpg" th:if="${imageContent.contentId != null}" required />
             <img th:src="@{'data:image/png;base64,'+${imageContent.data}}"
                  alt="Image Content" style="max-width: 100px; max-height: 100px;"/>
             <p>If you'd like to replace the image, upload a new one.</p>

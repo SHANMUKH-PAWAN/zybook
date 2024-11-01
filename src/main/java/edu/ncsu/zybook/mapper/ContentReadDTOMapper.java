@@ -46,6 +46,11 @@ public interface ContentReadDTOMapper {
     @Named("multipartToByteArray")
     default byte[] multipartToByteArray(MultipartFile file) {
         try {
+            String contentType = file.getContentType();
+//            if (!"image/png".equals(contentType) && !"image/jpeg".equals(contentType)) {
+//                throw new IllegalArgumentException("File must be a PNG or JPEG image");
+//            }
+            // Convert MultipartFile to byte array
             return file != null ? file.getBytes() : null;
         } catch (IOException e) {
             throw new RuntimeException("Failed to convert MultipartFile to byte array", e);
