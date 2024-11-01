@@ -29,7 +29,7 @@
     <!-- Field for Image Content Data -->
     <div>
         <label for="imageData">Image File:</label>
-        <input type="file" id="imageData" name="image" accept=".png, .jpeg, .jpg" th:if="${imageContent.contentId == null}" required />
+        <input type="file" id="imageData" th:field="*{image}" accept=".png, .jpeg, .jpg" th:if="${imageContent.contentId == null}" required />
 
         <!-- Optional: Show existing image for update -->
         <div th:if="${imageContent.contentId != null}">

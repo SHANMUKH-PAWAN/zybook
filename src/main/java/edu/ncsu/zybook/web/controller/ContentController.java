@@ -51,7 +51,7 @@ public class ContentController {
                                        @RequestParam int chapId,
                                        @RequestParam int sectionId,
                                        Model model) {
-        ImageContent content = new ImageContent();
+        ContentReadDTO content = new ContentReadDTO();
         content.setTbookId(tbookId);
         content.setChapId(chapId);
         content.setSectionId(sectionId);
@@ -59,15 +59,6 @@ public class ContentController {
         return "content/createImageContent";
     }
 
-//    @PostMapping
-//    public String createContent(@RequestBody Content content) {
-//        try {
-//            Content createdContent = contentService.create(content);
-//            return "Helloworld";
-//        } catch (RuntimeException e) {
-//            return "None"; // need to fix this later;
-//        }
-//    }
 
     @PostMapping("/text")
     public String createTextContent(@RequestParam("tbookId") int textbookId,
@@ -84,54 +75,12 @@ public class ContentController {
     public String createImageContent(@RequestParam("tbookId") int textbookId,
                                      @RequestParam("chapId") int chapterId,
                                      @RequestParam("sectionId") int sectionId,
-                                     @RequestParam("image") MultipartFile file,
-                                     @ModelAttribute ImageContent content) {
-
-        try {
-
-            String contentType = file.getContentType();
-            if (!"image/png".equals(contentType) && !"image/jpeg".equals(contentType)) {
-                throw new IllegalArgumentException("File must be a PNG or JPEG image");
-            }
-
-            // Convert MultipartFile to byte array
-            byte[] imageData = file.getBytes();
-
-            // Set the image data into the content object
-            content.setData(imageData);
-            content.setContentType("image");
-
-//            System.out.println(content);
-            // Create the content
-            Content createdContent = contentService.create(content);
-            return "redirect:/contents?tbookId="+textbookId+"&chapId="+chapterId+"&sectionId="+sectionId;
-        } catch (IOException e) {
-            // Handle the exception (e.g., log it and return an error view)
-            e.printStackTrace();
-            return "error"; // Redirect or return an error view
-        }
+                                     @ModelAttribute ContentReadDTO content) {
+        content.setContentType("image");
+        System.out.println(content);
+        Content createdContent = contentService.create(contentReadDTOMapper.toEntity(content));
+        return "redirect:/contents?tbookId="+textbookId+"&chapId="+chapterId+"&sectionId="+sectionId;
     }
-
-//    @GetMapping("/{contentId}/{sectionId}/{chapId}/{tbookId}")
-//    public ResponseEntity<Content> getContentById(
-//            @PathVariable int contentId,
-//            @PathVariable int sectionId,
-//            @PathVariable int chapId,
-//            @PathVariable int tbookId) {
-//        Optional<Content> content = contentService.findById(contentId, sectionId, chapId, tbookId);
-//        return content.map(ResponseEntity::ok).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-//    }
-
-//    @PutMapping
-//    public ResponseEntity<Content> updateContent(@RequestBody Content content) {
-//        try {
-//            Optional<Content> updatedContent = contentService.update(content);
-//            return updatedContent.map(ResponseEntity::ok)
-//                    .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-//        } catch (RuntimeException e) {
-//            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-//        }
-//    }
 
     @GetMapping("/edit/text")
     public String editTextContentForm(@RequestParam("tbookId") int textbookId,
@@ -142,13 +91,10 @@ public class ContentController {
         Optional<Content> result = contentService.findById(contentId,sectionId, chapterId, textbookId);
 
         if (result.isPresent()) {
-            // Add the found content to the model with a cast to TextContent if needed
             TextContent textContent = (TextContent) result.get();
-            System.out.println("In Object " + textContent);
             model.addAttribute("textContent", textContent );
             return "content/createTextContent";
         } else {
-            // Redirect to an error or "not found" page if the content is missing
             return "section/not-found";
         }
     }
@@ -175,7 +121,6 @@ public class ContentController {
     }
 
 
-
     @PutMapping("/text")
     public String updateTextContent(@RequestParam("tbookId") int textbookId,
                                     @RequestParam("chapId") int chapterId,
@@ -184,9 +129,6 @@ public class ContentController {
                                     @ModelAttribute TextContent content
     ) {
         try {
-//            System.out.println(content);
-            Content baseContent = content;
-//            System.out.println(baseContent);
             content.setContentType("text");
             Optional<Content> updatedContent = contentService.update(content);
             if (updatedContent.isPresent()) {
@@ -204,33 +146,12 @@ public class ContentController {
     public String updateImageContent(@RequestParam("tbookId") int textbookId,
                                      @RequestParam("chapId") int chapterId,
                                      @RequestParam("sectionId") int sectionId,
-                                     @RequestParam("image") MultipartFile file,
                                      @RequestParam("contentId") int contentId,
-                                     @ModelAttribute ImageContent content) {
+                                     @ModelAttribute ContentReadDTO content) {
+        content.setContentType("image");
+        Optional<Content> createdContent = contentService.update(contentReadDTOMapper.toEntity(content));
+        return "redirect:/contents?tbookId="+textbookId+"&chapId="+chapterId+"&sectionId="+sectionId;
 
-        try {
-
-            String contentType = file.getContentType();
-            if (!"image/png".equals(contentType) && !"image/jpeg".equals(contentType)) {
-                throw new IllegalArgumentException("File must be a PNG or JPEG image");
-            }
-
-            // Convert MultipartFile to byte array
-            byte[] imageData = file.getBytes();
-
-            // Set the image data into the content object
-            content.setData(imageData);
-            content.setContentType("image");
-
-//            System.out.println(content);
-            // Create the content
-            Optional<Content> createdContent = contentService.update(content);
-            return "redirect:/contents?tbookId="+textbookId+"&chapId="+chapterId+"&sectionId="+sectionId;
-        } catch (IOException e) {
-            // Handle the exception (e.g., log it and return an error view)
-            e.printStackTrace();
-            return "error"; // Redirect or return an error view
-        }
     }
 
 
@@ -255,28 +176,8 @@ public class ContentController {
                                          @RequestParam int tbookId,
                                          Model model) {
         List<Content> contentList = contentService.getAllContentBySection(sectionId, chapId, tbookId);
-
-        contentList.forEach(e ->
-                {
-                    if (e instanceof TextContent){
-                        TextContent t = (TextContent)e ;
-                    }
-                    else if (e instanceof ImageContent) {
-                        ImageContent i = (ImageContent) e;
-                    }
-                }
-                );
         List<ContentReadDTO> contentReadDTOS = new ArrayList<>();
-        contentReadDTOS = contentList.stream().map(
-                content -> {
-                    if (content instanceof TextContent) {
-                        return contentReadDTOMapper.toDTO((TextContent) content);
-                    } else if (content instanceof ImageContent) {
-                        return contentReadDTOMapper.toDTO((ImageContent) content);
-                    }
-                    return null;
-                }
-        ).collect(Collectors.toList());
+        contentReadDTOS = contentList.stream().map(contentReadDTOMapper::toDTO).collect(Collectors.toList());
 
         model.addAttribute("allContents", contentReadDTOS);
         model.addAttribute("sectionId", sectionId);
