@@ -39,6 +39,25 @@ public class UserController {
         return "user/list";
     }
 
+    @GetMapping("/waiting/{id}")
+    public String getWaitingList(@PathVariable String id, Model model) {
+        List<User> users = userService.getWaitingList(id);
+        model.addAttribute("users", users);
+        return "user/list";
+    }
+
+    @GetMapping("/approve/{courseId}/{userId}")
+    public String approve(@PathVariable String courseId, @PathVariable int userId){
+        userService.approve(courseId, userId);
+        return "redirect:/users/waiting/" + courseId;
+    }
+
+    @GetMapping("/reject/{courseId}/{userId}")
+    public String reject(@PathVariable String courseId, @PathVariable int userId){
+        userService.reject(courseId, userId);
+        return "redirect:/users/waiting/" + courseId;
+    }
+
     @GetMapping("/new")
     public String showCreateForm(Model model) {
         model.addAttribute("user", new User());

@@ -12,4 +12,7 @@ public interface IUserRepository {
     Optional<User> update(User user);
     boolean delete(int id);
     List<User> getAllUsers();
+    List<User> getWaitingList(String courseId);
+    boolean approve(String courseId, int userId);
+    boolean reject(String courseId, int userId);
 }

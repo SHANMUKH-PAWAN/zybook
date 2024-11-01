@@ -64,6 +64,30 @@ public class UserRegistersCourseRepository implements IUserRegistersCourseReposi
         return jdbcTemplate.query(sql, new Object[]{userId}, new UserRegistersCourseRepository.UserRegistersCourseRowMapper());
     }
 
+    @Override
+    public int getCurrentCount(String courseId) {
+        String sql = "SELECT COUNT(*) FROM UserRegistersCourse WHERE CourseID = ?";
+        try {
+            //int currcount = jdbcTemplate.update(sql, courseId);
+            int currcount = jdbcTemplate.queryForObject(sql, new Object[]{courseId}, Integer.class);
+            return currcount;
+        } catch (EmptyResultDataAccessException e) {
+            return 0;
+        }
+    }
+
+    @Override
+    public int getCapacity(String courseId) {
+        String sql = "SELECT course_capacity from ActiveCourse WHERE course_id = ?";
+        try{
+            //int capacity = jdbcTemplate.update(sql, courseId);
+            int capacity = jdbcTemplate.queryForObject(sql, new Object[]{courseId}, Integer.class);
+            return capacity;
+        } catch (EmptyResultDataAccessException e) {
+            return 0;
+        }
+    }
+
     private static class UserRegistersCourseRowMapper implements RowMapper<UserRegistersCourse> {
         @Override
         public UserRegistersCourse mapRow(ResultSet rs, int rowNum) throws SQLException {

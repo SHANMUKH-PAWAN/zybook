@@ -75,6 +75,43 @@ public class UserRepository implements IUserRepository{
         return jdbcTemplate.query(sql, new UserRepository.UserRowMapper());
     }
 
+    @Override
+    public List<User> getWaitingList(String courseId){
+        //String sql = "SELECT user_id FROM UserRegistersCourse WHERE approval_status = 'Waiting' AND course_id = ?";
+        String sql = "SELECT u.user_id, u.fname, u.lname, u.email, u.password, u.role_name FROM User u INNER JOIN UserRegistersCourse r WHERE u.user_id = r.user_id AND r.approval_status='Waiting' AND r.CourseID=?";
+
+        return jdbcTemplate.query(sql, new Object[]{courseId}, new UserRepository.UserRowMapper());
+    }
+
+    @Override
+    public boolean approve(String courseId, int userId) {
+        String sql = "UPDATE UserRegistersCourse SET approval_status='Approved' WHERE user_id=? AND CourseID=?";
+        int rowsAffected = jdbcTemplate.update(sql, userId, courseId);
+        if (rowsAffected>0){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean reject(String courseId, int userId) {
+        String sql = "UPDATE UserRegistersCourse SET approval_status='Rejected' WHERE user_id=? AND CourseID=?";
+        int rowsAffected = jdbcTemplate.update(sql, userId, courseId);
+        if (rowsAffected>0){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private static class WaitingListMapper implements RowMapper<Integer>{
+        public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return rs.getInt("user_id");
+        }
+    }
+
+
     private static class UserRowMapper implements RowMapper<User> {
         @Override
         public User mapRow(ResultSet rs, int rowNum) throws SQLException {
