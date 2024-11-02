@@ -66,7 +66,7 @@ public class UserRegistersCourseRepository implements IUserRegistersCourseReposi
 
     @Override
     public int getCurrentCount(String courseId) {
-        String sql = "SELECT COUNT(*) FROM UserRegistersCourse WHERE CourseID = ?";
+        String sql = "SELECT COUNT(*) FROM UserRegistersCourse WHERE CourseID = ? AND approval_status != 'Rejected'";
         try {
             //int currcount = jdbcTemplate.update(sql, courseId);
             int currcount = jdbcTemplate.queryForObject(sql, new Object[]{courseId}, Integer.class);

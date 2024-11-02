@@ -11,7 +11,6 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping("/users")
-
 public class UserController {
 
     private final IUserService userService;
@@ -32,27 +31,37 @@ public class UserController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public String getAllUsers(Model model) {
         List<User> users = userService.getAllUsers();
         model.addAttribute("users", users);
         return "user/list";
     }
 
+    @GetMapping
+    public String getCourseUsers(Model model, String courseId) {
+        List<User> users = userService.getWaitingList(courseId);
+        model.addAttribute("users", users);
+        model.addAttribute("courseId", courseId);
+        return "user/waitlist";
+    }
+
     @GetMapping("/waiting/{id}")
     public String getWaitingList(@PathVariable String id, Model model) {
         List<User> users = userService.getWaitingList(id);
         model.addAttribute("users", users);
-        return "user/list";
+        model.addAttribute("courseId", id);
+        return "user/waitlist";
     }
 
-    @GetMapping("/approve/{courseId}/{userId}")
-    public String approve(@PathVariable String courseId, @PathVariable int userId){
+    @PostMapping("/approve/{courseId}/{userId}")
+    public String approve(@PathVariable String courseId, @PathVariable int userId, Model model) {
         userService.approve(courseId, userId);
+        //model.addAttribute("courseId", courseId);
         return "redirect:/users/waiting/" + courseId;
     }
 
-    @GetMapping("/reject/{courseId}/{userId}")
+    @PostMapping("/reject/{courseId}/{userId}")
     public String reject(@PathVariable String courseId, @PathVariable int userId){
         userService.reject(courseId, userId);
         return "redirect:/users/waiting/" + courseId;
