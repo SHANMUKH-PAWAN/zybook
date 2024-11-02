@@ -1,6 +1,9 @@
 package edu.ncsu.zybook.persistence.repository;
 
 import edu.ncsu.zybook.domain.model.ActiveCourse;
+import edu.ncsu.zybook.domain.model.Course;
+import edu.ncsu.zybook.service.ICourseService;
+import edu.ncsu.zybook.persistence.repository.ICourseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -18,13 +21,29 @@ public class ActiveCourseRepository implements IActiveCourseRepository {
 
     @Autowired
     JdbcTemplate jdbcTemplate;
+    //ICourseService courseService;
+    ICourseRepository courseRepository = new CourseRepository();
 
     @Transactional
     @Override
     public ActiveCourse create(ActiveCourse activeCourse) {
-        String sql = "INSERT INTO ActiveCourse (course_token, course_capacity, course_id) VALUES (?, ?, ?)";
-        int rowsAffected = jdbcTemplate.update(sql, activeCourse.getCourseToken(), activeCourse.getCourseCapacity(), activeCourse.getCourseId());
-        if (rowsAffected > 0) {
+        Course course = new Course();
+        course.setCourseId(activeCourse.getCourseId());
+        course.setTitle(activeCourse.getTitle());
+        course.setStartDate(activeCourse.getStartDate());
+        course.setEndDate(activeCourse.getEndDate());
+        course.setCourseType(activeCourse.getCourseType());
+        course.setTbookId(activeCourse.getTbookId());
+        //Course created = courseRepository.create(course);
+        String sql = "INSERT INTO Course (course_id, title, start_date, end_date, course_type, textbook_id) VALUES(?,?,?,?,?,?)";
+        int rowsAffected = jdbcTemplate.update(sql, course.getCourseId(), course.getTitle(), course.getStartDate(), course.getEndDate(), course.getCourseType(), course.getTbookId());
+        System.out.println("Course created");
+
+        String sql2 = "INSERT INTO ActiveCourse (course_token, course_capacity, course_id) VALUES (?, ?, ?)";
+        int rowsAffected2 = jdbcTemplate.update(sql2, activeCourse.getCourseToken(), activeCourse.getCourseCapacity(), activeCourse.getCourseId());
+        System.out.println("Rows affected: " + rowsAffected2);
+        System.out.println("Active course created");
+        if (rowsAffected2 > 0) {
             return findById(activeCourse.getCourseId())
                     .orElseThrow(() -> new RuntimeException("Failed to retrieve newly inserted active course."));
         } else {

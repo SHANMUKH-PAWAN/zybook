@@ -5,10 +5,12 @@ import edu.ncsu.zybook.domain.model.Course;
 import edu.ncsu.zybook.persistence.repository.ICourseRepository;
 import edu.ncsu.zybook.persistence.repository.IActiveCourseRepository;
 import edu.ncsu.zybook.service.IActiveCourseService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class ActiveCourseService implements IActiveCourseService {
     private final IActiveCourseRepository activeCourseRepository;
 
