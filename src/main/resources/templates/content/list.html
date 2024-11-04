@@ -18,6 +18,7 @@
         <th>Hidden</th>
         <th>Data</th>
         <th>Actions</th>
+        <th>Activities</th>
     </tr>
     </thead>
     <tbody>
@@ -48,14 +49,17 @@
 </span>
 
             <span th:if="${content.contentType == 'image'}">
-    <a th:href="@{/contents/edit/image(tbookId=${tbookId}, chapId=${chapId}, sectionId=${sectionId}, contentId=${content.contentId})}">
-        Edit Image
-    </a>
-</span>
-
+                <a th:href="@{/contents/edit/image(tbookId=${tbookId}, chapId=${chapId}, sectionId=${sectionId}, contentId=${content.contentId})}">
+                    Edit Image
+                </a>
+            </span> <br>
             <form th:action="@{/contents(tbookId=${tbookId}, chapId=${chapId}, sectionId=${sectionId}, contentId=${content.contentId})}" th:method="delete" style="display:inline;">
                 <button type="submit">Delete</button>
             </form>
+
+        </td>
+        <td>
+            <a th:href="@{/activity/all(tbookId=${tbookId}, chapId=${chapId}, sectionId=${sectionId}, contentId=${content.contentId})}">Activities</a>
         </td>
     </tr>
     </tbody>

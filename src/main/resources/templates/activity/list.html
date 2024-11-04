@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>Activity List</title>
+</head>
+<body>
+<h1>Activity List</h1>
+
+<a th:href="@{/activity/new(tbookId=${tbookId}, chapId=${chapId}, sectionId=${sectionId}, contentId=${contentId})}"
+>Add Activity</a>
+<br>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>Visit Activity</th>
+        <th>Delete</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- Loop through the list of activities -->
+    <tr th:each="activity : ${allActivites}">
+        <td>
+            <a th:href="@{/activity(tbookId=${activity.tbookId}, chapId=${activity.chapId}, sectionId=${activity.sectionId}, contentId=${activity.contentId}, activityId=${activity.activityId})}"
+               th:text="${activity.activityId}"></a>
+        </td>
+        <td>
+            <form th:action="@{/activity(tbookId=${activity.tbookId}, chapId=${activity.chapId}, sectionId=${activity.sectionId}, contentId=${activity.contentId}, activityId=${activity.activityId})}" th:method="delete" style="display:inline;">
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+        <td>
+            <a th:href="@{/question/new(activityId=${activity.activityId}, contentId=${activity.contentId}, sectionId=${activity.sectionId}, chapId=${activity.chapId}, tbookId=${activity.tbookId})}"
+            >Add New Question</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<br>
+<div sec:authorize="hasAnyRole('ADMIN')">
+    <a th:href="@{/landing/admin}">Landing Page</a>
+</div>
+
+
+</body>
+</html>
