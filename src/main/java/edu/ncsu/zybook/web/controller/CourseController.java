@@ -4,6 +4,7 @@ import edu.ncsu.zybook.domain.model.Course;
 import edu.ncsu.zybook.domain.model.Textbook;
 import edu.ncsu.zybook.service.ICourseService;
 import edu.ncsu.zybook.service.ITextbookService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -41,18 +42,21 @@ public class CourseController {
         }
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping("/new")
     public String showCreateForm(Model model) {
         model.addAttribute("course", new Course());
         return "course/create";
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @PostMapping
     public String createCourse(@ModelAttribute Course course) {
         courseService.create(course);
         return "redirect:/courses";
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable String id, Model model) {
         Optional<Course> course = courseService.findById(id);
@@ -64,6 +68,7 @@ public class CourseController {
         }
     }
 
+    @PreAuthorize("hasAnyRole('PROFESSOR', 'ADMIN')")
     @PutMapping("/update")
     public String updateCourse(@ModelAttribute Course course) {
         System.out.println(course);
@@ -71,6 +76,7 @@ public class CourseController {
         return "redirect:/courses";
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @DeleteMapping("/{id}")
     public String deleteCourse(@PathVariable String id) {
         courseService.delete(id);

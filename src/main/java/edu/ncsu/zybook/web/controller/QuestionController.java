@@ -8,6 +8,7 @@ import edu.ncsu.zybook.mapper.AnswerDTOMapper;
 import edu.ncsu.zybook.mapper.QuestionDTOMapper;
 import edu.ncsu.zybook.service.IAnswerService;
 import edu.ncsu.zybook.service.IQuestionService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +34,8 @@ public class QuestionController {
         this.questionDTOMapper = questionDTOMapper;
         this.answerDTOMapper = answerDTOMapper;
     }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'PROFESSOR', 'TA')")
     @PostMapping()
     public String createQuestion(@ModelAttribute QuestionDTO questionDTO) {
         System.out.println("Entered create question post!!");
@@ -54,6 +57,8 @@ public class QuestionController {
         });
         return "redirect:/activity?chapId="+question.getChapter_id()+"&sectionId="+question.getSection_id()+"&contentId="+question.getContent_id()+"&activityId="+question.getActivity_id()+"&tbookId="+question.getTbook_id(); //redirected to activity: getAllActivities view
     }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'PROFESSOR', 'TA')")
     @GetMapping("/new")
     public String showCreateQuestionForm(@RequestParam("tbookId") int tbookId,
                                          @RequestParam("chapId") int chapId,
@@ -74,6 +79,7 @@ public class QuestionController {
         return "question/create";
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'PROFESSOR', 'TA')")
     @GetMapping("/edit")
     public String showEditQuestionForm(@RequestParam("tbookId") int tbookId,
                                          @RequestParam("chapId") int chapId,
@@ -98,6 +104,8 @@ public class QuestionController {
         }
         return "question/create";
     }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'PROFESSOR', 'TA')")
     @PutMapping
     public String updateQuestion(@ModelAttribute QuestionDTO questionDTO,
     @RequestParam("questionId") int questionId,
@@ -122,6 +130,8 @@ public class QuestionController {
         });
         return "redirect:/activity?chapId="+chapterId+"&sectionId="+sectionId+"&contentId="+contentId+"&activityId="+activityId+"&tbookId="+tbookId;
     }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'PROFESSOR', 'TA')")
     @DeleteMapping
     public String deleteQuestion(@RequestParam("questionId") int questionId,
                                  @RequestParam("activityId") int activityId,

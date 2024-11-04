@@ -61,14 +61,14 @@ public class TextbookController {
         return "textbook/list";
     }
 
-    @PreAuthorize("hasAnyRole('PROFESSOR', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping("/new")
     public String showCreateForm(Model model) {
         model.addAttribute("textbook", new Textbook());
         return "textbook/create";
     }
 
-    @PreAuthorize("hasAnyRole('PROFESSOR', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @PostMapping
     public  String createTextbook(@ModelAttribute Textbook textbook) {
         textbookService.create(textbook);
