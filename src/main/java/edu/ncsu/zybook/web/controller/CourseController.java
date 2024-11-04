@@ -4,13 +4,16 @@ import edu.ncsu.zybook.domain.model.Course;
 import edu.ncsu.zybook.domain.model.Textbook;
 import edu.ncsu.zybook.service.ICourseService;
 import edu.ncsu.zybook.service.ITextbookService;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/courses")
@@ -46,6 +49,15 @@ public class CourseController {
     @GetMapping("/new")
     public String showCreateForm(Model model) {
         model.addAttribute("course", new Course());
+        List<Integer> inUseTbooks = courseService.findAll().stream().map(Course::getTbookId).toList();
+        List<Integer> tbooks = textbookService.getAllTextbooks(0,100,"uid","ASC").stream().map(Textbook::getUid).toList();
+        List<Integer> unUsedTbookIds = new ArrayList<>(tbooks);
+        unUsedTbookIds.removeAll(inUseTbooks);
+        List<Textbook> unUsedTbooks = unUsedTbookIds.stream()
+                .map(textbookService::findById)
+                .flatMap(Optional::stream)
+                .toList();
+        model.addAttribute("unUsedTbooks", unUsedTbooks);
         return "course/create";
     }
 

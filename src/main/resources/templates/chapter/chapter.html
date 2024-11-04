@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <title>Chapter Details</title>
 </head>
@@ -40,5 +40,9 @@
 </table>
 
 <a th:href="@{/textbooks/{tbookId}(tbookId=${chapter.tbookId})}">Back</a>
+<br>
+<div sec:authorize="hasAnyRole('ADMIN')">
+    <a th:href="@{/landing/admin}">Landing Page</a>
+</div>
 </body>
 </html>

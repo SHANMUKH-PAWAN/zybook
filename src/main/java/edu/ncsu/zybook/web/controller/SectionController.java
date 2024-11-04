@@ -107,7 +107,7 @@ public class SectionController {
                                  @RequestParam("chapId") int chapterId,
                                  @ModelAttribute Section section) {
         iSectionService.create(section);
-        return "redirect:/chapters/chapter?tbookId=" + textbookId + "&chapId=" + chapterId ;
+        return "redirect:/sections/section?tbookId=" + textbookId + "&chapId=" + chapterId + "&sno=" + section.getSno() ;
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'PROFESSOR', 'TA')")

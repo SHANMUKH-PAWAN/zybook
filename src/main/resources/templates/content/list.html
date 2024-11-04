@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <title>All Contents</title>
 </head>
@@ -34,7 +34,7 @@
 
             <!-- Display image if the content is of type IMAGE -->
             <span th:if="${content.contentType == 'image'}">
-                <span th:text="${content.data != null ? 'Data is available' : 'No data'}"></span>
+<!--                <span th:text="${content.data != null ? 'Data is available' : 'No data'}"></span>-->
                 <img th:src="@{'data:image/png;base64,'+${content.data}}"
                 alt="Image Content" style="max-width: 100px; max-height: 100px;"/>
             </span>
@@ -60,5 +60,12 @@
     </tr>
     </tbody>
 </table>
+<br>
+<a th:href="@{/chapters/chapter(tbookId=${tbookId}, chapId=${chapId})}">Back to Chapter</a>
+<br>
+<div sec:authorize="hasAnyRole('ADMIN')">
+    <a th:href="@{/landing/admin}">Landing Page</a>
+</div>
+
 </body>
 </html>
