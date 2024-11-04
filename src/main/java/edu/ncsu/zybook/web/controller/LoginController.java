@@ -21,19 +21,20 @@ public class LoginController {
     }
 
     @GetMapping
-    public String loginPage(@RequestParam(name = "role", required = false) String roleName, Model model) {
+    public String loginPage(@RequestParam(name = "role", required = false) String roleName, Model model, @ModelAttribute User user) {
         model.addAttribute("role", roleName != null ? roleName : "Unknown");
+        System.out.println("Login Page controller:"+roleName);
         return "login/login";
     }
 
     @PostMapping
-    public String authenticateUser(@RequestParam String email, @RequestParam String password, Model model) {
-        Optional<User> userOptional = userService.findByEmail(email);
-
-        if (userOptional.isPresent() && userOptional.get().getPassword().equals(password)) {
+    public String authenticateUser(Model model, @ModelAttribute User checkUser) {
+        System.out.println("Check User object"+checkUser);
+        Optional<User> userOptional = userService.findByEmail(checkUser.getEmail());
+        if (userOptional.isPresent() && userOptional.get().getPassword().equals(checkUser.getPassword())) {
             User user = userOptional.get();
             String role = user.getRoleName();
-
+            System.out.println("Inside authenticated user:"+user);
             if (role == null) {
                 model.addAttribute("error", "User role is not assigned.");
                 return "login/login";

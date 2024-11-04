@@ -287,3 +287,7 @@ CREATE Table User_Participation(
     FOREIGN KEY (user_id) REFERENCES User(user_id) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (activity_id,content_id,s_id,c_id,t_id,q_id) REFERENCES Question(activity_id,content_id,s_id,c_id,t_id,q_id) ON UPDATE CASCADE ON DELETE CASCADE
 );
+
+--Changeset vengatesh:25 Modify password length
+ALTER TABLE User
+MODIFY password VARCHAR(200);
