@@ -69,6 +69,16 @@ public class UserRegistersCourseService implements IUserRegistersCourseService {
     }
 
     @Override
+    public int getCurrentCount(String courseId) {
+        return userRegistersCourseRepository.getCurrentCount(courseId);
+    }
+
+    @Override
+    public int getCapacity(String courseId) {
+        return userRegistersCourseRepository.getCapacity(courseId);
+    }
+
+    @Override
     public List<UserRegistersCourse> findAllByUser(int userId) {
         return userRegistersCourseRepository.findAllByUser(userId);
     }
