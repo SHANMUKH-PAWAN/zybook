@@ -20,7 +20,7 @@ public class UserRepository implements IUserRepository{
 
     @Override
     public Optional<User> findById(int id) {
-        String sql = "SELECT * FROM user WHERE user_id = ?";
+        String sql = "SELECT * FROM User WHERE user_id = ?";
         try{
             User user = jdbcTemplate.queryForObject(sql, new Object[]{id}, new UserRepository.UserRowMapper());
             return Optional.of(user);
