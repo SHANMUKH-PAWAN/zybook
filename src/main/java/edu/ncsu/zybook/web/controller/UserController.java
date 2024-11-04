@@ -1,7 +1,10 @@
 package edu.ncsu.zybook.web.controller;
 
 import edu.ncsu.zybook.domain.model.User;
+import edu.ncsu.zybook.security.CustomUserDetails;
 import edu.ncsu.zybook.service.IUserService;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -16,12 +19,14 @@ public class UserController {
     private final IUserService userService;
 
     public UserController(IUserService userService) {
-
         this.userService = userService;
     }
 
+    // Allow user to view their own profile or allow access to admins
+    @PreAuthorize("#id == principal.id or hasRole('ADMIN')")
     @GetMapping("/{id}")
-    public String getUser(@PathVariable int id, Model model) {
+    public String getUser(@AuthenticationPrincipal CustomUserDetails currentUser, @PathVariable int id, Model model) {
+        System.out.println("Current logged in User "+ currentUser.getId());
         Optional<User> user = userService.findById(id);
         if (user.isPresent()) {
             model.addAttribute("user", user.get());
@@ -31,54 +36,33 @@ public class UserController {
         }
     }
 
-    @GetMapping("/all")
+    // Only admins can view the list of all users
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping
     public String getAllUsers(Model model) {
         List<User> users = userService.getAllUsers();
         model.addAttribute("users", users);
         return "user/list";
     }
 
-    @GetMapping
-    public String getCourseUsers(Model model, String courseId) {
-        List<User> users = userService.getWaitingList(courseId);
-        model.addAttribute("users", users);
-        model.addAttribute("courseId", courseId);
-        return "user/waitlist";
-    }
-
-    @GetMapping("/waiting/{id}")
-    public String getWaitingList(@PathVariable String id, Model model) {
-        List<User> users = userService.getWaitingList(id);
-        model.addAttribute("users", users);
-        model.addAttribute("courseId", id);
-        return "user/waitlist";
-    }
-
-    @PostMapping("/approve/{courseId}/{userId}")
-    public String approve(@PathVariable String courseId, @PathVariable int userId, Model model) {
-        userService.approve(courseId, userId);
-        //model.addAttribute("courseId", courseId);
-        return "redirect:/users/waiting/" + courseId;
-    }
-
-    @PostMapping("/reject/{courseId}/{userId}")
-    public String reject(@PathVariable String courseId, @PathVariable int userId){
-        userService.reject(courseId, userId);
-        return "redirect:/users/waiting/" + courseId;
-    }
-
+    // Only admins can view the user creation form
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/new")
     public String showCreateForm(Model model) {
         model.addAttribute("user", new User());
         return "user/create";
     }
 
+    // Only admins can create a user
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public String createUser(@ModelAttribute User user) {
         userService.create(user);
         return "redirect:/users";
     }
 
+    // Allow user to edit their own profile or allow access to admins
+    @PreAuthorize("#id == principal.id or hasRole('ADMIN')")
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable int id, Model model) {
         Optional<User> user = userService.findById(id);
@@ -90,12 +74,16 @@ public class UserController {
         }
     }
 
+    // Allow user to update their own profile or allow access to admins
+    @PreAuthorize("#user.id == principal.id or hasRole('ADMIN')")
     @PutMapping("/{id}")
     public String updateUser(@ModelAttribute User user) {
         userService.update(user);
         return "redirect:/users";
     }
 
+    // Only admins can delete a user
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public String deleteUser(@PathVariable int id) {
         userService.delete(id);

@@ -2,6 +2,7 @@ package edu.ncsu.zybook.DTO;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @NoArgsConstructor
@@ -14,4 +15,5 @@ public class ContentReadDTO {
     Integer chapId;
     String contentType;
     String data;
+    MultipartFile image;
 }
