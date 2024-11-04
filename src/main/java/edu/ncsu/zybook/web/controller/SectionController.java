@@ -1,6 +1,7 @@
 package edu.ncsu.zybook.web.controller;
 
 import edu.ncsu.zybook.mapper.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import edu.ncsu.zybook.DTO.SectionReadDTO;
@@ -51,6 +52,7 @@ public class SectionController {
         this.contentWeakMapper = contentWeakMapper;
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'PROFESSOR', 'TA')")
     @GetMapping("/edit")
     public String showEditForm(
             @RequestParam("tbookId") int textbookId,
@@ -69,6 +71,7 @@ public class SectionController {
             return "section/not-found";
         }
     }
+
 
     @GetMapping
     public String getAllSections(@RequestParam("tbookId") int tbookId, @RequestParam("chapId") int chapterId, Model model) {
@@ -98,6 +101,7 @@ public class SectionController {
 //        }
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'PROFESSOR', 'TA')")
     @PostMapping
     public  String createSection(@RequestParam("tbookId") int textbookId,
                                  @RequestParam("chapId") int chapterId,
@@ -106,6 +110,7 @@ public class SectionController {
         return "redirect:/chapters/chapter?tbookId=" + textbookId + "&chapId=" + chapterId ;
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'PROFESSOR', 'TA')")
     @GetMapping("/new")
     public String showCreateForm(@RequestParam("tbookId") Integer textbookId,
                                  @RequestParam("chapId") Integer chapterId,
@@ -121,6 +126,7 @@ public class SectionController {
         return "section/create";
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'PROFESSOR', 'TA')")
     @PutMapping("/update")
     public String updateSection( @RequestParam("tbookId") int textbookId,
                                  @RequestParam("chapId") int chapterId,
@@ -130,6 +136,7 @@ public class SectionController {
         return "redirect:/chapters/chapter?tbookId=" + textbookId + "&chapId=" + chapterId;
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'PROFESSOR', 'TA')")
     @DeleteMapping
     public String deleteSection(
             @RequestParam("tbookId") int textbookId,

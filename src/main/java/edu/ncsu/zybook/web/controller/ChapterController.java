@@ -11,6 +11,7 @@ import edu.ncsu.zybook.mapper.TextbookReadDTOMapper;
 import edu.ncsu.zybook.service.IChapterService;
 import edu.ncsu.zybook.service.ISectionService;
 import edu.ncsu.zybook.service.ITextbookService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -42,6 +43,7 @@ public class ChapterController {
         this.sectionWeakMapper = sectionWeakMapper;
     }
 
+    @PreAuthorize("hasAnyRole('PROFESSOR', 'ADMIN')")
     @GetMapping("/edit")
     public String showEditForm(
             @RequestParam("tbookId") int textbookId,
@@ -83,12 +85,14 @@ public class ChapterController {
         }
     }
 
+    @PreAuthorize("hasAnyRole('PROFESSOR', 'ADMIN')")
     @PostMapping
     public  String createChapter(@ModelAttribute Chapter chapter) {
         iChapterService.create(chapter);
         return "redirect:/textbooks/"+ chapter.getTbookId();
     }
 
+    @PreAuthorize("hasAnyRole('PROFESSOR', 'ADMIN')")
     @GetMapping("/new")
     public String showCreateForm(@RequestParam("tbookId") Integer textbookId, Model model) {
         Chapter chapter = new Chapter();
@@ -98,7 +102,7 @@ public class ChapterController {
         model.addAttribute("chapter", chapter);
         return "chapter/create";
     }
-
+    @PreAuthorize("hasAnyRole('PROFESSOR', 'ADMIN')")
     @PutMapping("/update")
     public String updateChapter( @RequestParam("tbookId") int textbookId,
                                  @RequestParam("chapId") int chapterId,
@@ -106,7 +110,7 @@ public class ChapterController {
         iChapterService.update(chapter);
         return "redirect:/textbooks/" + textbookId;
     }
-
+    @PreAuthorize("hasAnyRole('PROFESSOR', 'ADMIN')")
     @DeleteMapping
     public String deleteChapter(
             @RequestParam("tbookId") int textbookId,

@@ -15,6 +15,7 @@ import edu.ncsu.zybook.service.IUserService;
 import edu.ncsu.zybook.service.impl.ActivityService;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -86,6 +87,8 @@ public class ActivityController {
         //return activity not found
         return "activity/not-found";
     }
+
+    @PreAuthorize("hasAnyRole('PROFESSOR', 'ADMIN', 'TA')")
     @PostMapping
     public  String createActivity(@ModelAttribute Activity activity) {
         System.out.println("Entered create activity post!!");
@@ -95,6 +98,8 @@ public class ActivityController {
                 "&chapId=" + activity.getChapId() +
                 "&tbookId=" + activity.getTbookId();
     }
+
+    @PreAuthorize("hasAnyRole('PROFESSOR', 'ADMIN', 'TA')")
     @DeleteMapping
     public  String deleteActivity(@RequestParam("tbookId") int textbookId,
                                                 @RequestParam("chapId") int chapterId,
@@ -106,6 +111,8 @@ public class ActivityController {
 
         return "redirect:/content/"+ contentId;
     }
+
+    @PreAuthorize("hasAnyRole('PROFESSOR', 'ADMIN', 'TA')")
     @GetMapping("/new")
     public String showCreateForm(@RequestParam("tbookId") int textbookId,
                                  @RequestParam("chapId") int chapterId,

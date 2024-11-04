@@ -9,6 +9,7 @@ import edu.ncsu.zybook.mapper.ContentReadDTOMapper;
 import edu.ncsu.zybook.service.IContentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -69,6 +70,7 @@ public class ContentController {
 //        }
 //    }
 
+    @PreAuthorize("hasAnyRole('PROFESSOR', 'ADMIN', 'TA')")
     @PostMapping("/text")
     public String createTextContent(@RequestParam("tbookId") int textbookId,
                                     @RequestParam("chapId") int chapterId,
@@ -80,6 +82,7 @@ public class ContentController {
         return "redirect:/contents?tbookId="+textbookId+"&chapId="+chapterId+"&sectionId="+sectionId;
     }
 
+    @PreAuthorize("hasAnyRole('PROFESSOR', 'ADMIN', 'TA')")
     @PostMapping("/image")
     public String createImageContent(@RequestParam("tbookId") int textbookId,
                                      @RequestParam("chapId") int chapterId,
@@ -133,6 +136,7 @@ public class ContentController {
 //        }
 //    }
 
+    @PreAuthorize("hasAnyRole('PROFESSOR', 'ADMIN', 'TA')")
     @GetMapping("/edit/text")
     public String editTextContentForm(@RequestParam("tbookId") int textbookId,
                                       @RequestParam("chapId") int chapterId,
@@ -153,6 +157,7 @@ public class ContentController {
         }
     }
 
+    @PreAuthorize("hasAnyRole('PROFESSOR', 'ADMIN', 'TA')")
     @GetMapping("/edit/image")
     public String editImageContentForm(@RequestParam("tbookId") int textbookId,
                                        @RequestParam("chapId") int chapterId,
@@ -176,6 +181,7 @@ public class ContentController {
 
 
 
+    @PreAuthorize("hasAnyRole('PROFESSOR', 'ADMIN', 'TA')")
     @PutMapping("/text")
     public String updateTextContent(@RequestParam("tbookId") int textbookId,
                                     @RequestParam("chapId") int chapterId,
@@ -200,6 +206,7 @@ public class ContentController {
         }
     }
 
+    @PreAuthorize("hasAnyRole('PROFESSOR', 'ADMIN', 'TA')")
     @PutMapping("/image")
     public String updateImageContent(@RequestParam("tbookId") int textbookId,
                                      @RequestParam("chapId") int chapterId,
@@ -233,7 +240,7 @@ public class ContentController {
         }
     }
 
-
+    @PreAuthorize("hasAnyRole('PROFESSOR', 'ADMIN', 'TA')")
     @DeleteMapping
     public String deleteContent(@RequestParam int sectionId,
                                 @RequestParam int chapId,

@@ -39,6 +39,7 @@ public class UserController {
         return "user/list";
     }
 
+
     @GetMapping("/new")
     public String showCreateForm(Model model) {
         model.addAttribute("user", new User());
