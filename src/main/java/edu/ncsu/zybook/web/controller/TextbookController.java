@@ -58,6 +58,7 @@ public class TextbookController {
             Model model) {
         List<Textbook> textbooks = textbookService.getAllTextbooks(offset, limit, sortBy, sortDirection);
         model.addAttribute("textbooks", textbooks);
+        System.out.println();
         return "textbook/list";
     }
 

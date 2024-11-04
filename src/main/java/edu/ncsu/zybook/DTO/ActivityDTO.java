@@ -1,5 +1,6 @@
 package edu.ncsu.zybook.DTO;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,4 +15,5 @@ public class ActivityDTO {
     private Integer contentId;
     private Integer chapId;
     private  Integer tbookId;
+    private Integer score;
 }
