@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <title>Course Details</title>
 </head>
@@ -17,14 +17,14 @@
         <tr>
             <th>Textbook ID</th>
             <th>Title</th>
-            <th>Actions</th>
+            <th sec:authorize="hasRole('ADMIN')">Actions</th>
         </tr>
         </thead>
         <tbody>
         <tr>
             <td th:text="${textbook.uid}">Textbook ID</td>
             <td th:text="${textbook.title}">Textbook Title</td>
-            <td>
+            <td sec:authorize="hasRole('ADMIN')">
                 <a th:href="@{/textbooks/{id}(id=${textbook.uid})}">View Textbook Details</a>
             </td>
         </tr>
@@ -32,7 +32,7 @@
     </table>
 </div>
 <br>
-<a th:href="@{/textbooks/new(courseId=${course.courseId})}">Add New Textbook</a>
+<a sec:authorize="hasRole('ADMIN')" th:href="@{/textbooks/new(courseId=${course.courseId})}">Add New Textbook</a>
 <br>
 <a th:href="@{/courses}">Back to List</a>
 </body>
