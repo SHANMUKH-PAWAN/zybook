@@ -2,10 +2,12 @@ package edu.ncsu.zybook.web.controller;
 
 import edu.ncsu.zybook.DTO.ActivityDTO;
 import edu.ncsu.zybook.DTO.AnswerDTO;
+import edu.ncsu.zybook.DTO.ContentReadDTO;
 import edu.ncsu.zybook.DTO.QuestionDTO;
 import edu.ncsu.zybook.domain.model.*;
 import edu.ncsu.zybook.mapper.ActivityDTOMapper;
 import edu.ncsu.zybook.mapper.AnswerDTOMapper;
+import edu.ncsu.zybook.mapper.ContentReadDTOMapper;
 import edu.ncsu.zybook.mapper.QuestionDTOMapper;
 import edu.ncsu.zybook.service.IActivityService;
 import edu.ncsu.zybook.service.IContentService;
@@ -33,17 +35,20 @@ public class UserParticipationController {
     QuestionDTOMapper questionDTOMapper;
     AnswerDTOMapper answerDTOMapper;
     ActivityDTOMapper activityDTOMapper;
+    ContentReadDTOMapper contentReadDTOMapper;
 
-    public UserParticipationController(IUserParticipationService userParticipationService, IContentService contentService, IActivityService activityService, IQuestionService questionService, QuestionDTOMapper questionDTOMapper, AnswerDTOMapper answerDTOMapper, AnswerService answerService, ActivityDTOMapper activityDTOMapper) {
+    public UserParticipationController(AnswerService answerService, IUserParticipationService userParticipationService, IContentService contentService, IActivityService activityService, IQuestionService questionService, QuestionDTOMapper questionDTOMapper, AnswerDTOMapper answerDTOMapper, ActivityDTOMapper activityDTOMapper, ContentReadDTOMapper contentReadDTOMapper) {
+        this.answerService = answerService;
         this.userParticipationService = userParticipationService;
         this.contentService = contentService;
         this.activityService = activityService;
         this.questionService = questionService;
         this.questionDTOMapper = questionDTOMapper;
         this.answerDTOMapper = answerDTOMapper;
-        this.answerService = answerService;
         this.activityDTOMapper = activityDTOMapper;
+        this.contentReadDTOMapper = contentReadDTOMapper;
     }
+
     @GetMapping("/edit")
     public String getAllContent(@RequestParam("contentId") int contentId,
                                 @RequestParam("sectionId") int sectionId,
@@ -53,7 +58,9 @@ public class UserParticipationController {
                                 Model model) {
         Optional<Content> content = contentService.findById(contentId, sectionId, chapId, tbookId);
         if (content.isPresent()) {
-            model.addAttribute("content", content.get());
+            Content tmp = content.get();
+            ContentReadDTO contentReadDTO  = contentReadDTOMapper.toDTO(tmp);
+            model.addAttribute("content", contentReadDTO);
 
             List<Activity> activities = activityService.findAllByContent(contentId, sectionId, chapId, tbookId);
             List<ActivityDTO> activityDTOS = new ArrayList<>();

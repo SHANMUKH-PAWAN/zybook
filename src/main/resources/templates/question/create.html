@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <title>Create QnA</title>
 </head>
@@ -70,4 +70,10 @@
         <button type="submit" class="btn btn-primary">Add Question</button>
     </form>
 </div>
+
+<br>
+<div sec:authorize="hasAnyRole('ADMIN')">
+    <a th:href="@{/landing/admin}">Landing Page</a>
+</div>
+
 </body>

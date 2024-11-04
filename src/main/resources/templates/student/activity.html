@@ -104,7 +104,6 @@
                 <h3>Image Content</h3>
                 <div th:if="${content.data != null}">
                     <img th:src="@{'data:image/png;base64,' + ${content.data}}" alt="Image Content" style="max-width: 100%; max-height: 300px; margin-top: 10px;" />
-                    <p>Image description or additional information here.</p>
                 </div>
                 <div th:if="${content.data == null}">
                     <p>No image data available</p>
