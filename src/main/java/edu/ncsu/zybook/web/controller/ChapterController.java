@@ -89,7 +89,7 @@ public class ChapterController {
     @PostMapping
     public  String createChapter(@ModelAttribute Chapter chapter) {
         iChapterService.create(chapter);
-        return "redirect:/textbooks/"+ chapter.getTbookId();
+        return "redirect:/chapters/chapter?tbookId="+ chapter.getTbookId()+"&chapId="+chapter.getCno();
     }
 
     @PreAuthorize("hasAnyRole('PROFESSOR', 'ADMIN')")

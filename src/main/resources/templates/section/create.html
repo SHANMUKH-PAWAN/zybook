@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <title th:text="${section.sno == null ? 'Add New Section' : 'Edit Section'}">Form</title>
 </head>
@@ -39,7 +39,10 @@
     <button type="submit">Save</button>
 </form>
 <br>
-<a th:href="@{/chapters/chapter(tbookId=${section.tbookId}, chapId=${section.chapId})}">Back to List</a>
-
+<a th:href="@{/chapters/chapter(tbookId=${section.tbookId}, chapId=${section.chapId})}">Back to Chapter</a>
+<br>
+<div sec:authorize="hasAnyRole('ADMIN')">
+    <a th:href="@{/landing/admin}">Landing Page</a>
+</div>
 </body>
 </html>
