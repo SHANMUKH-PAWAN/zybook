@@ -1,11 +1,13 @@
 package edu.ncsu.zybook.service.impl;
 
 import edu.ncsu.zybook.domain.model.Chapter;
+import edu.ncsu.zybook.domain.model.Notification;
 import edu.ncsu.zybook.domain.model.Textbook;
 import edu.ncsu.zybook.domain.model.User;
 import edu.ncsu.zybook.persistence.repository.IUserRepository;
 import edu.ncsu.zybook.persistence.repository.UserRepository;
 import edu.ncsu.zybook.service.IUserService;
+import org.aspectj.weaver.ast.Not;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -85,6 +87,11 @@ public class UserService implements IUserService {
     public boolean reject(String courseId, int userId) {
         boolean result = userRepository.reject(courseId, userId);
         return result;
+    }
+
+    @Override
+    public List<Notification> getNotification(int userId) {
+        return userRepository.getNotification(userId);
     }
 
     @Override
