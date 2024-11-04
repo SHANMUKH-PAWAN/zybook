@@ -49,10 +49,28 @@ public class UserRegistersCourseController {
 
         if (user.isPresent()) {
             User registeruser = user.get();
+
             registration.setUserId(registeruser.getUserId());
             registration.setCourseId(userWeakDTO.getCourseId());
             registration.setEnrollmentDate(new Timestamp(System.currentTimeMillis()));
-            registration.setApprovalStatus("Approved");
+            registration.setApprovalStatus("Waiting");
+
+            if (userRegistersCourseService.getCurrentCount(userWeakDTO.getCourseId())<userRegistersCourseService.getCapacity(userWeakDTO.getCourseId())) {
+                registration.setUserId(registeruser.getUserId());
+                registration.setCourseId(userWeakDTO.getCourseId());
+                registration.setEnrollmentDate(new Timestamp(System.currentTimeMillis()));
+                registration.setApprovalStatus("Waiting");
+            }
+            else if (userRegistersCourseService.getCurrentCount(userWeakDTO.getCourseId())==0){
+                registration.setUserId(registeruser.getUserId());
+                registration.setCourseId(userWeakDTO.getCourseId());
+                registration.setEnrollmentDate(new Timestamp(System.currentTimeMillis()));
+                registration.setApprovalStatus("Waiting");
+                //return "redirect:/landing/student";
+            }
+            else{
+                return "redirect:/landing/student";
+            }
         }
         else{
             User newuser = new User();
@@ -67,7 +85,27 @@ public class UserRegistersCourseController {
             registration.setUserId(createdUser.getUserId());
             registration.setCourseId(userWeakDTO.getCourseId());
             registration.setEnrollmentDate(new Timestamp(System.currentTimeMillis()));
-            registration.setApprovalStatus("Approved");
+            registration.setApprovalStatus("Waiting");
+
+//            System.out.println("Current count "+ userRegistersCourseService.getCurrentCount(userWeakDTO.getCourseId()));
+//            System.out.println(userRegistersCourseService.getCurrentCount(userWeakDTO.getCourseId())
+
+            if (userRegistersCourseService.getCurrentCount(userWeakDTO.getCourseId())<userRegistersCourseService.getCapacity(userWeakDTO.getCourseId())) {
+                registration.setUserId(createdUser.getUserId());
+                registration.setCourseId(userWeakDTO.getCourseId());
+                registration.setEnrollmentDate(new Timestamp(System.currentTimeMillis()));
+                registration.setApprovalStatus("Waiting");
+            }
+            else if (userRegistersCourseService.getCurrentCount(userWeakDTO.getCourseId())==0){
+                registration.setUserId(createdUser.getUserId());
+                registration.setCourseId(userWeakDTO.getCourseId());
+                registration.setEnrollmentDate(new Timestamp(System.currentTimeMillis()));
+                registration.setApprovalStatus("Waiting");
+                //return "redirect:/landing/student";
+            }
+            else{
+                return "redirect:/landing/student";
+            }
         }
 
         userRegistersCourseService.create(registration);

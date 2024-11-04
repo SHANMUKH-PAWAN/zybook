@@ -17,4 +17,8 @@ public interface IUserRegistersCourseService {
     boolean delete(int userId, String courseId);
 
     List<UserRegistersCourse> findAllByUser(int userId);
+
+    int getCurrentCount(String courseId);
+
+    int getCapacity(String courseId);
 }

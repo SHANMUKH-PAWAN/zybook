@@ -71,6 +71,23 @@ public class UserService implements IUserService {
     }
 
     @Override
+    public List<User> getWaitingList(String courseId){
+        return userRepository.getWaitingList(courseId);
+    }
+
+    @Override
+    public boolean approve(String courseId, int userId) {
+        boolean result = userRepository.approve(courseId, userId);
+        return result;
+    }
+
+    @Override
+    public boolean reject(String courseId, int userId) {
+        boolean result = userRepository.reject(courseId, userId);
+        return result;
+    }
+
+    @Override
     public List<User> getAllUsers() {
         return userRepository.getAllUsers();
     }
