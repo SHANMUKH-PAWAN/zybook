@@ -10,6 +10,10 @@
 <form th:action="${user.userId == null ? '/users' : '/users/update?userId=' + user.userId}"
       th:object="${user}"
       th:method="${user.userId == null ? 'post' : 'put'}">
+    <div>
+        <label for="userId">User ID:</label>
+        <input type="text" id="userId" th:field="*{userId}" required/>
+    </div>
 
     <div>
         <label for="userFname">User First Name:</label>
@@ -44,7 +48,11 @@
     <button type="submit">Save Changes</button>
 </form>
 <br>
-<a th:href="@{/users}">Back to List</a>
+<a th:href="@{/users}">Users List</a>
+
+<div sec:authorize="hasAnyRole('ADMIN')">
+    <a th:href="@{/landing/admin}">Back</a>
+</div>
 </div>
 </body>
 </html>
