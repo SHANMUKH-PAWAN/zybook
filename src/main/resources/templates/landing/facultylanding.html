@@ -10,9 +10,9 @@
     <ol>
         <li><a th:href="@{/courses/active(userId=${userId})}">Go to Active Courses</a></li>
         <br>
-        <li><a th:href="@{/courses/evaluation}">Go to Evaluation Courses</a></li>
+        <li><a th:href="@{/courses/evaluation(userId=${userId})}">Go to Evaluation Courses</a></li>
         <br>
-        <li><a th:href="@{/courses}">View All Courses</a></li>
+        <li><a th:href="@{/courses/all(userId=${userId})}">View All Courses</a></li>
         <br>
         <li><a th:href="@{/users/edit/{userId}(userId=${userId})}">Change Password</a></li>
         <br>

@@ -101,6 +101,20 @@ public class CourseRepository implements ICourseRepository {
         return courses;
     }
 
+    @Override
+    public List<Course> getEvaluationCourse(int professorId) {
+        String sql = "SELECT * FROM Course WHERE professor_id = ? AND course_type = 'EVALUATION'";
+        List<Course> evaluationCourses = jdbcTemplate.query(sql, new Object[]{professorId}, new CourseRowMapper());
+        return evaluationCourses;
+    }
+
+    @Override
+    public List<Course> getAllCoursesForUser(int userId) {
+        String sql = "SELECT * FROM Course WHERE professor_id = ?";
+        List<Course> courses = jdbcTemplate.query(sql, new Object[]{userId}, new CourseRowMapper());
+        return courses;
+    }
+
     private class CourseRowMapper implements RowMapper<Course> {
         @Override
         public Course mapRow(ResultSet rs, int rowNum) throws SQLException {

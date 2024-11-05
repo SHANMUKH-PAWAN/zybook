@@ -17,4 +17,5 @@ public interface IUserRepository {
     boolean approve(String courseId, int userId);
     boolean reject(String courseId, int userId);
     List<Notification> getNotification(int userId);
+    String getCurrentPassword(User user);
 }

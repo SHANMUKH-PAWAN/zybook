@@ -15,4 +15,6 @@ public interface ICourseService {
     Optional<Course> findByTitle(String title);
     Optional<Course> updateProfessor(Course course, int professorId);
     List<ActiveCourse> getActiveCourses(int professorId);
+    List<Course> getEvaluationCourse(int professorId);
+    List<Course> getAllCoursesForUser(int userId);
 }

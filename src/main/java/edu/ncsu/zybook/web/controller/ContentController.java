@@ -70,6 +70,9 @@ public class ContentController {
                                     @ModelAttribute TextContent content) {
 
         content.setContentType("text");
+        content.setTbookId(textbookId);
+        content.setChapId(chapterId);
+        content.setSectionId(sectionId);
         Content createdContent = contentService.create(content);
         return "redirect:/contents?tbookId="+textbookId+"&chapId="+chapterId+"&sectionId="+sectionId;
     }

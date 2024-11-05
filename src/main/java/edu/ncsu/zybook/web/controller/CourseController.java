@@ -110,4 +110,16 @@ public class CourseController {
         model.addAttribute("courses", activeCourses);
         return "course/list";
     }
+    @GetMapping("/evaluation")
+    public String getEvaluationCourse(@RequestParam("userId") int userId, Model model) {
+        List<Course> evalutionCourse = courseService.getEvaluationCourse(userId);
+        model.addAttribute("courses", evalutionCourse);
+        return "course/list";
+    }
+    @GetMapping("/all")
+    public String getAllCoursesForUser(@RequestParam("userId") int userId, Model model) {
+        List<Course> courses = courseService.getAllCoursesForUser(userId);
+        model.addAttribute("courses", courses);
+        return "course/list";
+    }
 }

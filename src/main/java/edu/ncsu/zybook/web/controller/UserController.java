@@ -71,6 +71,7 @@ public class UserController {
     public String showEditForm(@PathVariable int id, Model model) {
         Optional<User> user = userService.findById(id);
         if (user.isPresent()) {
+            user.get().setPassword("");
             model.addAttribute("user", user.get());
             return "user/create";
         } else {
@@ -82,13 +83,26 @@ public class UserController {
     @PreAuthorize("#userId == principal.id or hasRole('ADMIN') or hasRole('FACULTY')")
     @PutMapping()
     public String updateUser(@ModelAttribute User user, @RequestParam("userId") int userId) {
-    @PreAuthorize("#user.id == principal.id or hasRole('ADMIN')")
-    @PutMapping("/{id}")
-    public String updateUser(@ModelAttribute User user) {
         PasswordEncoder passwordEncoder = securityConfig.passwordEncoder();
+        System.out.println(user);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userService.update(user);
-        System.out.println("User updated"+user);
+        user.setNewPassword(passwordEncoder.encode(user.getNewPassword()));
+        user.setConfirmPassword(passwordEncoder.encode(user.getConfirmPassword()));
+        if(passwordEncoder.matches(user.getNewPassword(),user.getConfirmPassword())) {
+            System.out.println("New password equals confirm password");
+            if(passwordEncoder.matches(user.getPassword(),userService.getPassword(user))){
+                System.out.println("Entered Password equals db password");
+                Optional<User>updatedUser = userService.update(user);
+                if(updatedUser.isPresent()) {
+                    System.out.println("User object after update:"+updatedUser.get());
+                }
+            }
+        }
+//        System.out.println("User object from update:"+user);
+//        Optional<User>updatedUser = userService.update(user);
+//        if(updatedUser.isPresent()) {
+//            System.out.println("User object after update:"+updatedUser.get());
+//        }
         return "redirect:/users/"+userId;
     }
 
