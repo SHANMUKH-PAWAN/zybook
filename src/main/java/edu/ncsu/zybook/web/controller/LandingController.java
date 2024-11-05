@@ -20,7 +20,11 @@ public class LandingController {
 
     @GetMapping()
     public String landing(@AuthenticationPrincipal CustomUserDetails currentUser) {
-        return "redirect:/landing/"+ userRepository.findById(currentUser.getId()).get().getRoleName();
+        String role = userRepository.findById(currentUser.getId()).get().getRoleName();
+        if(role.equals("")) return "redirect:/landing/student";
+        if(role.equals("student")) return "redirect:/landing/studentnew";
+
+        return "redirect:/landing/"+ role;
     }
 
     @GetMapping("/admin")
@@ -36,6 +40,11 @@ public class LandingController {
     @GetMapping("/student")
     public String studentLanding() {
         return "landing/studentlanding";
+    }
+
+    @GetMapping("/studentnew")
+    public String studentnewLanding() {
+        return "landing/studentnewlanding";
     }
 
     @GetMapping("/ta")
