@@ -2,9 +2,11 @@ package edu.ncsu.zybook.web.controller;
 
 import edu.ncsu.zybook.domain.model.User;
 import edu.ncsu.zybook.security.CustomUserDetails;
+import edu.ncsu.zybook.security.SecurityConfig;
 import edu.ncsu.zybook.service.IUserService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -17,9 +19,11 @@ import java.util.Optional;
 public class UserController {
 
     private final IUserService userService;
+    SecurityConfig securityConfig;
 
-    public UserController(IUserService userService) {
+    public UserController(IUserService userService, SecurityConfig securityConfig) {
         this.userService = userService;
+        this.securityConfig = securityConfig;
     }
 
     // Allow user to view their own profile or allow access to admins
@@ -57,6 +61,8 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public String createUser(@ModelAttribute User user) {
+        PasswordEncoder passwordEncoder = securityConfig.passwordEncoder();
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userService.create(user);
         return "redirect:/users";
     }
@@ -78,6 +84,8 @@ public class UserController {
     @PreAuthorize("#user.id == principal.id or hasRole('ADMIN')")
     @PutMapping("/{id}")
     public String updateUser(@ModelAttribute User user) {
+        PasswordEncoder passwordEncoder = securityConfig.passwordEncoder();
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userService.update(user);
         return "redirect:/users";
     }

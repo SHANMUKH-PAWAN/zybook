@@ -53,7 +53,11 @@ public class ActivityController {
                                    Model model) {
         List<Activity> allActivites= iActivityService.findAllByContent(contentId, chapterId, sectionId, textbookId);
         model.addAttribute("allActivites", allActivites);
-        return "content/list";
+        model.addAttribute("contentId", contentId);
+        model.addAttribute("sectionId", sectionId);
+        model.addAttribute("chapId", chapterId);
+        model.addAttribute("tbookId", textbookId);
+        return "activity/list";
     }
     @GetMapping
 //    http://localhost:8080/activity/chapId=1&sectionId=1&contentId=1&activityId=1
@@ -94,7 +98,7 @@ public class ActivityController {
         System.out.println("Entered create activity post!!");
         iActivityService.create(activity);
         //return to view content page to list all activities
-        return "redirect:/contents?sectionId=" + activity.getSectionId() +
+        return "redirect:/question/new?activityId=" + activity.getActivityId() + "&contentId="+activity.getContentId()+"&sectionId=" + activity.getSectionId() +
                 "&chapId=" + activity.getChapId() +
                 "&tbookId=" + activity.getTbookId();
     }
@@ -109,7 +113,10 @@ public class ActivityController {
                                                 Model model) {
         iActivityService.delete(activityId,contentId,sectionId,chapterId,textbookId);
 
-        return "redirect:/content/"+ contentId;
+        return "redirect:/activity/all?tbookId=" + textbookId +
+                "&chapId=" + chapterId +
+                "&sectionId=" + sectionId +
+                "&contentId=" + contentId;
     }
 
     @PreAuthorize("hasAnyRole('PROFESSOR', 'ADMIN', 'TA')")

@@ -72,8 +72,8 @@ public class TextbookController {
     @PreAuthorize("hasAnyRole('ADMIN')")
     @PostMapping
     public  String createTextbook(@ModelAttribute Textbook textbook) {
-        textbookService.create(textbook);
-        return "redirect:/textbooks";
+        Textbook tbook = textbookService.create(textbook);
+        return "redirect:/textbooks/"+tbook.getUid();
     }
 
     @PreAuthorize("hasAnyRole('PROFESSOR', 'ADMIN')")

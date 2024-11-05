@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <title th:text="${course.courseId == null ? 'Add New Course' : 'Edit Course'}">Form</title>
 </head>
@@ -41,7 +41,10 @@
 
     <div>
         <label for="tbookId">Textbook ID:</label>
-        <input type="text" id="tbookId" th:field="*{tbookId}" required/>
+        <select id="tbookId" th:field="*{tbookId}" required>
+            <option value="">Select Textbook: </option>
+            <option th:each="tbook : ${unUsedTbooks}" th:value="${tbook.uid}" th:text="${tbook.title}"></option>
+        </select>
     </div>
 
     <br>
@@ -49,6 +52,9 @@
 </form>
 <br>
 <a th:href="@{/courses}">Back to List</a>
+<div sec:authorize="hasAnyRole('ADMIN')">
+    <a th:href="@{/landing/admin}">Landing Page</a>
+</div>
 
 </body>
 </html>
