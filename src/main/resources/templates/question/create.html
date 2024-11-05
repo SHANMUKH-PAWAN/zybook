@@ -4,6 +4,7 @@
     <title>Create QnA</title>
 </head>
 <body>
+<div sec:authorize="hasAnyRole('FACULTY', 'ADMIN', 'TA')">
 <div class="add-question-form">
     <h2 th:text="'Add New Question'">Question</h2>
     <form
@@ -75,5 +76,6 @@
 <div sec:authorize="hasAnyRole('ADMIN')">
     <a th:href="@{/landing/admin}">Landing Page</a>
 </div>
-
+</div>
 </body>
+</html>

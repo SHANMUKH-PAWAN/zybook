@@ -4,7 +4,7 @@
     <title th:text="${chapter.cno == null ? 'Add New Chapter' : 'Edit Chapter'}">Form</title>
 </head>
 <body>
-
+<div sec:authorize="hasAnyRole('FACULTY', 'ADMIN', 'TA')">
 <h2> TextBook: <span th:text="${textbook.title}">Textbook title</span></h2>
 <h2 th:text="${chapter.cno == null ? 'Add New Chapter' : 'Edit Chapter'}">Form Title</h2>
 <form th:action="${chapter.cno == null ? '/chapters' : '/chapters/update?tbookId=' + chapter.tbookId + '&chapId=' + chapter.cno}"
@@ -42,9 +42,9 @@
 <br>
 <a th:href="@{/textbooks/{tbookId}(tbookId=${chapter.tbookId})}">Back to List</a>
 <br>
+</div>
 <div sec:authorize="hasAnyRole('ADMIN')">
     <a th:href="@{/landing/admin}">Landing Page</a>
 </div>
-
 </body>
 </html>

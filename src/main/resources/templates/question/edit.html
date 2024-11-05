@@ -4,6 +4,7 @@
     <title>Edit QnA</title>
 </head>
 <body>
+<div sec:authorize="hasAnyRole('FACULTY', 'ADMIN', 'TA')">
 <div class="add-question-form">
     <h2 th:text="'Edit Question'">Question</h2>
     <form
@@ -71,5 +72,6 @@
 <br>
 <div sec:authorize="hasAnyRole('ADMIN')">
     <a th:href="@{/landing/admin}">Landing Page</a>
+</div>
 </div>
 </body>

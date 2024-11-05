@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <title>User List</title>
 </head>
 <body>
+<div sec:authorize="hasAnyRole('ADMIN')">
 <h1>User List</h1>
 <a th:href="@{/users/new}">Add New User</a>
 <table border="1">
@@ -36,6 +37,7 @@
 </table>
 <div>
     <a th:href="@{/landing/admin}">Back to Landing Page</a>
+</div>
 </div>
 </body>
 </html>

@@ -92,7 +92,7 @@ public class ActivityController {
         return "activity/not-found";
     }
 
-    @PreAuthorize("hasAnyRole('PROFESSOR', 'ADMIN', 'TA')")
+    @PreAuthorize("hasAnyRole('FACULTY', 'ADMIN', 'TA')")
     @PostMapping
     public  String createActivity(@ModelAttribute Activity activity) {
         System.out.println("Entered create activity post!!");
@@ -103,7 +103,7 @@ public class ActivityController {
                 "&tbookId=" + activity.getTbookId();
     }
 
-    @PreAuthorize("hasAnyRole('PROFESSOR', 'ADMIN', 'TA')")
+    @PreAuthorize("hasAnyRole('FACULTY', 'ADMIN', 'TA')")
     @DeleteMapping
     public  String deleteActivity(@RequestParam("tbookId") int textbookId,
                                                 @RequestParam("chapId") int chapterId,
@@ -119,7 +119,7 @@ public class ActivityController {
                 "&contentId=" + contentId;
     }
 
-    @PreAuthorize("hasAnyRole('PROFESSOR', 'ADMIN', 'TA')")
+    @PreAuthorize("hasAnyRole('FACULTY', 'ADMIN', 'TA')")
     @GetMapping("/new")
     public String showCreateForm(@RequestParam("tbookId") int textbookId,
                                  @RequestParam("chapId") int chapterId,

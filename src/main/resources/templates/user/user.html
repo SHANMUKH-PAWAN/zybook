@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <title>User Details</title>
 </head>
 <body>
+<div sec:authorize="hasAnyRole('ADMIN')">
 <h1>User Details</h1>
 <p><strong>User ID:</strong> <span th:text="${user.userId}">User ID</span></p>
 <p><strong>First Name:</strong> <span th:text="${user.fname}">First Name</span></p>
@@ -15,5 +16,6 @@
 <a th:href="@{/users/edit/{id}(id=${user.userId})}"><button type="button">Edit</button></a>
 <br>
 <a th:href="@{/users}">Back to User List</a>
+</div>
 </body>
 </html>

@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <title th:text="${user.userId == null ? 'Add New User' : 'Edit User'}">Form</title>
 </head>
 <body>
+<div sec:authorize="hasAnyRole('ADMIN')">
 
 <h2 th:text="${user.userId == null ? 'Add New User' : 'Edit User'}">Add or Edit User Profile</h2>
 <form th:action="${user.userId == null ? '/users' : '/users/update?userId=' + user.userId}"
@@ -44,5 +45,6 @@
 </form>
 <br>
 <a th:href="@{/users}">Back to List</a>
+</div>
 </body>
 </html>

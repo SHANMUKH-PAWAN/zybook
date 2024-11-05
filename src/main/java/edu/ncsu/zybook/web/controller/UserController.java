@@ -41,7 +41,6 @@ public class UserController {
         }
     }
 
-    // Only admins can view the list of all users
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public String getAllUsers(Model model) {
@@ -50,7 +49,6 @@ public class UserController {
         return "user/list";
     }
 
-    // Only admins can view the user creation form
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/new")
     public String showCreateForm(Model model) {
@@ -58,7 +56,6 @@ public class UserController {
         return "user/create";
     }
 
-    // Only admins can create a user
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public String createUser(@ModelAttribute User user) {

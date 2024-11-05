@@ -5,17 +5,18 @@
 </head>
 <body>
 <h1>Activity List</h1>
-
+<div sec:authorize="hasAnyRole('FACULTY', 'ADMIN', 'TA')">
 <a th:href="@{/activity/new(tbookId=${tbookId}, chapId=${chapId}, sectionId=${sectionId}, contentId=${contentId})}"
 >Add Activity</a>
+</div>
 <br>
 
 <table border="1">
     <thead>
     <tr>
         <th>Visit Activity</th>
-        <th>Delete</th>
-        <th>Actions</th>
+        <th sec:authorize="hasAnyRole('FACULTY', 'ADMIN', 'TA')">Delete</th>
+        <th sec:authorize="hasAnyRole('FACULTY', 'ADMIN', 'TA')">Actions</th>
     </tr>
     </thead>
     <tbody>

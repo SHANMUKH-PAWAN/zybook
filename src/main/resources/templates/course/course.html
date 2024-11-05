@@ -17,14 +17,14 @@
         <tr>
             <th>Textbook ID</th>
             <th>Title</th>
-            <th sec:authorize="hasRole('ADMIN')">Actions</th>
+            <th>Actions</th>
         </tr>
         </thead>
         <tbody>
         <tr>
             <td th:text="${textbook.uid}">Textbook ID</td>
             <td th:text="${textbook.title}">Textbook Title</td>
-            <td sec:authorize="hasRole('ADMIN')">
+            <td>
                 <a th:href="@{/textbooks/{id}(id=${textbook.uid})}">View Textbook Details</a>
             </td>
         </tr>
