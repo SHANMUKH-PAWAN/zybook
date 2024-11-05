@@ -14,6 +14,7 @@ import edu.ncsu.zybook.service.IContentService;
 import edu.ncsu.zybook.service.IQuestionService;
 import edu.ncsu.zybook.service.IUserParticipationService;
 import edu.ncsu.zybook.service.impl.AnswerService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -144,7 +145,7 @@ public class UserParticipationController {
         }
     }
 
-
+    @PreAuthorize("hasAnyRole('STUDENT')")
     @PostMapping
     public String submitParticipation(
             @RequestParam Map<String, String> formData,

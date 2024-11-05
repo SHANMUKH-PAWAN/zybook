@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <title>Faculty Page</title>
 </head>
 <body>
+<div sec:authorize="hasAnyRole('FACULTY')">
 <h1>Faculty Dashboard</h1>
 <nav>
     <ol>
@@ -18,6 +19,7 @@
         <li><a th:href="@{/logout}">Logout</a></li>
     </ol>
 </nav>
+</div>
 </body>
 </html>
 </html>

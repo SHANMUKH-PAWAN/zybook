@@ -76,7 +76,7 @@ public class TextbookController {
         return "redirect:/textbooks/"+tbook.getUid();
     }
 
-    @PreAuthorize("hasAnyRole('PROFESSOR', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable int id, Model model) {
         Optional<Textbook> textbook = textbookService.findById(id);
@@ -88,7 +88,7 @@ public class TextbookController {
         }
     }
 
-    @PreAuthorize("hasAnyRole('PROFESSOR', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('FACULTY', 'ADMIN')")
     @PutMapping("/{id}")
     public String updateTextbook(@ModelAttribute Textbook textbook) {
         textbookService.update(textbook);

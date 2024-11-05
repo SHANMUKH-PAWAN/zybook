@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <title>Student Activity Quiz</title>
     <style>
@@ -84,7 +84,7 @@
     </style>
 </head>
 <body>
-
+<div sec:authorize="hasAnyRole('STUDENT')">
 <h1>Content and Activities</h1>
 
 <!-- Content Block -->
@@ -184,5 +184,6 @@
     <input type="hidden" th:name="tbookId" th:value="${content.tbookId}" />
     <input type="hidden" th:name="userId" th:value="${userId}" />
 </form>
+</div>
 </body>
 </html>

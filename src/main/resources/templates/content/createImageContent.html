@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <title th:text="${imageContent.contentId} != null ? 'Update Image Content' : 'Create Image Content'">Image Content</title>
 </head>
 <body>
+<div sec:authorize="hasAnyRole('FACULTY', 'ADMIN', 'TA')">
 <h1 th:text="${imageContent.contentId} != null ? 'Update Image Content' : 'Create Image Content'">Image Content</h1>
 
 <form th:action="${imageContent.contentId} != null ? @{/contents/image(tbookId=${imageContent.tbookId}, sectionId=${imageContent.sectionId}, chapId=${imageContent.chapId}, contentId = ${imageContent.contentId})} : @{/contents/image(tbookId=${imageContent.tbookId}, sectionId=${imageContent.sectionId}, chapId=${imageContent.chapId})}"
@@ -58,5 +59,6 @@
 </form>
 
 <a th:href="@{/sections/section(tbookId=${imageContent.tbookId}, sno=${imageContent.sectionId}, chapId=${imageContent.chapId})}">Back to Section</a>
+</div>
 </body>
 </html>

@@ -6,6 +6,7 @@ import edu.ncsu.zybook.mapper.UserWeakDTOMapper;
 import edu.ncsu.zybook.service.ICourseService;
 import edu.ncsu.zybook.service.IUserRegistersCourseService;
 import edu.ncsu.zybook.service.IUserService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 

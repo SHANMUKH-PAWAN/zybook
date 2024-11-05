@@ -6,9 +6,12 @@ import edu.ncsu.zybook.domain.model.ImageContent;
 import edu.ncsu.zybook.domain.model.TextContent;
 import edu.ncsu.zybook.domain.model.Textbook;
 import edu.ncsu.zybook.mapper.ContentReadDTOMapper;
+import edu.ncsu.zybook.security.CustomUserDetails;
 import edu.ncsu.zybook.service.IContentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -59,7 +62,7 @@ public class ContentController {
         return "content/createImageContent";
     }
 
-
+    @PreAuthorize("hasAnyRole('FACULTY', 'TA', 'ADMIN')")
     @PostMapping("/text")
     public String createTextContent(@RequestParam("tbookId") int textbookId,
                                     @RequestParam("chapId") int chapterId,
@@ -71,6 +74,7 @@ public class ContentController {
         return "redirect:/contents?tbookId="+textbookId+"&chapId="+chapterId+"&sectionId="+sectionId;
     }
 
+    @PreAuthorize("hasAnyRole('FACULTY', 'TA', 'ADMIN')")
     @PostMapping("/image")
     public String createImageContent(@RequestParam("tbookId") int textbookId,
                                      @RequestParam("chapId") int chapterId,
@@ -82,6 +86,7 @@ public class ContentController {
         return "redirect:/contents?tbookId="+textbookId+"&chapId="+chapterId+"&sectionId="+sectionId;
     }
 
+    @PreAuthorize("hasAnyRole('FACULTY', 'TA', 'ADMIN')")
     @GetMapping("/edit/text")
     public String editTextContentForm(@RequestParam("tbookId") int textbookId,
                                       @RequestParam("chapId") int chapterId,
@@ -99,6 +104,7 @@ public class ContentController {
         }
     }
 
+    @PreAuthorize("hasAnyRole('FACULTY', 'ADMIN', 'TA')")
     @GetMapping("/edit/image")
     public String editImageContentForm(@RequestParam("tbookId") int textbookId,
                                        @RequestParam("chapId") int chapterId,
@@ -120,7 +126,7 @@ public class ContentController {
         }
     }
 
-
+    @PreAuthorize("hasAnyRole('FACULTY', 'ADMIN', 'TA')")
     @PutMapping("/text")
     public String updateTextContent(@RequestParam("tbookId") int textbookId,
                                     @RequestParam("chapId") int chapterId,
@@ -142,6 +148,7 @@ public class ContentController {
         }
     }
 
+    @PreAuthorize("hasAnyRole('FACULTY', 'ADMIN', 'TA')")
     @PutMapping("/image")
     public String updateImageContent(@RequestParam("tbookId") int textbookId,
                                      @RequestParam("chapId") int chapterId,
@@ -154,7 +161,7 @@ public class ContentController {
 
     }
 
-
+    @PreAuthorize("hasAnyRole('FACULTY', 'ADMIN', 'TA')")
     @DeleteMapping
     public String deleteContent(@RequestParam int sectionId,
                                 @RequestParam int chapId,
@@ -170,8 +177,10 @@ public class ContentController {
         }
     }
 
+
     @GetMapping
-    public String getAllContentBySection(@RequestParam int sectionId,
+    public String getAllContentBySection(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                         @RequestParam int sectionId,
                                          @RequestParam int chapId,
                                          @RequestParam int tbookId,
                                          Model model) {
@@ -179,6 +188,7 @@ public class ContentController {
         List<ContentReadDTO> contentReadDTOS = new ArrayList<>();
         contentReadDTOS = contentList.stream().map(contentReadDTOMapper::toDTO).collect(Collectors.toList());
 
+        model.addAttribute("userId", customUserDetails.getId());
         model.addAttribute("allContents", contentReadDTOS);
         model.addAttribute("sectionId", sectionId);
         model.addAttribute("chapId", chapId);

@@ -5,6 +5,7 @@
   <title th:text="${textbook.uid == null ? 'Add New Textbook' : 'Edit Textbook'}">Form</title>
 </head>
 <body>
+<div sec:authorize="hasAnyRole('ADMIN')">
 <h1 th:text="${textbook.uid == null ? 'Add New Textbook' : 'Edit Textbook'}">Form Title</h1>
 
 <form
@@ -28,6 +29,6 @@
   <div sec:authorize="hasAnyRole('ADMIN')">
     <a th:href="@{/landing/admin}">Back</a>
   </div>
-
+</div>
 </body>
 </html>

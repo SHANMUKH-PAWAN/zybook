@@ -35,7 +35,8 @@ public class QuestionController {
         this.answerDTOMapper = answerDTOMapper;
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'PROFESSOR', 'TA')")
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'FACULTY', 'TA')")
     @PostMapping()
     public String createQuestion(@ModelAttribute QuestionDTO questionDTO) {
         System.out.println("Entered create question post!!");
@@ -58,7 +59,7 @@ public class QuestionController {
         return "redirect:/activity?chapId="+question.getChapter_id()+"&sectionId="+question.getSection_id()+"&contentId="+question.getContent_id()+"&activityId="+question.getActivity_id()+"&tbookId="+question.getTbook_id(); //redirected to activity: getAllActivities view
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'PROFESSOR', 'TA')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'FACULTY', 'TA')")
     @GetMapping("/new")
     public String showCreateQuestionForm(@RequestParam("tbookId") int tbookId,
                                          @RequestParam("chapId") int chapId,
@@ -79,7 +80,7 @@ public class QuestionController {
         return "question/create";
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'PROFESSOR', 'TA')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'FACULTY', 'TA')")
     @GetMapping("/edit")
     public String showEditQuestionForm(@RequestParam("tbookId") int tbookId,
                                          @RequestParam("chapId") int chapId,
@@ -105,7 +106,7 @@ public class QuestionController {
         return "question/create";
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'PROFESSOR', 'TA')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'FACULTY', 'TA')")
     @PutMapping
     public String updateQuestion(@ModelAttribute QuestionDTO questionDTO,
     @RequestParam("questionId") int questionId,
@@ -131,7 +132,7 @@ public class QuestionController {
         return "redirect:/activity?chapId="+chapterId+"&sectionId="+sectionId+"&contentId="+contentId+"&activityId="+activityId+"&tbookId="+tbookId;
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'PROFESSOR', 'TA')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'FACULTY', 'TA')")
     @DeleteMapping
     public String deleteQuestion(@RequestParam("questionId") int questionId,
                                  @RequestParam("activityId") int activityId,

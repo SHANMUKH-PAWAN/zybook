@@ -43,7 +43,7 @@ public class ChapterController {
         this.sectionWeakMapper = sectionWeakMapper;
     }
 
-    @PreAuthorize("hasAnyRole('PROFESSOR', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('FACULTY', 'TA', 'ADMIN')")
     @GetMapping("/edit")
     public String showEditForm(
             @RequestParam("tbookId") int textbookId,
@@ -85,14 +85,14 @@ public class ChapterController {
         }
     }
 
-    @PreAuthorize("hasAnyRole('PROFESSOR', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('FACULTY', 'TA', 'ADMIN')")
     @PostMapping
     public  String createChapter(@ModelAttribute Chapter chapter) {
         iChapterService.create(chapter);
         return "redirect:/chapters/chapter?tbookId="+ chapter.getTbookId()+"&chapId="+chapter.getCno();
     }
 
-    @PreAuthorize("hasAnyRole('PROFESSOR', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('FACULTY', 'TA', 'ADMIN')")
     @GetMapping("/new")
     public String showCreateForm(@RequestParam("tbookId") Integer textbookId, Model model) {
         Chapter chapter = new Chapter();
@@ -102,7 +102,8 @@ public class ChapterController {
         model.addAttribute("chapter", chapter);
         return "chapter/create";
     }
-    @PreAuthorize("hasAnyRole('PROFESSOR', 'ADMIN')")
+
+    @PreAuthorize("hasAnyRole('FACULTY', 'TA', 'ADMIN')")
     @PutMapping("/update")
     public String updateChapter( @RequestParam("tbookId") int textbookId,
                                  @RequestParam("chapId") int chapterId,
@@ -110,7 +111,8 @@ public class ChapterController {
         iChapterService.update(chapter);
         return "redirect:/textbooks/" + textbookId;
     }
-    @PreAuthorize("hasAnyRole('PROFESSOR', 'ADMIN')")
+
+    @PreAuthorize("hasAnyRole('FACULTY', 'TA', 'ADMIN')")
     @DeleteMapping
     public String deleteChapter(
             @RequestParam("tbookId") int textbookId,

@@ -52,7 +52,7 @@ public class SectionController {
         this.contentWeakMapper = contentWeakMapper;
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'PROFESSOR', 'TA')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'FACULTY', 'TA')")
     @GetMapping("/edit")
     public String showEditForm(
             @RequestParam("tbookId") int textbookId,
@@ -101,7 +101,7 @@ public class SectionController {
 //        }
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'PROFESSOR', 'TA')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'FACULTY', 'TA')")
     @PostMapping
     public  String createSection(@RequestParam("tbookId") int textbookId,
                                  @RequestParam("chapId") int chapterId,
@@ -110,7 +110,7 @@ public class SectionController {
         return "redirect:/sections/section?tbookId=" + textbookId + "&chapId=" + chapterId + "&sno=" + section.getSno() ;
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'PROFESSOR', 'TA')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'FACULTY', 'TA')")
     @GetMapping("/new")
     public String showCreateForm(@RequestParam("tbookId") Integer textbookId,
                                  @RequestParam("chapId") Integer chapterId,
@@ -126,7 +126,7 @@ public class SectionController {
         return "section/create";
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'PROFESSOR', 'TA')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'FACULTY', 'TA')")
     @PutMapping("/update")
     public String updateSection( @RequestParam("tbookId") int textbookId,
                                  @RequestParam("chapId") int chapterId,
@@ -136,7 +136,7 @@ public class SectionController {
         return "redirect:/chapters/chapter?tbookId=" + textbookId + "&chapId=" + chapterId;
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'PROFESSOR', 'TA')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'FACULTY', 'TA')")
     @DeleteMapping
     public String deleteSection(
             @RequestParam("tbookId") int textbookId,

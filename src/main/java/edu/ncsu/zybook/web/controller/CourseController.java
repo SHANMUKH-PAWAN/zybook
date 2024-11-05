@@ -80,7 +80,7 @@ public class CourseController {
         }
     }
 
-    @PreAuthorize("hasAnyRole('PROFESSOR', 'ADMIN')")
+    @PreAuthorize("hasAnyRole( 'ADMIN')")
     @PutMapping("/update")
     public String updateCourse(@ModelAttribute Course course) {
         System.out.println(course);

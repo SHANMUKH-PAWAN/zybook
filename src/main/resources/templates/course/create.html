@@ -5,7 +5,7 @@
 </head>
 <body>
 
-
+<div sec:authorize="hasAnyRole('ADMIN')">
 <form th:action="${course.courseId == null ? '/courses' : '/courses/update?courseId=' + course.courseId}"
       th:object="${course}"
       th:method="${course.courseId == null ? 'post' : 'put'}">
@@ -55,6 +55,6 @@
 <div sec:authorize="hasAnyRole('ADMIN')">
     <a th:href="@{/landing/admin}">Landing Page</a>
 </div>
-
+</div>
 </body>
 </html>
