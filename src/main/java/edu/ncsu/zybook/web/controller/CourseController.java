@@ -1,5 +1,6 @@
 package edu.ncsu.zybook.web.controller;
 
+import edu.ncsu.zybook.domain.model.ActiveCourse;
 import edu.ncsu.zybook.domain.model.Course;
 import edu.ncsu.zybook.domain.model.Textbook;
 import edu.ncsu.zybook.service.ICourseService;
@@ -97,8 +98,16 @@ public class CourseController {
 
     @GetMapping
     public String getAllCourses(Model model) {
+        System.out.println("Inside get all courses controller");
         List<Course> courses = courseService.findAll();
         model.addAttribute("courses", courses);
+        return "course/list";
+    }
+    @GetMapping("/active")
+    public String getActiveCourse(@RequestParam("userId") int userId, Model model) {
+        List<ActiveCourse> activeCourses = courseService.getActiveCourses(userId);
+        System.out.println(activeCourses);
+        model.addAttribute("courses", activeCourses);
         return "course/list";
     }
 }

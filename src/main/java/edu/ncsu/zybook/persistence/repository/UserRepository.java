@@ -58,8 +58,8 @@ public class UserRepository implements IUserRepository{
 
     @Override
     public Optional<User> update(User user) {
-        String sql = "UPDATE User SET fname = ?, lname = ? WHERE user_id = ?";
-        int rowsAffected = jdbcTemplate.update(sql, user.getFname(), user.getLname(), user.getUserId());
+        String sql = "UPDATE User SET fname = ?, lname = ?, email = ?, password=? WHERE user_id = ?";
+        int rowsAffected = jdbcTemplate.update(sql, user.getFname(), user.getLname(), user.getEmail(), user.getPassword(), user.getUserId());
         return rowsAffected > 0 ? Optional.of(user) : Optional.empty();
     }
 

@@ -79,13 +79,17 @@ public class UserController {
     }
 
     // Allow user to update their own profile or allow access to admins
+    @PreAuthorize("#userId == principal.id or hasRole('ADMIN') or hasRole('FACULTY')")
+    @PutMapping()
+    public String updateUser(@ModelAttribute User user, @RequestParam("userId") int userId) {
     @PreAuthorize("#user.id == principal.id or hasRole('ADMIN')")
     @PutMapping("/{id}")
     public String updateUser(@ModelAttribute User user) {
         PasswordEncoder passwordEncoder = securityConfig.passwordEncoder();
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userService.update(user);
-        return "redirect:/users";
+        System.out.println("User updated"+user);
+        return "redirect:/users/"+userId;
     }
 
     // Only admins can delete a user

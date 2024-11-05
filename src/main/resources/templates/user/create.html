@@ -7,7 +7,7 @@
 <div sec:authorize="hasAnyRole('ADMIN')">
 
 <h2 th:text="${user.userId == null ? 'Add New User' : 'Edit User'}">Add or Edit User Profile</h2>
-<form th:action="${user.userId == null ? '/users' : '/users/update?userId=' + user.userId}"
+<form th:action="${user.userId == null ? '/users' : '/users?userId=' + user.userId}"
       th:object="${user}"
       th:method="${user.userId == null ? 'post' : 'put'}">
 
