@@ -18,7 +18,7 @@
         <th>Hidden</th>
         <th>Data</th>
         <th sec:authorize="hasAnyRole('FACULTY', 'ADMIN', 'TA')">Actions</th>
-        <th>Activities</th>
+        <th sec:authorize="hasAnyRole('FACULTY', 'ADMIN', 'TA')">Activities</th>
     </tr>
     </thead>
     <tbody>
