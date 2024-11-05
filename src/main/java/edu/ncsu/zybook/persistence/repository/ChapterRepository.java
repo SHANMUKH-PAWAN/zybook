@@ -75,7 +75,7 @@ public class ChapterRepository implements IChapterRepository {
 
     @Override
     public List<Chapter> findAllByTextbook(int tbook_id) {
-        String sql = "SELECT * FROM Chapter WHERE tbook_id = ?";
+        String sql = "SELECT * FROM Chapter WHERE tbook_id = ? order by cno asc";
         return jdbcTemplate.query(sql, new Object[]{tbook_id}, new ChapterRowMapper());
     }
 

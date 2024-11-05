@@ -22,8 +22,9 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:each="content : ${allContents}">
-        <td th:text="${content.contentId}">Content ID</td>
+    <tr th:each="content, iterIndex : ${allContents}">
+        <td th:text="${iterIndex.index+1}">Content ID</td>
+<!--        <td th:text="${content.contentId}">Content ID</td>-->
         <td th:text="${content.contentType}">Content Type</td>
         <td th:text="${content.ownedBy}">Owned By</td>
         <td th:text="${content.isHidden} ? 'Yes' : 'No'">Hidden</td>

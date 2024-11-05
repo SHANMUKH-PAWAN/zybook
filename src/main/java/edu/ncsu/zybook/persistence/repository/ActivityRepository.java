@@ -63,7 +63,9 @@ public class ActivityRepository implements IActivityRepository {
     @Override
     public List<Activity> findAllByContent(int contentId, int sectionId, int chapId, int tbookId) {
         String sql = "SELECT * FROM Activity WHERE content_id = ? AND s_id = ? AND c_id = ? AND t_id = ? ORDER BY activity_id";
-        return jdbcTemplate.query(sql, new Object[]{contentId, sectionId, chapId, tbookId}, new ActivityRowMapper());
+        List<Activity> allActivities = jdbcTemplate.query(sql, new Object[]{contentId, sectionId, chapId, tbookId}, new ActivityRowMapper());
+        System.out.println("In activity respository:"+allActivities.size());
+        return allActivities;
     }
 
     private static class ActivityRowMapper implements RowMapper<Activity> {
@@ -75,6 +77,7 @@ public class ActivityRepository implements IActivityRepository {
             activity.setSectionId(rs.getInt("s_id"));
             activity.setChapId(rs.getInt("c_id"));
             activity.setTbookId(rs.getInt("t_id"));
+            System.out.println("In activity repository row mapper:");
             return activity;
         }
     }

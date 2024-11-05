@@ -73,6 +73,7 @@ public class ContentController {
         content.setTbookId(textbookId);
         content.setChapId(chapterId);
         content.setSectionId(sectionId);
+        System.out.println("Content in controller"+content);
         Content createdContent = contentService.create(content);
         return "redirect:/contents?tbookId="+textbookId+"&chapId="+chapterId+"&sectionId="+sectionId;
     }

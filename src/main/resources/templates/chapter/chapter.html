@@ -26,8 +26,9 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:each="section : ${chapter.sections}" th:if="${chapter.sections != null}">
-        <td th:text="${section.sno}">Section ID</td>
+    <tr th:each="section, iterStat : ${chapter.sections}" th:if="${chapter.sections != null}">
+        <td th:text="${iterStat.index+1}">Section ID</td> <!-- Added indexing to display default numbering-->
+<!--        <td th:text="${section.sno}">Section ID</td>-->
         <td th:text="${section.title}">Section Title</td>
         <td th:text="${section.hidden}">Hidden</td>
         <td>
