@@ -25,6 +25,7 @@ public class ContentRepository implements IContentRepository {
     @Transactional
     @Override
     public Content create(Content content) {
+        System.out.println("Inside content repo"+content.toString());
         String sql = "INSERT INTO Content (content_id, s_id, c_id, t_id, content_type, owned_by, is_hidden) VALUES (?, ?, ?, ?, ?, ?, ?)";
         int rowsAffected = jdbcTemplate.update(sql, content.getContentId(), content.getSectionId(), content.getChapId(),
                 content.getTbookId(), content.getContentType(), content.getOwnedBy(), content.isHidden());

@@ -19,4 +19,5 @@ public class Course {
 
     protected String courseType;
     protected Integer tbookId;
+    protected int professorId;
 }

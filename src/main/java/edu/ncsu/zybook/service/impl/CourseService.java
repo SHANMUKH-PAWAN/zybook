@@ -1,5 +1,6 @@
 package edu.ncsu.zybook.service.impl;
 
+import edu.ncsu.zybook.domain.model.ActiveCourse;
 import edu.ncsu.zybook.domain.model.Course;
 import edu.ncsu.zybook.service.ICourseService;
 import edu.ncsu.zybook.persistence.repository.ICourseRepository;
@@ -82,5 +83,33 @@ public class CourseService implements ICourseService {
         else{
             throw new RuntimeException("Course does not exist with title:" + title);
         }
+    }
+
+    @Override
+    public Optional<Course> updateProfessor(Course course, int professorId) {
+        if(courseRepository.findById(course.getCourseId()).isPresent()){
+            Optional<Course> result = courseRepository.updateProfessor(course,professorId);
+            return result;
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public List<ActiveCourse> getActiveCourses(int professorId) {
+        List<ActiveCourse> activeCourses = courseRepository.getActiveCourse(professorId);
+        System.out.println("In service:"+activeCourses.toString());
+        return activeCourses;
+    }
+
+    @Override
+    public List<Course> getEvaluationCourse(int professorId) {
+        List<Course> evaluationCourses = courseRepository.getEvaluationCourse(professorId);
+        System.out.println("In service:"+evaluationCourses.toString());
+        return evaluationCourses;
+    }
+
+    @Override
+    public List<Course> getAllCoursesForUser(int userId) {
+        return courseRepository.getAllCoursesForUser(userId);
     }
 }
