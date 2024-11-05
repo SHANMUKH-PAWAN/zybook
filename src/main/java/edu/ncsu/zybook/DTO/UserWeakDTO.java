@@ -10,4 +10,5 @@ public class UserWeakDTO {
     String lname;
     String email;
     String courseId;
+    String password;
 }

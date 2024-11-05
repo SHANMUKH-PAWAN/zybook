@@ -3,9 +3,11 @@ package edu.ncsu.zybook.web.controller;
 import edu.ncsu.zybook.DTO.UserWeakDTO;
 import edu.ncsu.zybook.domain.model.*;
 import edu.ncsu.zybook.mapper.UserWeakDTOMapper;
+import edu.ncsu.zybook.security.SecurityConfig;
 import edu.ncsu.zybook.service.ICourseService;
 import edu.ncsu.zybook.service.IUserRegistersCourseService;
 import edu.ncsu.zybook.service.IUserService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -27,13 +29,14 @@ public class UserRegistersCourseController {
     ICourseService courseService;
     IUserRegistersCourseService userRegistersCourseService;
     UserWeakDTOMapper userWeakDTOMapper;
+    SecurityConfig securityConfig;
 
-    public UserRegistersCourseController(IUserService userService, ICourseService courseService, IUserRegistersCourseService userRegistersCourseService, UserWeakDTOMapper userWeakDTOMapper) {
+    public UserRegistersCourseController(IUserService userService, ICourseService courseService, IUserRegistersCourseService userRegistersCourseService, UserWeakDTOMapper userWeakDTOMapper, SecurityConfig securityConfig) {
         this.userService = userService;
         this.courseService = courseService;
         this.userRegistersCourseService = userRegistersCourseService;
         this.userWeakDTOMapper = userWeakDTOMapper;
-
+        this.securityConfig = securityConfig;
     }
 
     @GetMapping("/new")
@@ -70,7 +73,7 @@ public class UserRegistersCourseController {
                 //return "redirect:/landing/student";
             }
             else{
-                return "redirect:/landing/student";
+                return "enrollment/error";
             }
         }
         else{
@@ -78,7 +81,8 @@ public class UserRegistersCourseController {
             newuser.setFname(userWeakDTO.getFname());
             newuser.setLname(userWeakDTO.getLname());
             newuser.setEmail(userWeakDTO.getEmail());
-            newuser.setPassword("test");
+            PasswordEncoder passwordEncoder = securityConfig.passwordEncoder();
+            newuser.setPassword(passwordEncoder.encode(userWeakDTO.getPassword()));
             newuser.setRoleName("student");
             //newuser.setUserId(2);
             User createdUser = userService.create(newuser);
@@ -105,14 +109,14 @@ public class UserRegistersCourseController {
                 //return "redirect:/landing/student";
             }
             else{
-                return "redirect:/landing/student";
+                return "enrollment/error";
             }
         }
 
         userRegistersCourseService.create(registration);
         model.addAttribute("message", "Enrollment successful!");
 
-        return "redirect:/enrollment/new";
+        return "redirect:/landing/student";
     }
 
 

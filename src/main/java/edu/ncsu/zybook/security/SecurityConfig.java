@@ -46,7 +46,9 @@ public class SecurityConfig {
                                 "/error",
                                 "/home",
                                 "/landing/student",
-                                "/enrollment/new").permitAll()
+                                "/enrollment/new",
+                                "/enrollment/register",
+                                "/enrollment/error").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

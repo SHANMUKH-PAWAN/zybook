@@ -1,5 +1,6 @@
 package edu.ncsu.zybook.web.controller;
 
+import edu.ncsu.zybook.domain.model.Notification;
 import edu.ncsu.zybook.domain.model.User;
 import edu.ncsu.zybook.security.CustomUserDetails;
 import edu.ncsu.zybook.security.SecurityConfig;
@@ -93,5 +94,12 @@ public class UserController {
     public String deleteUser(@PathVariable int id) {
         userService.delete(id);
         return "redirect:/users";
+    }
+
+    @GetMapping("/notifications/{id}")
+    public String getNotifications(@PathVariable int id, Model model) {
+        List<Notification> notifications = userService.getNotification(id);
+        model.addAttribute("notifications", notifications);
+        return "user/notifications";
     }
 }
