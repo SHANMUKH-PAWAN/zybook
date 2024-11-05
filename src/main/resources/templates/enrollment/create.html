@@ -20,10 +20,16 @@
     <label for="email">Email:</label>
     <input type="email" id="email" th:field="*{email}" required><br><br>
 
+    <label for="password">Password:</label>
+    <input type="password" id="password" th:field="*{password}" required><br><br>
+
     <label for="courseId">Course ID:</label>
     <input type="text" id="courseId" th:field="*{courseId}" required><br><br>
 
     <button type="submit">Enroll</button>
 </form>
+<div>
+    <a th:href="@{/landing/student}">Back to Landing Page</a>
+</div>
 </body>
 </html>
