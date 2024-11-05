@@ -6,6 +6,7 @@ import edu.ncsu.zybook.domain.model.ImageContent;
 import edu.ncsu.zybook.domain.model.TextContent;
 import edu.ncsu.zybook.domain.model.Textbook;
 import edu.ncsu.zybook.mapper.ContentReadDTOMapper;
+import edu.ncsu.zybook.persistence.repository.UserRepository;
 import edu.ncsu.zybook.security.CustomUserDetails;
 import edu.ncsu.zybook.service.IContentService;
 import org.springframework.http.HttpStatus;
@@ -30,10 +31,12 @@ public class ContentController {
 
     private final IContentService contentService;
     private final ContentReadDTOMapper contentReadDTOMapper;
+    private final UserRepository userRepository;
 
-    public ContentController(IContentService contentService, ContentReadDTOMapper contentReadDTOMapper) {
+    public ContentController(IContentService contentService, ContentReadDTOMapper contentReadDTOMapper, UserRepository userRepository) {
         this.contentService = contentService;
         this.contentReadDTOMapper = contentReadDTOMapper;
+        this.userRepository = userRepository;
     }
 
     @GetMapping("/new/text")
@@ -191,12 +194,13 @@ public class ContentController {
         List<Content> contentList = contentService.getAllContentBySection(sectionId, chapId, tbookId);
         List<ContentReadDTO> contentReadDTOS = new ArrayList<>();
         contentReadDTOS = contentList.stream().map(contentReadDTOMapper::toDTO).collect(Collectors.toList());
-
+        String loggedInUserRole = userRepository.getUserRole(customUserDetails.getId());
         model.addAttribute("userId", customUserDetails.getId());
         model.addAttribute("allContents", contentReadDTOS);
         model.addAttribute("sectionId", sectionId);
         model.addAttribute("chapId", chapId);
         model.addAttribute("tbookId", tbookId);
+        model.addAttribute("currentRole",loggedInUserRole);
         return "content/list";
     }
 }
