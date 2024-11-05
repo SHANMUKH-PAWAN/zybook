@@ -42,7 +42,7 @@ public class LoginController {
 
             switch (role.toLowerCase()) {
                 case "student":
-                    return "redirect:/landing/student";
+                    return "redirect:/landing/studentnew";
                 case "faculty":
                     return "redirect:/landing/faculty";
                 case "admin":
