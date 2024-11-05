@@ -102,4 +102,31 @@ public class UserController {
         model.addAttribute("notifications", notifications);
         return "user/notifications";
     }
+
+    @PreAuthorize("hasRole('FACULTY')")
+    @GetMapping("/waiting/{id}")
+    public String getWaitingList(@PathVariable String id, Model model) {
+        List<User> users = userService.getWaitingList(id);
+        model.addAttribute("users", users);
+        model.addAttribute("courseId",id);
+        return "user/waitlist";
+    }
+
+    @PreAuthorize("hasRole('FACULTY')")
+    @PostMapping("/approve/{courseId}/{userId}")
+    public String approve(@PathVariable String courseId, @PathVariable int userId, Model model) {
+        userService.approve(courseId, userId);
+        model.addAttribute("courseId", courseId);
+        model.addAttribute("userId", userId);
+        return "redirect:/users/waiting/" + courseId;
+    }
+
+    @PreAuthorize("hasRole('FACULTY')")
+    @PostMapping("/reject/{courseId}/{userId}")
+    public String reject(@PathVariable String courseId, @PathVariable int userId, Model model) {
+        userService.reject(courseId, userId);
+        model.addAttribute("courseId", courseId);
+        model.addAttribute("userId", userId);
+        return "redirect:/users/waiting/" + courseId;
+    }
 }
