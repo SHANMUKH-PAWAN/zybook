@@ -1,5 +1,6 @@
 package edu.ncsu.zybook.persistence.repository;
 
+import edu.ncsu.zybook.domain.model.Notification;
 import edu.ncsu.zybook.domain.model.Textbook;
 import edu.ncsu.zybook.domain.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,11 +106,24 @@ public class UserRepository implements IUserRepository{
         }
     }
 
-    private static class WaitingListMapper implements RowMapper<Integer>{
-        public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return rs.getInt("user_id");
+    @Override
+    public List<Notification> getNotification(int userId) {
+        String sql = "SELECT * FROM Notification WHERE user_id=?";
+        //int rowsAffected = jdbcTemplate.update(sql, userId);
+        return jdbcTemplate.query(sql, new Object[]{userId}, new UserRepository.NotificationMapper());
+    }
+
+    private static class NotificationMapper implements RowMapper<Notification> {
+        @Override
+        public Notification mapRow(ResultSet rs, int rowNum) throws SQLException {
+            Notification notification = new Notification();
+            notification.setUserId(rs.getInt("user_id"));
+            notification.setCourseId(rs.getString("CourseID"));
+            notification.setMessage(rs.getString("message"));
+            return notification;
         }
     }
+
 
 
     private static class UserRowMapper implements RowMapper<User> {

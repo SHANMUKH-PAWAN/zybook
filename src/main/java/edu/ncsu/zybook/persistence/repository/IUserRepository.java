@@ -1,5 +1,6 @@
 package edu.ncsu.zybook.persistence.repository;
 
+import edu.ncsu.zybook.domain.model.Notification;
 import edu.ncsu.zybook.domain.model.User;
 
 import java.util.List;
@@ -15,4 +16,5 @@ public interface IUserRepository {
     List<User> getWaitingList(String courseId);
     boolean approve(String courseId, int userId);
     boolean reject(String courseId, int userId);
+    List<Notification> getNotification(int userId);
 }
