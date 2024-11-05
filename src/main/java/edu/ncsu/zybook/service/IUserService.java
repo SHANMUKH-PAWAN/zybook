@@ -18,4 +18,5 @@ public interface IUserService {
     boolean reject(String courseId, int userId);
     List<Notification> getNotification(int userId);
     String getPassword(User user);
+    String getUserRole(int userId);
 }

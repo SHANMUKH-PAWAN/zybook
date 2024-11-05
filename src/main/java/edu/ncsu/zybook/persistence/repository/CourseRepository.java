@@ -94,11 +94,20 @@ public class CourseRepository implements ICourseRepository {
     }
 
     @Override
-    public List<ActiveCourse> getActiveCourse(int professorId) {
-        String sql = "SELECT * FROM Course WHERE professor_id = ? AND course_type = 'ACTIVE'";
-        List<ActiveCourse> courses = jdbcTemplate.query(sql, new Object[]{professorId}, new CourseRowMapper()).stream().map(e->((ActiveCourse) e)).collect(Collectors.toList());
-        System.out.println("In repository:"+courses.toString());
-        return courses;
+    public List<ActiveCourse> getActiveCourse(int userId, String role) {
+        if(role.equalsIgnoreCase("faculty")){
+            String sql = "SELECT * FROM Course WHERE professor_id = ? AND course_type = 'ACTIVE'";
+            List<ActiveCourse> courses = jdbcTemplate.query(sql, new Object[]{userId}, new CourseRowMapper()).stream().map(e->((ActiveCourse) e)).collect(Collectors.toList());
+            System.out.println("In repository:"+courses.toString());
+            return courses;
+        }
+       else if(role.equalsIgnoreCase("ta")){
+           String sql = "SELECT C.course_id course_id, C.title title, C.start_date start_date, C.end_date end_date, C.course_type course_type, C.textbook_id textbook_id, C.professor_id professor_id FROM Assigned A, Course C WHERE A.course_id = C.course_id AND A.user_id=? AND course_type = 'ACTIVE'";
+           List<ActiveCourse> courses = jdbcTemplate.query(sql, new Object[]{userId}, new CourseRowMapper()).stream().map(e->((ActiveCourse) e)).collect(Collectors.toList());
+           System.out.println("In repository for TA:"+courses.toString());
+           return courses;
+       }
+       return null;
     }
 
     @Override
