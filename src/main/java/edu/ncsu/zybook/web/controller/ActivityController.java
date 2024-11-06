@@ -51,7 +51,8 @@ public class ActivityController {
                                    @RequestParam("sectionId") int sectionId,
                                    @RequestParam("contentId") int contentId,
                                    Model model) {
-        List<Activity> allActivites= iActivityService.findAllByContent(contentId, chapterId, sectionId, textbookId);
+        List<Activity> allActivites= iActivityService.findAllByContent(contentId, sectionId, chapterId, textbookId);
+        System.out.println("All Activities from Faculty"+allActivites.toString());
         model.addAttribute("allActivites", allActivites);
         model.addAttribute("contentId", contentId);
         model.addAttribute("sectionId", sectionId);

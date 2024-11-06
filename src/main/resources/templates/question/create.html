@@ -69,6 +69,7 @@
         </div>
         <!-- Submit Button -->
         <button type="submit" class="btn btn-primary">Add Question</button>
+        <button type="button" class="btn btn-primary" th:onclick="|window.location.href='@{/activity/all(tbookId=${question.tbook_id},chapId=${question.chapter_id},sectionId=${question.section_id},contentId=${question.content_id})}'|">Cancel</button>
     </form>
 </div>
 

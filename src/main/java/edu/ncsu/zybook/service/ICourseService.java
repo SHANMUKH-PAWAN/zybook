@@ -1,5 +1,6 @@
 package edu.ncsu.zybook.service;
 
+import edu.ncsu.zybook.domain.model.ActiveCourse;
 import edu.ncsu.zybook.domain.model.Course;
 
 import java.util.List;
@@ -12,4 +13,8 @@ public interface ICourseService {
     Optional<Course> findById(String id);
     List<Course> findAll();
     Optional<Course> findByTitle(String title);
+    Optional<Course> updateProfessor(Course course, int professorId);
+    List<ActiveCourse> getActiveCourses(int professorId, String role);
+    List<Course> getEvaluationCourse(int professorId);
+    List<Course> getAllCoursesForUser(int userId);
 }

@@ -58,11 +58,24 @@ public class UserRepository implements IUserRepository{
 
     @Override
     public Optional<User> update(User user) {
-        String sql = "UPDATE User SET fname = ?, lname = ? WHERE user_id = ?";
-        int rowsAffected = jdbcTemplate.update(sql, user.getFname(), user.getLname(), user.getUserId());
+        System.out.println("Password correct, going to update now");
+        String sql = "UPDATE User SET fname = ?, lname = ?, email = ?, password=? WHERE user_id = ?";
+        int rowsAffected = jdbcTemplate.update(sql, user.getFname(), user.getLname(), user.getEmail(), user.getNewPassword(), user.getUserId());
         return rowsAffected > 0 ? Optional.of(user) : Optional.empty();
     }
+    public String getCurrentPassword(User user) {
+        String sql = "SELECT password FROM user WHERE user_id = ?";
+        String password = jdbcTemplate.queryForObject(sql, new Object[]{user.getUserId()}, String.class);
+        System.out.println("Current Password:"+password);
+        return password;
+    }
 
+    @Override
+    public String getUserRole(int userId) {
+        String sql = "SELECT role_name FROM User WHERE user_id = ?";
+        String roleName = jdbcTemplate.queryForObject(sql, new Object[]{userId}, String.class);
+        return roleName;
+    }
     @Override
     public boolean delete(int id) {
         String sql = "DELETE FROM User WHERE user_id = ?";

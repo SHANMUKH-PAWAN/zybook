@@ -7,7 +7,7 @@
 <div sec:authorize="hasAnyRole('ADMIN')">
 
 <h2 th:text="${user.userId == null ? 'Add New User' : 'Edit User'}">Add or Edit User Profile</h2>
-<form th:action="${user.userId == null ? '/users' : '/users/update?userId=' + user.userId}"
+<form th:action="${user.userId == null ? '/users' : '/users?userId=' + user.userId}"
       th:object="${user}"
       th:method="${user.userId == null ? 'post' : 'put'}">
     <div>
@@ -31,8 +31,16 @@
     </div>
 
     <div>
-        <label for="userPassword">User Password:</label>
+        <label for="userPassword">Enter User Current Password:</label>
         <input type="password" id="userPassword" th:field="*{password}" required/>
+    </div>
+    <div>
+        <label for="newUserPassword">Enter New Password:</label>
+        <input type="password" id="newUserPassword" th:field="*{newPassword}" required/>
+    </div>
+    <div>
+        <label for="confirmNewPassword">Confirm New Password:</label>
+        <input type="password" id="confirmNewPassword" th:field="*{confirmPassword}" required/>
     </div>
     <div>
         <label for="userRoleName">User Role:</label>

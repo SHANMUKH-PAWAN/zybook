@@ -95,6 +95,16 @@ public class UserService implements IUserService {
     }
 
     @Override
+    public String getPassword(User user) {
+        return userRepository.getCurrentPassword(user);
+    }
+
+    @Override
+    public String getUserRole(int userId) {
+        return userRepository.getUserRole(userId);
+    }
+
+    @Override
     public List<User> getAllUsers() {
         return userRepository.getAllUsers();
     }

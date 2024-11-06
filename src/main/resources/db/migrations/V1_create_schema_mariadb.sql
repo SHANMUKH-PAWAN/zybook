@@ -291,3 +291,12 @@ CREATE Table User_Participation(
 --Changeset vengatesh:25 Modify password length
 ALTER TABLE User
 MODIFY password VARCHAR(200);
+--Changeset vengatesh:26 Modify password length
+ALTER TABLE Content
+MODIFY COLUMN owned_by VARCHAR(15) DEFAULT 'admin';
+--Changeset vengatesh:27 Modify password length
+ALTER TABLE Content
+DROP CHECK content_chk_2;
+--Changeset vengatesh:28 Modify password length
+ALTER TABLE Content
+    ADD CONSTRAINT chk_owned_by CHECK (owned_by IN ('faculty', 'ta', 'admin'));

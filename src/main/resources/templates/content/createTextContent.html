@@ -42,7 +42,7 @@
     </div>
 
     <br>
-    <button type="submit">Create Text Content</button>
+        <button type="submit" th:text="${textContent.contentId == null ? 'Create Text Content' : 'Update Text Content'}"></button>
 </form>
 
 <a th:href="@{/sections/section(tbookId=${textContent.tbookId}, sno=${textContent.sectionId}, chapId=${textContent.chapId})}">Back to Section</a>

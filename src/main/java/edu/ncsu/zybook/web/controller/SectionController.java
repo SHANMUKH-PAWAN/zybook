@@ -77,7 +77,7 @@ public class SectionController {
     public String getAllSections(@RequestParam("tbookId") int tbookId, @RequestParam("chapId") int chapterId, Model model) {
         List<Section> sections = iSectionService.findAllByChapter(tbookId, chapterId);
         model.addAttribute("sections", sections);
-        return "section/list";
+        return "redirect:/chapters/chapter";
     }
 
     @GetMapping("/section")
