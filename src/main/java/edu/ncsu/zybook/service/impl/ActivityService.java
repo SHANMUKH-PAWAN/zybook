@@ -53,4 +53,9 @@ public class ActivityService implements IActivityService {
         System.out.println("In Service, activity size:"+allActivities.size());
         return allActivities;
     }
+
+    @Override
+    public List<Activity> findAllActivitiesByTextbook(int tbookId) {
+        return activityRepository.findAllActivitiesByTextbook(tbookId);
+    }
 }
