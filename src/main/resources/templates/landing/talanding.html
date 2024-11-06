@@ -8,7 +8,7 @@
 <h1>TA Dashboard</h1>
 <nav>
     <ol>
-        <li><a th:href="@{/courses/active}">Go to Active Course</a></li>
+        <li><a th:href="@{/courses/active(userId=${userId})}">Go to Active Course</a></li>
         <br>
         <li><a th:href="@{/courses}">View All Courses</a></li>
         <br>

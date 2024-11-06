@@ -90,6 +90,13 @@ public class UserRepository implements IUserRepository{
         System.out.println("Current Password:"+password);
         return password;
     }
+
+    @Override
+    public String getUserRole(int userId) {
+        String sql = "SELECT role_name FROM User WHERE user_id = ?";
+        String roleName = jdbcTemplate.queryForObject(sql, new Object[]{userId}, String.class);
+        return roleName;
+    }
     @Override
     public boolean delete(int id) {
         String sql = "DELETE FROM User WHERE user_id = ?";

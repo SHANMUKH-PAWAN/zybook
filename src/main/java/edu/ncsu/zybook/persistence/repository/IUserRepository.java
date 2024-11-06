@@ -19,4 +19,5 @@ public interface IUserRepository {
     List<Notification> getNotification(int userId);
     String getCurrentPassword(User user);
     User createTA(User user, String courseId);
+    String getUserRole(int userId);
 }

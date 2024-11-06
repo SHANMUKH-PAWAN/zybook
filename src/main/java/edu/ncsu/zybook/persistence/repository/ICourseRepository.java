@@ -14,7 +14,7 @@ public interface ICourseRepository {
     List<Course> findAll();
     Optional<Course> findByTitle(String title);
     Optional<Course> updateProfessor(Course course, int professorId);
-    List<ActiveCourse> getActiveCourse(int professorId);
+    List<ActiveCourse> getActiveCourse(int professorId, String role);
     List<Course> getEvaluationCourse(int professorId);
     List<Course> getAllCoursesForUser(int userId);
     int getTbookId(String courseId);

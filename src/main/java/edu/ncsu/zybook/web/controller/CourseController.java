@@ -5,6 +5,7 @@ import edu.ncsu.zybook.domain.model.Course;
 import edu.ncsu.zybook.domain.model.Textbook;
 import edu.ncsu.zybook.service.ICourseService;
 import edu.ncsu.zybook.service.ITextbookService;
+import edu.ncsu.zybook.service.IUserService;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -22,10 +23,12 @@ public class CourseController {
 
     private final ICourseService courseService;
     private final ITextbookService textbookService;
+    private final IUserService userService;
 
-    public CourseController(ICourseService courseService, ITextbookService textbookService) {
+    public CourseController(ICourseService courseService, ITextbookService textbookService, IUserService userService) {
         this.courseService = courseService;
         this.textbookService = textbookService;
+        this.userService = userService;
     }
     @GetMapping("/{id}")
     public String getCourse(@PathVariable String id, Model model) {
@@ -105,7 +108,11 @@ public class CourseController {
     }
     @GetMapping("/active")
     public String getActiveCourse(@RequestParam("userId") int userId, Model model) {
-        List<ActiveCourse> activeCourses = courseService.getActiveCourses(userId);
+        String role = userService.getUserRole(userId);
+        if (role.equals("")) {
+            throw new RuntimeException("No suitbale role found for the user to get courses");
+        }
+        List<ActiveCourse> activeCourses = courseService.getActiveCourses(userId,role);
         System.out.println(activeCourses);
         model.addAttribute("userId",userId);
         model.addAttribute("courses", activeCourses);

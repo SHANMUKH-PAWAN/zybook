@@ -52,7 +52,8 @@ public class LandingController {
     }
 
     @GetMapping("/ta")
-    public String taLanding() {
+    public String taLanding(@AuthenticationPrincipal CustomUserDetails currentUser, Model model) {
+        model.addAttribute("userId",currentUser.getId());
         return "landing/talanding";
     }
 

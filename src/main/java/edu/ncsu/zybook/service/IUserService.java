@@ -19,4 +19,5 @@ public interface IUserService {
     List<Notification> getNotification(int userId);
     String getPassword(User user);
     User createTA(User user, String courseId);
+    String getUserRole(int userId);
 }

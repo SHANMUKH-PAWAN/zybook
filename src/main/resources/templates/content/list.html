@@ -22,8 +22,9 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:each="content : ${allContents}">
-        <td th:text="${content.contentId}">Content ID</td>
+    <tr th:each="content, iterIndex : ${allContents}">
+        <td th:text="${iterIndex.index+1}">Content ID</td>
+<!--        <td th:text="${content.contentId}">Content ID</td>-->
         <td th:text="${content.contentType}">Content Type</td>
         <td th:text="${content.ownedBy}">Owned By</td>
         <td th:text="${content.isHidden} ? 'Yes' : 'No'">Hidden</td>
@@ -53,9 +54,11 @@
                     Edit Image
                 </a>
             </span> <br>
+            <div th:if="${(currentRole == 'ta' and content.ownedBy == 'ta') or (currentRole == 'faculty' and (content.ownedBy == 'faculty' or content.ownedBy == 'ta')) or (currentRole == 'admin' and (content.ownedBy == 'faculty' or content.ownedBy == 'ta' or content.ownedBy == 'admin'))}">
             <form th:action="@{/contents(tbookId=${tbookId}, chapId=${chapId}, sectionId=${sectionId}, contentId=${content.contentId})}" th:method="delete" style="display:inline;">
                 <button type="submit">Delete</button>
             </form>
+            </div>
 
         </td>
         <td>
