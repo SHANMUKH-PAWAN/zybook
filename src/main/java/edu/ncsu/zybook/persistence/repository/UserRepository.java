@@ -57,6 +57,27 @@ public class UserRepository implements IUserRepository{
     }
 
     @Override
+    public User createTA(User user, String courseId){
+        String sql = "INSERT INTO User (fname,lname,email,password,role_name) VALUES(?,?,?,?,?)";
+        int rowsAffected = jdbcTemplate.update(sql, user.getFname(), user.getLname(), user.getEmail(), user.getPassword(), user.getRoleName());
+        Optional<User> result = findByEmail(user.getEmail());
+        if(result.isPresent()){
+            User createdUser = result.get();
+            String sql2 = "INSERT INTO Assigned (course_id,user_id) VALUES(?,?)";
+            int rowsAffected2 = jdbcTemplate.update(sql2, courseId, createdUser.getUserId());
+            if(rowsAffected > 0)
+            {
+                return findByEmail(user.getEmail())
+                        .orElseThrow(() -> new RuntimeException("Failed to retrieve newly inserted User."));
+            }
+            else{
+                throw new RuntimeException("Failed to insert User.");
+            }
+        }
+        throw new RuntimeException("Failed to insert User.");
+    }
+
+    @Override
     public Optional<User> update(User user) {
         System.out.println("Password correct, going to update now");
         String sql = "UPDATE User SET fname = ?, lname = ?, email = ?, password=? WHERE user_id = ?";

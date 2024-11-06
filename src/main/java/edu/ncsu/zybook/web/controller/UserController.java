@@ -41,7 +41,7 @@ public class UserController {
         }
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','FACULTY')")
     @GetMapping
     public String getAllUsers(Model model) {
         List<User> users = userService.getAllUsers();
@@ -49,19 +49,36 @@ public class UserController {
         return "user/list";
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','FACULTY')")
     @GetMapping("/new")
     public String showCreateForm(Model model) {
         model.addAttribute("user", new User());
         return "user/create";
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','FACULTY')")
     @PostMapping
     public String createUser(@ModelAttribute User user) {
         PasswordEncoder passwordEncoder = securityConfig.passwordEncoder();
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userService.create(user);
+        return "redirect:/users";
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN','FACULTY')")
+    @GetMapping("/newta")
+    public String showCreateTAForm(@RequestParam("courseId") String courseId, Model model) {
+        model.addAttribute("user", new User());
+        model.addAttribute("courseId", courseId);
+        return "user/createta";
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN','FACULTY')")
+    @PostMapping("/ta")
+    public String createTA(@ModelAttribute User user, @RequestParam("courseId") String courseId) {
+        PasswordEncoder passwordEncoder = securityConfig.passwordEncoder();
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userService.createTA(user, courseId);
         return "redirect:/users";
     }
 

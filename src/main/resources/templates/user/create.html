@@ -4,7 +4,7 @@
     <title th:text="${user.userId == null ? 'Add New User' : 'Edit User'}">Form</title>
 </head>
 <body>
-<div sec:authorize="hasAnyRole('ADMIN')">
+<div sec:authorize="hasAnyRole('ADMIN','FACULTY')">
 
 <h2 th:text="${user.userId == null ? 'Add New User' : 'Edit User'}">Add or Edit User Profile</h2>
 <form th:action="${user.userId == null ? '/users' : '/users?userId=' + user.userId}"
@@ -29,16 +29,20 @@
         <label for="userEmail">User Email:</label>
         <input type="text" id="userEmail" th:field="*{email}" required/>
     </div>
-
-    <div>
+    <div th:if="${user.userId != null}">
         <label for="userPassword">Enter User Current Password:</label>
         <input type="password" id="userPassword" th:field="*{password}" required/>
     </div>
     <div>
         <label for="newUserPassword">Enter New Password:</label>
-        <input type="password" id="newUserPassword" th:field="*{newPassword}" required/>
+        <div th:if="${user.userId!=null}">
+            <input type="password" id="newUserPassword" th:field="*{newPassword}" required/>
+        </div>
+        <div th:if="${user.userId==null}">
+            <input type="password" th:field="*{password}" required/>
+        </div>
     </div>
-    <div>
+    <div th:if="${user.userId != null}">
         <label for="confirmNewPassword">Confirm New Password:</label>
         <input type="password" id="confirmNewPassword" th:field="*{confirmPassword}" required/>
     </div>

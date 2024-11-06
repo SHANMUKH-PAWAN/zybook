@@ -17,4 +17,5 @@ public interface ICourseService {
     List<ActiveCourse> getActiveCourses(int professorId, String role);
     List<Course> getEvaluationCourse(int professorId);
     List<Course> getAllCoursesForUser(int userId);
+    int getTbookId(String courseId);
 }

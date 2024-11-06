@@ -112,4 +112,9 @@ public class CourseService implements ICourseService {
     public List<Course> getAllCoursesForUser(int userId) {
         return courseRepository.getAllCoursesForUser(userId);
     }
+
+    @Override
+    public int getTbookId(String courseId) {
+        return courseRepository.getTbookId(courseId);
+    }
 }

@@ -124,6 +124,17 @@ public class CourseRepository implements ICourseRepository {
         return courses;
     }
 
+    @Override
+    public int getTbookId(String courseId){
+        String sql = "SELECT textbook_id FROM Course WHERE course_id = ?";
+        try{
+            int tbookId = jdbcTemplate.queryForObject(sql, new Object[]{courseId}, Integer.class);
+            return tbookId;
+        } catch (EmptyResultDataAccessException e) {
+            return 0;
+        }
+    }
+
     private class CourseRowMapper implements RowMapper<Course> {
         @Override
         public Course mapRow(ResultSet rs, int rowNum) throws SQLException {
