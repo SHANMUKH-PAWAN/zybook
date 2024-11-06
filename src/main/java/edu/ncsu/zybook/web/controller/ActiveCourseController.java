@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,14 +21,16 @@ public class ActiveCourseController {
     //ICourseService courseService;
 //    ITextbookService textbookService;
     IActiveCourseService activeCourseService;
+    ICourseService courseService;
+    ITextbookService textbookService;
 
-    @Autowired
-    public ActiveCourseController(IActiveCourseService activeCourseService) {
-//        this.courseService = courseService;
-//        this.textbookService = textbookService;
+    public ActiveCourseController(IActiveCourseService activeCourseService, ICourseService courseService, ITextbookService textbookService) {
         this.activeCourseService = activeCourseService;
+        this.courseService = courseService;
+        this.textbookService = textbookService;
     }
-//    @GetMapping("/{id}")
+
+    //    @GetMapping("/{id}")
 //    public String getActiveCourse(@PathVariable String id, Model model) {
 //        Optional<ActiveCourse> coursevariable = activeCourseService.findById(id);
 //        if (coursevariable.isPresent()) {
@@ -49,11 +52,21 @@ public class ActiveCourseController {
     @GetMapping("/new")
     public String showCreateForm(Model model) {
         model.addAttribute("activecourse", new ActiveCourse());
+        List<Integer> inUseTbooks = courseService.findAll().stream().map(Course::getTbookId).toList();
+        List<Integer> tbooks = textbookService.getAllTextbooks(0,100,"uid","ASC").stream().map(Textbook::getUid).toList();
+        List<Integer> unUsedTbookIds = new ArrayList<>(tbooks);
+        unUsedTbookIds.removeAll(inUseTbooks);
+        List<Textbook> unUsedTbooks = unUsedTbookIds.stream()
+                .map(textbookService::findById)
+                .flatMap(Optional::stream)
+                .toList();
+        model.addAttribute("unUsedTbooks", unUsedTbooks);
         return "activecourse/create";
     }
 
     @PostMapping("/registeractive")
     public String createActiveCourse(@ModelAttribute ActiveCourse activeCourse) {
+        System.out.println(activeCourse);
         activeCourseService.create(activeCourse);
         return "redirect:/courses";
     }

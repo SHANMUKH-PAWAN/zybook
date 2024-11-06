@@ -37,9 +37,10 @@ public class ActiveCourseRepository implements IActiveCourseRepository {
         course.setEndDate(activeCourse.getEndDate());
         course.setCourseType(activeCourse.getCourseType());
         course.setTbookId(activeCourse.getTbookId());
+        course.setProfessorId(activeCourse.getProfessorId());
         //Course created = courseRepository.create(course);
-        String sql = "INSERT INTO Course (course_id, title, start_date, end_date, course_type, textbook_id) VALUES(?,?,?,?,?,?)";
-        int rowsAffected = jdbcTemplate.update(sql, course.getCourseId(), course.getTitle(), course.getStartDate(), course.getEndDate(), course.getCourseType(), course.getTbookId());
+        String sql = "INSERT INTO Course (course_id, title, start_date, end_date, course_type, textbook_id, professor_id) VALUES(?,?,?,?,?,?,?)";
+        int rowsAffected = jdbcTemplate.update(sql, course.getCourseId(), course.getTitle(), course.getStartDate(), course.getEndDate(), course.getCourseType(), course.getTbookId(), course.getProfessorId());
         System.out.println("Course created");
 
         String sql2 = "INSERT INTO ActiveCourse (course_token, course_capacity, course_id) VALUES (?, ?, ?)";
