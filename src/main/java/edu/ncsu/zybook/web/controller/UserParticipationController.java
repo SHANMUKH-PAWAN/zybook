@@ -65,7 +65,7 @@ public class UserParticipationController {
 
             activities.forEach(activity -> {
                 ActivityDTO activityDTO = activityDTOMapper.toDTO(activity);
-                List<Question> questions = questionService.findAllByActivity(activity.getChapId(), activity.getContentId(), activity.getSectionId(), activity.getChapId(), activity.getTbookId());
+                List<Question> questions = questionService.findAllByActivity(activity.getActivityId(), activity.getContentId(), activity.getSectionId(), activity.getChapId(), activity.getTbookId());
                 List<QuestionDTO> questionDTOS = new ArrayList<>();
 
                 questions.forEach(question -> {

@@ -31,13 +31,13 @@ public class AnswerService implements IAnswerService {
 
     @Override
     public Optional<Answer> findById(int answerId, int questionId, int activityId, int contentId, int sectionId, int chapId, int tbookId) {
-        return answerRepository.findById(questionId, answerId, activityId, contentId, sectionId, chapId, tbookId);
+        return answerRepository.findById(answerId, questionId, activityId, contentId, sectionId, chapId, tbookId);
     }
 
     @Transactional
     @Override
     public Optional<Answer> update(Answer answer) {
-        if (answerRepository.findById(answer.getQuestionId(), answer.getAnswerId(), answer.getActivityId(), answer.getContentId(), answer.getSectionId(), answer.getChapId(), answer.getTbookId()).isPresent()) {
+        if (answerRepository.findById(answer.getAnswerId(), answer.getQuestionId(), answer.getActivityId(), answer.getContentId(), answer.getSectionId(), answer.getChapId(), answer.getTbookId()).isPresent()) {
             return answerRepository.update(answer);
         } else {
             throw new RuntimeException("Answer not found with the provided identifiers");

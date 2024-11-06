@@ -36,8 +36,9 @@ public class CourseRepository implements ICourseRepository {
     @Transactional
     @Override
     public Course create(Course course) {
-        String sql = "INSERT INTO Course (course_id, title, start_date, end_date, course_type, textbook_id) VALUES(?,?,?,?,?,?)";
-        int rowsAffected = jdbcTemplate.update(sql, course.getCourseId(), course.getTitle(), course.getStartDate(), course.getEndDate(), course.getCourseType(), course.getTbookId());
+        System.out.println("CREEE" + course);
+        String sql = "INSERT INTO Course (course_id, title, start_date, end_date, course_type, textbook_id, professor_id) VALUES(?,?,?,?,?,?,?)";
+        int rowsAffected = jdbcTemplate.update(sql, course.getCourseId(), course.getTitle(), course.getStartDate(), course.getEndDate(), course.getCourseType(), course.getTbookId(), course.getProfessorId());
         if(rowsAffected > 0)
         {
             return findById(course.getCourseId())
@@ -65,8 +66,9 @@ public class CourseRepository implements ICourseRepository {
     @Transactional
     @Override
     public Optional<Course> update(Course course) {
-        String sql = "UPDATE Course SET title = ?, start_date = ?, end_date = ?, course_type = ?, textbook_id = ? WHERE course_id = ?";
-        int rowsAffected = jdbcTemplate.update(sql, course.getTitle(), course.getStartDate(), course.getEndDate(), course.getCourseType(), course.getTbookId(), course.getCourseId());
+        System.out.println("UPDATE "+ course);
+        String sql = "UPDATE Course SET title = ?, start_date = ?, end_date = ?, course_type = ?, textbook_id = ?,  professor_id = ? WHERE course_id = ?";
+        int rowsAffected = jdbcTemplate.update(sql, course.getTitle(), course.getStartDate(), course.getEndDate(), course.getCourseType(), course.getTbookId(), course.getProfessorId(), course.getCourseId());
         return rowsAffected > 0 ? Optional.of(course) : Optional.empty();
     }
 

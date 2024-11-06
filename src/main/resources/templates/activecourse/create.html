@@ -43,7 +43,10 @@
 
     <div>
         <label for="tbookId">Textbook ID:</label>
-        <input type="text" id="tbookId" th:field="*{tbookId}" required/>
+        <select id="tbookId" th:field="*{tbookId}" required>
+            <option value="">Select Textbook: </option>
+            <option th:each="tbook : ${unUsedTbooks}" th:value="${tbook.uid}" th:text="${tbook.title}"></option>
+        </select>
     </div>
 
     <div>
@@ -54,6 +57,11 @@
     <div>
         <label for="courseToken">Course Token:</label>
         <input type="text" id="courseToken" th:field="*{courseToken}" required/>
+    </div>
+
+    <div>
+        <label for="professorId">Assign Professor:</label>
+        <input type="text" id="professorId" th:field="*{professorId}" required/>
     </div>
 
     <br>

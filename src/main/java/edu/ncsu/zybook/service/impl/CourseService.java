@@ -34,9 +34,9 @@ public class CourseService implements ICourseService {
     @Override
     @Transactional
     public Optional<Course> update(Course course) {
-        System.out.println("DEBBBBUG 0987"+course.getCourseId());
+//        System.out.println("DEBBBBUG 0987"+course.getCourseId());
         if(courseRepository.findById(course.getCourseId()).isPresent()){
-            System.out.println("DEBBBBUG ISIDE IF");
+//            System.out.println("DEBBBBUG ISIDE IF");
             return courseRepository.update(course);
         }
         else{

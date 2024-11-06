@@ -45,6 +45,7 @@ public class QuestionController {
 
         questionService.create(question);
 
+        System.out.println("Answer DOOO " +  Arrays.toString(questionDTO.getAnswers()));
         AnswerDTO[] answerDTOs = questionDTO.getAnswers();
         Arrays.asList(answerDTOs).stream().map(answerDTOMapper::toEntity).forEach(answer -> {
             answer.setQuestionId(question.getQuestion_id());

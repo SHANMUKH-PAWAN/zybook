@@ -36,7 +36,7 @@ public class AnswerRepository implements IAnswerRepository {
         );
 
         if (rowsAffected > 0) {
-            return findById(answer.getQuestionId(),answer.getAnswerId(), answer.getActivityId(), answer.getContentId(), answer.getSectionId(), answer.getChapId(), answer.getTbookId())
+            return findById(answer.getAnswerId(), answer.getQuestionId(), answer.getActivityId(), answer.getContentId(), answer.getSectionId(), answer.getChapId(), answer.getTbookId())
                     .orElseThrow(() -> new RuntimeException("Failed to retrieve newly inserted answer."));
         } else {
             throw new RuntimeException("Failed to insert answer.");
@@ -44,7 +44,7 @@ public class AnswerRepository implements IAnswerRepository {
     }
 
     @Override
-    public Optional<Answer> findById(int questionId, int answerId, int activityId, int contentId, int sectionId, int chapId, int textbookId) {
+    public Optional<Answer> findById(int answerId, int questionId, int activityId, int contentId, int sectionId, int chapId, int textbookId) {
         String sql = "SELECT * FROM Answer WHERE question_id = ? AND answer_id = ? AND activity_id = ? AND content_id = ? AND s_id = ? AND c_id = ? AND t_id = ?";
         try {
             Answer answerObj = jdbcTemplate.queryForObject(sql, new Object[]{

@@ -41,11 +41,17 @@
         </div>
     </div>
 
-    <!-- Common fields -->
-    <div>
-<!--        <label for="ownedBy">Owned By:</label>-->
-        <input type="hidden" id="ownedBy" th:field="*{ownedBy}" />
+
+    <label for="ownedBy">Owned By:</label>
+    <div sec:authorize="hasAnyRole('FACULTY', 'ADMIN')">
+        <input id="ownedBy" th:field="*{ownedBy}" />
     </div>
+
+    <div sec:authorize="hasRole('TA')" th:if="${imageContent.contentId == null}">
+        <input id="ownedBy" th:field="*{ownedBy}" />
+    </div>
+
+
 
     <div>
         <label for="isHidden">Hidden:</label>
