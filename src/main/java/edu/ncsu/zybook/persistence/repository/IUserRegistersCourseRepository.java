@@ -2,6 +2,8 @@ package edu.ncsu.zybook.persistence.repository;
 
 import edu.ncsu.zybook.domain.model.UserRegistersCourse;
 
+import edu.ncsu.zybook.domain.model.User;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -21,4 +23,8 @@ public interface IUserRegistersCourseRepository {
     int getCurrentCount(String courseId);
 
     int getCapacity(String courseId);
+
+    List<User> getAllStudents(String courseId);
+
+    String getCourseId(String courseToken);
 }

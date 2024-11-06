@@ -17,4 +17,5 @@ public interface ICourseRepository {
     List<ActiveCourse> getActiveCourse(int professorId);
     List<Course> getEvaluationCourse(int professorId);
     List<Course> getAllCoursesForUser(int userId);
+    int getTbookId(String courseId);
 }

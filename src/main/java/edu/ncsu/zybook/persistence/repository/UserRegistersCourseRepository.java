@@ -1,6 +1,7 @@
 package edu.ncsu.zybook.persistence.repository;
 
 import edu.ncsu.zybook.domain.model.UserRegistersCourse;
+import edu.ncsu.zybook.domain.model.User;
 import org.springframework.stereotype.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -85,6 +86,35 @@ public class UserRegistersCourseRepository implements IUserRegistersCourseReposi
             return capacity;
         } catch (EmptyResultDataAccessException e) {
             return 0;
+        }
+    }
+
+    @Override
+    public String getCourseId(String courseToken){
+        String sql = "SELECT course_id FROM ActiveCourse WHERE course_token = ?";
+        try{
+            String courseId = jdbcTemplate.queryForObject(sql, new Object[]{courseToken}, String.class);
+            return courseId;
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public List<User> getAllStudents(String courseId) {
+        String sql = "SELECT u.user_id, u.fname, u.lname, u.email from User u INNER JOIN UserRegistersCourse urc WHERE u.user_id = urc.user_id AND urc.CourseID = ?";
+        return jdbcTemplate.query(sql, new Object[]{courseId}, new UserRegistersCourseRepository.StudentsCourseRowMapper());
+    }
+
+    private static class StudentsCourseRowMapper implements RowMapper<User> {
+        @Override
+        public User mapRow(ResultSet rs, int rowNum) throws SQLException{
+            User user = new User();
+            user.setUserId(rs.getInt("user_id"));
+            user.setFname(rs.getString("fname"));
+            user.setLname(rs.getString("lname"));
+            user.setEmail(rs.getString("email"));
+            return user;
         }
     }
 

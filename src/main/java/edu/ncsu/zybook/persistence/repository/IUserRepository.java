@@ -18,4 +18,5 @@ public interface IUserRepository {
     boolean reject(String courseId, int userId);
     List<Notification> getNotification(int userId);
     String getCurrentPassword(User user);
+    User createTA(User user, String courseId);
 }

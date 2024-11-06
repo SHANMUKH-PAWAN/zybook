@@ -1,5 +1,6 @@
 package edu.ncsu.zybook.service;
 
+import edu.ncsu.zybook.domain.model.User;
 import edu.ncsu.zybook.domain.model.UserRegistersCourse;
 
 import java.util.List;
@@ -21,4 +22,8 @@ public interface IUserRegistersCourseService {
     int getCurrentCount(String courseId);
 
     int getCapacity(String courseId);
+
+    List<User> getAllStudents(String courseId);
+
+    String getCourseId(String courseToken);
 }

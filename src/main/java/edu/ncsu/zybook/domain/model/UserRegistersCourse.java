@@ -11,4 +11,5 @@ public class UserRegistersCourse {
     private String approvalStatus;
     private Integer userId;
     private String courseId;
+    private String courseToken;
 }

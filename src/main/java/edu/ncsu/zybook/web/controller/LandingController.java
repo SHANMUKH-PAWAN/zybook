@@ -2,23 +2,23 @@ package edu.ncsu.zybook.web.controller;
 
 import edu.ncsu.zybook.persistence.repository.UserRepository;
 import edu.ncsu.zybook.security.CustomUserDetails;
+import edu.ncsu.zybook.service.impl.CourseService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/landing")
 public class LandingController {
 
     private UserRepository userRepository;
+    private CourseService courseService;
 
-    public LandingController(UserRepository userRepository) {
+    public LandingController(UserRepository userRepository, CourseService courseService) {
         this.userRepository = userRepository;
+        this.courseService = courseService;
     }
 
     @GetMapping()
@@ -54,5 +54,14 @@ public class LandingController {
     @GetMapping("/ta")
     public String taLanding() {
         return "landing/talanding";
+    }
+
+    @GetMapping("/active")
+    public String activeLanding(@RequestParam("userId") int userId, @RequestParam("courseId") String courseId, Model model) {
+        model.addAttribute("userId", userId);
+        model.addAttribute("courseId", courseId);
+        int tbookId = courseService.getTbookId(courseId);
+        model.addAttribute("tbookId", tbookId);
+        return "landing/activelanding";
     }
 }

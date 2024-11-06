@@ -107,8 +107,9 @@ public class CourseController {
     public String getActiveCourse(@RequestParam("userId") int userId, Model model) {
         List<ActiveCourse> activeCourses = courseService.getActiveCourses(userId);
         System.out.println(activeCourses);
+        model.addAttribute("userId",userId);
         model.addAttribute("courses", activeCourses);
-        return "course/list";
+        return "course/activelist";
     }
     @GetMapping("/evaluation")
     public String getEvaluationCourse(@RequestParam("userId") int userId, Model model) {

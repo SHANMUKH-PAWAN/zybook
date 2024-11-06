@@ -103,4 +103,9 @@ public class UserService implements IUserService {
     public List<User> getAllUsers() {
         return userRepository.getAllUsers();
     }
+
+    @Override
+    public User createTA(User user, String courseId){
+        return userRepository.createTA(user, courseId);
+    }
 }
