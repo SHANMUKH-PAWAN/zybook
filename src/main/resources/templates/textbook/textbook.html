@@ -18,7 +18,7 @@
         <th>Chapter ID</th>
         <th>Chapter Code</th>
         <th>Chapter Title</th>
-        <th>Hidden</th>
+        <th sec:authorize="hasAnyRole('FACULTY', 'ADMIN', 'TA')">Hidden</th>
         <th>Actions</th>
     </tr>
     </thead>
@@ -28,7 +28,7 @@
 <!--        <td th:text="${chapter.cno}">Chapter ID</td>-->
         <td th:text="${chapter.chapterCode}">Chapter Code</td>
         <td th:text="${chapter.title}">Chapter Title</td>
-        <td th:text="${chapter.hidden}">Hidden</td>
+        <td  sec:authorize="hasAnyRole('FACULTY', 'ADMIN', 'TA')" th:text="${chapter.hidden}">Hidden</td>
         <td>
 
             <a th:href="@{/chapters/chapter(tbookId=${textbook.uid}, chapId=${chapter.cno})}">View</a>

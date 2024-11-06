@@ -13,21 +13,20 @@
     <thead>
     <tr>
         <th>Content ID</th>
-        <th>Type</th>
-        <th>Owned By</th>
-        <th>Hidden</th>
+        <th sec:authorize="hasAnyRole('FACULTY', 'ADMIN', 'TA')">Type</th>
+        <th sec:authorize="hasAnyRole('FACULTY', 'ADMIN', 'TA')">Owned By</th>
+        <th sec:authorize="hasAnyRole('FACULTY', 'ADMIN', 'TA')">Hidden</th>
         <th>Data</th>
         <th sec:authorize="hasAnyRole('FACULTY', 'ADMIN', 'TA')">Actions</th>
-        <th sec:authorize="hasAnyRole('FACULTY', 'ADMIN', 'TA')">Activities</th>
+        <th>Activities</th>
     </tr>
     </thead>
     <tbody>
     <tr th:each="content, iterIndex : ${allContents}">
         <td th:text="${iterIndex.index+1}">Content ID</td>
-<!--        <td th:text="${content.contentId}">Content ID</td>-->
-        <td th:text="${content.contentType}">Content Type</td>
-        <td th:text="${content.ownedBy}">Owned By</td>
-        <td th:text="${content.isHidden} ? 'Yes' : 'No'">Hidden</td>
+        <td  sec:authorize="hasAnyRole('FACULTY', 'ADMIN', 'TA')" th:text="${content.contentType}">Content Type</td>
+        <td  sec:authorize="hasAnyRole('FACULTY', 'ADMIN', 'TA')" th:text="${content.ownedBy}">Owned By</td>
+        <td  sec:authorize="hasAnyRole('FACULTY', 'ADMIN', 'TA')" th:text="${content.isHidden} ? 'Yes' : 'No'">Hidden</td>
         <td>
             <!-- Display text data if the content is of type TEXT -->
             <span th:if="${content.contentType == 'text'}">
@@ -42,11 +41,13 @@
             </span>
 
         </td>
+        <div sec:authorize="hasAnyRole('FACULTY', 'ADMIN', 'TA')">
         <td>
             <span th:if="${content.contentType == 'text'}">
     <a th:href="@{/contents/edit/text(tbookId=${tbookId}, chapId=${chapId}, sectionId=${sectionId}, contentId=${content.contentId})}">
         Edit Text
     </a>
+
 </span>
 
             <span th:if="${content.contentType == 'image'}">
@@ -61,6 +62,7 @@
             </div>
 
         </td>
+        </div>
         <td>
             <div sec:authorize="!hasAnyRole('STUDENT')">
             <a th:href="@{/activity/all(tbookId=${tbookId}, chapId=${chapId}, sectionId=${sectionId}, contentId=${content.contentId})}">Activities</a>
