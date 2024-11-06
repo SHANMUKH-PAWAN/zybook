@@ -1,26 +1,23 @@
 package edu.ncsu.zybook.web.controller;
 
-import edu.ncsu.zybook.DTO.ActivityDTO;
-import edu.ncsu.zybook.DTO.AnswerDTO;
-import edu.ncsu.zybook.DTO.ContentReadDTO;
-import edu.ncsu.zybook.DTO.QuestionDTO;
+import edu.ncsu.zybook.DTO.*;
 import edu.ncsu.zybook.domain.model.*;
 import edu.ncsu.zybook.mapper.ActivityDTOMapper;
 import edu.ncsu.zybook.mapper.AnswerDTOMapper;
 import edu.ncsu.zybook.mapper.ContentReadDTOMapper;
 import edu.ncsu.zybook.mapper.QuestionDTOMapper;
+import edu.ncsu.zybook.security.CustomUserDetails;
 import edu.ncsu.zybook.service.IActivityService;
 import edu.ncsu.zybook.service.IContentService;
 import edu.ncsu.zybook.service.IQuestionService;
 import edu.ncsu.zybook.service.IUserParticipationService;
 import edu.ncsu.zybook.service.impl.AnswerService;
+import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
@@ -183,6 +180,37 @@ public class UserParticipationController {
         });
 
         return "redirect:/participation/edit?chapId="+chapId +"&sectionId="+sectionId+"&tbookId="+tbookId+"&userId="+userId+"&contentId="+contentId;
+    }
+
+    @GetMapping("/score")
+    public String getScore(@AuthenticationPrincipal CustomUserDetails currentUser,
+                           @RequestParam("tbookId") int tbookId,
+                           @RequestParam("userId") int userId,
+                           Model model
+                           ){
+        if( currentUser.getId() != userId) throw new RuntimeException("Incorrect access to different user's details");
+        List<Activity> activities = activityService.findAllActivitiesByTextbook(tbookId);
+        List<ScoreDTO> scores = new ArrayList<>();
+        for(Activity activity: activities )
+        {
+            ScoreDTO score = new ScoreDTO();
+            score.setUserId(userId);
+            score.setTbookId(tbookId);
+            score.setChapterId(activity.getChapId());
+            score.setSectionId(activity.getSectionId());
+            score.setContentId(activity.getContentId());
+            score.setActivityId(activity.getActivityId());
+            if (userParticipationService.hasAttended(userId, activity.getActivityId(), activity.getContentId(), activity.getSectionId(), activity.getChapId(), tbookId)) {
+                score.setScore(userParticipationService.calculateScore(userId, activity.getActivityId(), activity.getContentId(), activity.getSectionId(), activity.getChapId(), tbookId));
+            }
+            else{
+                score.setScore(-1);
+            }
+            scores.add(score);
+        }
+        System.out.println("Scores  ___>"+scores);
+        model.addAttribute("scores", scores);
+        return "student/participationScore";
     }
 
 }

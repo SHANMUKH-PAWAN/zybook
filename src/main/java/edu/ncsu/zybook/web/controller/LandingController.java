@@ -42,12 +42,13 @@ public class LandingController {
     }
 
     @GetMapping("/student")
-    public String studentLanding() {
+    public String studentLanding( ) {
         return "landing/studentlanding";
     }
 
     @GetMapping("/studentnew")
-    public String studentnewLanding() {
+    public String studentnewLanding(@AuthenticationPrincipal CustomUserDetails currentUser, Model model) {
+        model.addAttribute("userId", currentUser.getId());
         return "landing/studentnewlanding";
     }
 

@@ -3,11 +3,13 @@ package edu.ncsu.zybook.web.controller;
 import edu.ncsu.zybook.domain.model.ActiveCourse;
 import edu.ncsu.zybook.domain.model.Course;
 import edu.ncsu.zybook.domain.model.Textbook;
+import edu.ncsu.zybook.security.CustomUserDetails;
 import edu.ncsu.zybook.service.ICourseService;
 import edu.ncsu.zybook.service.ITextbookService;
 import edu.ncsu.zybook.service.IUserService;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +33,7 @@ public class CourseController {
         this.userService = userService;
     }
     @GetMapping("/{id}")
-    public String getCourse(@PathVariable String id, Model model) {
+    public String getCourse(@PathVariable String id, @AuthenticationPrincipal CustomUserDetails customUserDetails, Model model) {
         Optional<Course> coursevariable = courseService.findById(id);
         if (coursevariable.isPresent()) {
             Course course = coursevariable.get();
@@ -43,6 +45,7 @@ public class CourseController {
             else {model.addAttribute("textbook", null);
             }
             model.addAttribute("course", course);
+            model.addAttribute("userId",customUserDetails.getId());
             return "course/course";
         }else {
             return "course/not-found";
