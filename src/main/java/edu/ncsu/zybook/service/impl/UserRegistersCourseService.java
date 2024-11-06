@@ -82,4 +82,14 @@ public class UserRegistersCourseService implements IUserRegistersCourseService {
     public List<UserRegistersCourse> findAllByUser(int userId) {
         return userRegistersCourseRepository.findAllByUser(userId);
     }
+
+    @Override
+    public List<User> getAllStudents(String courseId){
+        return userRegistersCourseRepository.getAllStudents(courseId);
+    }
+
+    @Override
+    public String getCourseId(String courseToken){
+        return userRegistersCourseRepository.getCourseId(courseToken);
+    }
 }

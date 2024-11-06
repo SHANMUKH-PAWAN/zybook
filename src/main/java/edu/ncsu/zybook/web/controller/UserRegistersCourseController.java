@@ -55,19 +55,25 @@ public class UserRegistersCourseController {
             User registeruser = user.get();
 
             registration.setUserId(registeruser.getUserId());
-            registration.setCourseId(userWeakDTO.getCourseId());
+            String courseId = userRegistersCourseService.getCourseId(userWeakDTO.getCourseToken());
+            registration.setCourseId(courseId);
+            registration.setCourseToken(userWeakDTO.getCourseToken());
             registration.setEnrollmentDate(new Timestamp(System.currentTimeMillis()));
             registration.setApprovalStatus("Waiting");
 
             if (userRegistersCourseService.getCurrentCount(userWeakDTO.getCourseId())<userRegistersCourseService.getCapacity(userWeakDTO.getCourseId())) {
                 registration.setUserId(registeruser.getUserId());
-                registration.setCourseId(userWeakDTO.getCourseId());
+                courseId = userRegistersCourseService.getCourseId(userWeakDTO.getCourseToken());
+                registration.setCourseId(courseId);
+                registration.setCourseToken(userWeakDTO.getCourseToken());
                 registration.setEnrollmentDate(new Timestamp(System.currentTimeMillis()));
                 registration.setApprovalStatus("Waiting");
             }
             else if (userRegistersCourseService.getCurrentCount(userWeakDTO.getCourseId())==0){
                 registration.setUserId(registeruser.getUserId());
-                registration.setCourseId(userWeakDTO.getCourseId());
+                courseId = userRegistersCourseService.getCourseId(userWeakDTO.getCourseToken());
+                registration.setCourseId(courseId);
+                registration.setCourseToken(userWeakDTO.getCourseToken());
                 registration.setEnrollmentDate(new Timestamp(System.currentTimeMillis()));
                 registration.setApprovalStatus("Waiting");
                 //return "redirect:/landing/student";
@@ -88,7 +94,9 @@ public class UserRegistersCourseController {
             User createdUser = userService.create(newuser);
 
             registration.setUserId(createdUser.getUserId());
-            registration.setCourseId(userWeakDTO.getCourseId());
+            String courseId = userRegistersCourseService.getCourseId(userWeakDTO.getCourseToken());
+            registration.setCourseId(courseId);
+            registration.setCourseToken(userWeakDTO.getCourseToken());
             registration.setEnrollmentDate(new Timestamp(System.currentTimeMillis()));
             registration.setApprovalStatus("Waiting");
 
@@ -97,13 +105,17 @@ public class UserRegistersCourseController {
 
             if (userRegistersCourseService.getCurrentCount(userWeakDTO.getCourseId())<userRegistersCourseService.getCapacity(userWeakDTO.getCourseId())) {
                 registration.setUserId(createdUser.getUserId());
-                registration.setCourseId(userWeakDTO.getCourseId());
+                courseId = userRegistersCourseService.getCourseId(userWeakDTO.getCourseToken());
+                registration.setCourseId(courseId);
+                registration.setCourseToken(userWeakDTO.getCourseToken());
                 registration.setEnrollmentDate(new Timestamp(System.currentTimeMillis()));
                 registration.setApprovalStatus("Waiting");
             }
             else if (userRegistersCourseService.getCurrentCount(userWeakDTO.getCourseId())==0){
                 registration.setUserId(createdUser.getUserId());
-                registration.setCourseId(userWeakDTO.getCourseId());
+                courseId = userRegistersCourseService.getCourseId(userWeakDTO.getCourseToken());
+                registration.setCourseId(courseId);
+                registration.setCourseToken(userWeakDTO.getCourseToken());
                 registration.setEnrollmentDate(new Timestamp(System.currentTimeMillis()));
                 registration.setApprovalStatus("Waiting");
                 //return "redirect:/landing/student";
@@ -117,6 +129,13 @@ public class UserRegistersCourseController {
         model.addAttribute("message", "Enrollment successful!");
 
         return "redirect:/landing/student";
+    }
+
+    @GetMapping("/students")
+    public String getAllStudents(@RequestParam String courseId, Model model) {
+        List<User> students = userRegistersCourseService.getAllStudents(courseId);
+        model.addAttribute("students", students);
+        return "enrollment/students";
     }
 
 
