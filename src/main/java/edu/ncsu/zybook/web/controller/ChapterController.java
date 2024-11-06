@@ -8,10 +8,12 @@ import edu.ncsu.zybook.domain.model.Textbook;
 import edu.ncsu.zybook.mapper.ChapterReadDTOMapper;
 import edu.ncsu.zybook.mapper.SectionWeakMapper;
 import edu.ncsu.zybook.mapper.TextbookReadDTOMapper;
+import edu.ncsu.zybook.security.CustomUserDetails;
 import edu.ncsu.zybook.service.IChapterService;
 import edu.ncsu.zybook.service.ISectionService;
 import edu.ncsu.zybook.service.ITextbookService;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -62,23 +64,35 @@ public class ChapterController {
 
     @GetMapping()
     public String getAllChapters(@RequestParam("tbookId") int tbookId, Model model) {
-        List<Chapter> chapters = iChapterService.findAllByTextbook(tbookId);
+        List<Chapter> chapters = iChapterService.findAllByTextbook(tbookId)
+                .stream()
+                .filter(chapter -> !chapter.isHidden())
+                .collect(Collectors.toList());;
+                System.out.println(chapters);
         model.addAttribute("chapters", chapters);
         return "chapter/list";
     }
 
     @GetMapping("/chapter")
-    public String getChapter(
-            @RequestParam("tbookId") int textbookId,
-            @RequestParam("chapId") int chapterId,
-            Model model) {
+    public String getChapter(@RequestParam("tbookId") int textbookId,
+                             @RequestParam("chapId") int chapterId,
+                             @AuthenticationPrincipal CustomUserDetails customUserDetails,
+                             Model model) {
         Optional<Chapter> chapter = iChapterService.findById(chapterId, textbookId);
         if (chapter.isPresent()) {
-            List<Section> sections = iSectionService.findAllByChapter(textbookId,chapterId);
+            List<Section> sections;
+            if (customUserDetails.getAuthorities().stream().anyMatch(auth -> auth.getAuthority().equalsIgnoreCase("ROLE_STUDENT"))) {
+                sections = iSectionService.findAllByChapter(textbookId, chapterId)
+                        .stream()
+                        .filter(section -> !section.isHidden())
+                        .collect(Collectors.toList());
+            } else {
+                sections = iSectionService.findAllByChapter(textbookId, chapterId);
+            }
+
             ChapterReadDTO chapterReadDTO = chapterReadDTOMapper.toDTO(chapter.get());
             chapterReadDTO.setSections(sections.stream().map(sectionWeakMapper::toDTO).collect(Collectors.toList()));
-            model.addAttribute("chapter", chapterReadDTO );
-//            System.out.println(Arrays.toString(chapterReadDTO.getSections().toArray()));
+            model.addAttribute("chapter", chapterReadDTO);
             return "chapter/chapter";
         } else {
             return "chapter/not-found";

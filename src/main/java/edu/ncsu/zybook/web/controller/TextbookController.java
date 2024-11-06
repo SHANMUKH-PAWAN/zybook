@@ -5,11 +5,13 @@ import edu.ncsu.zybook.domain.model.Chapter;
 import edu.ncsu.zybook.domain.model.Textbook;
 import edu.ncsu.zybook.mapper.ChapterWeakMapper;
 import edu.ncsu.zybook.mapper.TextbookReadDTOMapper;
+import edu.ncsu.zybook.security.CustomUserDetails;
 import edu.ncsu.zybook.service.IChapterService;
 import edu.ncsu.zybook.service.ITextbookService;
 import edu.ncsu.zybook.service.impl.ChapterService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -35,12 +37,23 @@ public class TextbookController {
     }
 
     @GetMapping("/{id}")
-    public String getTextbook(@PathVariable int id, Model model) {
+    public String getTextbook(@PathVariable int id, @AuthenticationPrincipal CustomUserDetails customUserDetails, Model model) {
         Optional<Textbook> textbook = textbookService.findById(id);
         if (textbook.isPresent()) {
-
             TextbookReadDTO textbookReadDTO = textbookReadDTOMapper.toDTO(textbook.get());
-            List<Chapter> chapters = iChapterService.findAllByTextbook(textbookReadDTO.getUid());
+            List<Chapter> chapters;
+            if (customUserDetails.getAuthorities().stream().anyMatch(auth -> auth.getAuthority().equalsIgnoreCase("ROLE_STUDENT"))) {
+                // Only non-hidden chapters for students
+                chapters = iChapterService.findAllByTextbook(textbookReadDTO.getUid())
+                        .stream()
+                        .filter(chapter -> !chapter.isHidden())
+                        .collect(Collectors.toList());
+                textbookReadDTO.setChapters(chapters.stream().map(chapterWeakMapper::toDTO).collect(Collectors.toList()));
+            } else {
+                // For non-students, fetch all chapters
+                chapters = iChapterService.findAllByTextbook(textbookReadDTO.getUid());
+                textbookReadDTO.setChapters(chapters.stream().map(chapterWeakMapper::toDTO).collect(Collectors.toList()));
+            }
             textbookReadDTO.setChapters(chapters.stream().map(chapterWeakMapper::toDTO).collect(Collectors.toList()));
             model.addAttribute("textbook", textbookReadDTO);
             return "textbook/textbook";

@@ -73,9 +73,9 @@ public class ContentController {
         content.setTbookId(textbookId);
         content.setChapId(chapterId);
         content.setSectionId(sectionId);
-        System.out.println("Content in controller"+content);
+        System.out.println("Content in controller" + content);
         Content createdContent = contentService.create(content);
-        return "redirect:/contents?tbookId="+textbookId+"&chapId="+chapterId+"&sectionId="+sectionId;
+        return "redirect:/contents?tbookId=" + textbookId + "&chapId=" + chapterId + "&sectionId=" + sectionId;
     }
 
     @PreAuthorize("hasAnyRole('FACULTY', 'TA', 'ADMIN')")
@@ -87,7 +87,7 @@ public class ContentController {
         content.setContentType("image");
         System.out.println(content);
         Content createdContent = contentService.create(contentReadDTOMapper.toEntity(content));
-        return "redirect:/contents?tbookId="+textbookId+"&chapId="+chapterId+"&sectionId="+sectionId;
+        return "redirect:/contents?tbookId=" + textbookId + "&chapId=" + chapterId + "&sectionId=" + sectionId;
     }
 
     @PreAuthorize("hasAnyRole('FACULTY', 'TA', 'ADMIN')")
@@ -95,13 +95,13 @@ public class ContentController {
     public String editTextContentForm(@RequestParam("tbookId") int textbookId,
                                       @RequestParam("chapId") int chapterId,
                                       @RequestParam("sectionId") int sectionId,
-                                       @RequestParam("contentId") int contentId,
-                                       Model model) {
-        Optional<Content> result = contentService.findById(contentId,sectionId, chapterId, textbookId);
+                                      @RequestParam("contentId") int contentId,
+                                      Model model) {
+        Optional<Content> result = contentService.findById(contentId, sectionId, chapterId, textbookId);
 
         if (result.isPresent()) {
             TextContent textContent = (TextContent) result.get();
-            model.addAttribute("textContent", textContent );
+            model.addAttribute("textContent", textContent);
             return "content/createTextContent";
         } else {
             return "section/not-found";
@@ -114,8 +114,8 @@ public class ContentController {
                                        @RequestParam("chapId") int chapterId,
                                        @RequestParam("sectionId") int sectionId,
                                        @RequestParam("contentId") int contentId,
-                                      Model model) {
-        Optional<Content> result = contentService.findById(contentId,sectionId, chapterId, textbookId);
+                                       Model model) {
+        Optional<Content> result = contentService.findById(contentId, sectionId, chapterId, textbookId);
 
         if (result.isPresent()) {
 
@@ -144,10 +144,9 @@ public class ContentController {
             if (updatedContent.isPresent()) {
                 // Redirect to a content view page after update
                 return "redirect:/contents?tbookId=" + textbookId + "&chapId=" + chapterId + "&sectionId=" + sectionId;
-            }
-            else return "section/not-found";
+            } else return "section/not-found";
 
-            } catch (RuntimeException e) {
+        } catch (RuntimeException e) {
             return "section/not-found";
         }
     }
@@ -161,7 +160,7 @@ public class ContentController {
                                      @ModelAttribute ContentReadDTO content) {
         content.setContentType("image");
         Optional<Content> createdContent = contentService.update(contentReadDTOMapper.toEntity(content));
-        return "redirect:/contents?tbookId="+textbookId+"&chapId="+chapterId+"&sectionId="+sectionId;
+        return "redirect:/contents?tbookId=" + textbookId + "&chapId=" + chapterId + "&sectionId=" + sectionId;
 
     }
 
@@ -174,7 +173,7 @@ public class ContentController {
     ) {
         try {
             boolean deleted = contentService.delete(contentId, sectionId, chapId, tbookId);
-            return deleted ?"redirect:/contents?tbookId="+tbookId+"&chapId="+chapId+"&sectionId="+sectionId
+            return deleted ? "redirect:/contents?tbookId=" + tbookId + "&chapId=" + chapId + "&sectionId=" + sectionId
                     : "section/not-found.html";
         } catch (RuntimeException e) {
             return "section/not-found.html";
@@ -188,15 +187,25 @@ public class ContentController {
                                          @RequestParam int chapId,
                                          @RequestParam int tbookId,
                                          Model model) {
-        List<Content> contentList = contentService.getAllContentBySection(sectionId, chapId, tbookId);
-        List<ContentReadDTO> contentReadDTOS = new ArrayList<>();
-        contentReadDTOS = contentList.stream().map(contentReadDTOMapper::toDTO).collect(Collectors.toList());
-
+        List<Content> contentList;
+        if (customUserDetails.getAuthorities().stream().anyMatch(auth -> auth.getAuthority().equalsIgnoreCase("ROLE_STUDENT"))) {
+            contentList = contentService.getAllContentBySection(sectionId, chapId, tbookId)
+                    .stream()
+                    .filter(content -> !content.isHidden())
+                    .collect(Collectors.toList());
+        } else {
+            contentList = contentService.getAllContentBySection(sectionId, chapId, tbookId);
+        }
+        List<ContentReadDTO> contentReadDTOS = contentList.stream()
+                .map(contentReadDTOMapper::toDTO)
+                .collect(Collectors.toList());
         model.addAttribute("userId", customUserDetails.getId());
         model.addAttribute("allContents", contentReadDTOS);
         model.addAttribute("sectionId", sectionId);
         model.addAttribute("chapId", chapId);
         model.addAttribute("tbookId", tbookId);
+
         return "content/list";
     }
 }
+
