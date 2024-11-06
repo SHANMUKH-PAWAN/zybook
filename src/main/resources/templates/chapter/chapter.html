@@ -8,7 +8,9 @@
 <p><strong>ID:</strong> <span th:text="${chapter.cno}">ID</span></p>
 <p><strong>Chapter Code:</strong> <span th:text="${chapter.chapterCode}">Code</span></p>
 <p><strong>Title:</strong> <span th:text="${chapter.title}">Title</span></p>
+<div sec:authorize="hasAnyRole('ADMIN', 'FACULTY', 'TA')">
 <p><strong>Hidden:</strong> <span th:text="${chapter.hidden}">Hidden</span></p>
+</div>
 <p><strong>Text Book:</strong> <span th:text="${chapter.tbookId}">Code</span></p>
 
 <div sec:authorize="hasAnyRole('FACULTY','ADMIN','TA')">
@@ -21,7 +23,7 @@
     <tr>
         <th>Section ID</th>
         <th>Section Title</th>
-        <th>Hidden</th>
+        <th sec:authorize="hasAnyRole('FACULTY', 'ADMIN', 'TA')">Hidden</th>
         <th>Actions</th>
     </tr>
     </thead>
@@ -30,7 +32,7 @@
         <td th:text="${iterStat.index+1}">Section ID</td> <!-- Added indexing to display default numbering-->
 <!--        <td th:text="${section.sno}">Section ID</td>-->
         <td th:text="${section.title}">Section Title</td>
-        <td th:text="${section.hidden}">Hidden</td>
+        <td  sec:authorize="hasAnyRole('FACULTY', 'ADMIN', 'TA')" th:text="${section.hidden}">Hidden</td>
         <td>
             <a th:href="@{/sections/section(tbookId=${chapter.tbookId}, chapId=${chapter.cno}, sno=${section.sno})}">View</a>
             <div sec:authorize="hasAnyRole('ADMIN','FACULTY','TA')">

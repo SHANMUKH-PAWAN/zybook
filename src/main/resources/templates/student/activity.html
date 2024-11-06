@@ -90,18 +90,23 @@
 <!-- Content Block -->
 <div class="content-box">
     <section>
-        <h2>Content Information</h2>
+        <h2>Content</h2>
+        <div sec:authorize="hasAnyRole('FACULTY', 'TA')">
         <p><strong>Content Type:</strong> <span th:text="${content.contentType}">Content Type</span></p>
         <p><strong>Hidden:</strong> <span th:text="${content.isHidden} ? 'Yes' : 'No'">Hidden Status</span></p>
-
+        </div>
         <!-- Display Content Based on Type -->
         <section>
             <div th:if="${content.contentType == 'text'}">
+                <div sec:authorize="hasAnyRole('FACULTY', 'TA')">
                 <h3>Text Content</h3>
+                </div>
                 <p th:text="${content.data != null ? content.data : 'No text data available'}">Text Data</p>
             </div>
             <div th:if="${content.contentType == 'image'}">
+                <div sec:authorize="hasAnyRole('FACULTY', 'TA')">
                 <h3>Image Content</h3>
+                </div>
                 <div th:if="${content.data != null}">
                     <img th:src="@{'data:image/png;base64,' + ${content.data}}" alt="Image Content" style="max-width: 100%; max-height: 300px; margin-top: 10px;" />
                 </div>
