@@ -55,9 +55,12 @@
                     Edit Image
                 </a>
             </span> <br>
+            <div th:if="${(currentRole == 'ta' and content.ownedBy == 'ta') or (currentRole == 'faculty' and (content.ownedBy == 'faculty' or content.ownedBy == 'ta')) or (currentRole == 'admin' and (content.ownedBy == 'faculty' or content.ownedBy == 'ta' or content.ownedBy == 'admin'))}">
             <form th:action="@{/contents(tbookId=${tbookId}, chapId=${chapId}, sectionId=${sectionId}, contentId=${content.contentId})}" th:method="delete" style="display:inline;">
                 <button type="submit">Delete</button>
             </form>
+            </div>
+
         </td>
         </div>
         <td>

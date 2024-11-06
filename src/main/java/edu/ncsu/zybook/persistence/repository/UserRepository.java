@@ -76,7 +76,6 @@ public class UserRepository implements IUserRepository{
         String roleName = jdbcTemplate.queryForObject(sql, new Object[]{userId}, String.class);
         return roleName;
     }
-
     @Override
     public boolean delete(int id) {
         String sql = "DELETE FROM User WHERE user_id = ?";
