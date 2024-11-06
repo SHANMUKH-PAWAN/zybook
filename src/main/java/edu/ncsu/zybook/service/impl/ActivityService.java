@@ -51,4 +51,9 @@ public class ActivityService implements IActivityService {
     public List<Activity> findAllByContent(int contentId, int sectionId, int chapId, int tbookId) {
         return activityRepository.findAllByContent(contentId, sectionId, chapId, tbookId);
     }
+
+    @Override
+    public List<Activity> findAllActivitiesByTextbook(int tbookId) {
+        return activityRepository.findAllActivitiesByTextbook(tbookId);
+    }
 }

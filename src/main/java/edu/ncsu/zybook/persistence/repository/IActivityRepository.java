@@ -14,4 +14,6 @@ public interface IActivityRepository {
     boolean delete(int activityId, int contentId, int sectionId, int chapId, int tbookId);
 
     List<Activity> findAllByContent(int contentId, int sectionId, int chapId, int tbookId);
+
+    List<Activity> findAllActivitiesByTextbook(int tbookId);
 }

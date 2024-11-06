@@ -66,6 +66,11 @@ public class ActivityRepository implements IActivityRepository {
         return jdbcTemplate.query(sql, new Object[]{contentId, sectionId, chapId, tbookId}, new ActivityRowMapper());
     }
 
+    public List<Activity> findAllActivitiesByTextbook(int tbookId){
+        String sql = "SELECT * FROM Activity WHERE t_id = ? ORDER BY activity_id";
+        return jdbcTemplate.query(sql, new Object[]{tbookId}, new ActivityRowMapper());
+    }
+
     private static class ActivityRowMapper implements RowMapper<Activity> {
         @Override
         public Activity mapRow(ResultSet rs, int rowNum) throws SQLException {

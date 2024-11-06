@@ -59,6 +59,7 @@ public class UserParticipationRepository implements IUserParticipationRepository
         return rowsAffected > 0 ? Optional.of(userParticipation) : Optional.empty();
     }
 
+
     private static class UserParticipationRowMapper implements RowMapper<UserParticipation> {
         @Override
         public UserParticipation mapRow(ResultSet rs, int rowNum) throws SQLException {
