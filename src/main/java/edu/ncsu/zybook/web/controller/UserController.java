@@ -75,15 +75,19 @@ public class UserController {
 
     @PreAuthorize("hasAnyRole('ADMIN','FACULTY')")
     @PostMapping("/ta")
-    public String createTA(@ModelAttribute User user, @RequestParam("courseId") String courseId) {
+    public String createTA(@AuthenticationPrincipal CustomUserDetails currentUser, @ModelAttribute User user, @RequestParam("courseId") String courseId) {
         PasswordEncoder passwordEncoder = securityConfig.passwordEncoder();
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userService.createTA(user, courseId);
+        String currentUserRole = userService.getUserRole(currentUser.getId());
+        if(currentUserRole.equalsIgnoreCase("FACULTY")) {
+            return "redirect:/landing/faculty";
+        }
         return "redirect:/users";
     }
 
     // Allow user to edit their own profile or allow access to admins
-    @PreAuthorize("#id == principal.id or hasRole('ADMIN')")
+    @PreAuthorize("#id == principal.id or hasAnyRole('ADMIN','FACULTY','TA')")
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable int id, Model model) {
         Optional<User> user = userService.findById(id);
@@ -102,24 +106,17 @@ public class UserController {
     public String updateUser(@ModelAttribute User user, @RequestParam("userId") int userId) {
         PasswordEncoder passwordEncoder = securityConfig.passwordEncoder();
         System.out.println(user);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setNewPassword(passwordEncoder.encode(user.getNewPassword()));
-        user.setConfirmPassword(passwordEncoder.encode(user.getConfirmPassword()));
-        if(passwordEncoder.matches(user.getNewPassword(),user.getConfirmPassword())) {
-            System.out.println("New password equals confirm password");
-            if(passwordEncoder.matches(user.getPassword(),userService.getPassword(user))){
+        if(user.getNewPassword().equals(user.getConfirmPassword())) {
+            String currentPasswordEntered = user.getPassword();
+            String passwordFromDb = userService.getPassword(user);
+
+            if (passwordEncoder.matches(currentPasswordEntered, passwordFromDb)){
                 System.out.println("Entered Password equals db password");
-                Optional<User>updatedUser = userService.update(user);
-                if(updatedUser.isPresent()) {
-                    System.out.println("User object after update:"+updatedUser.get());
-                }
+                user.setNewPassword(passwordEncoder.encode(user.getNewPassword()));
+                Optional<User> updatedUser = userService.update(user);
+
             }
         }
-//        System.out.println("User object from update:"+user);
-//        Optional<User>updatedUser = userService.update(user);
-//        if(updatedUser.isPresent()) {
-//            System.out.println("User object after update:"+updatedUser.get());
-//        }
         return "redirect:/users/"+userId;
     }
 

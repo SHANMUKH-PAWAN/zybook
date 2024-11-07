@@ -102,8 +102,8 @@ public class CourseService implements ICourseService {
     }
 
     @Override
-    public List<Course> getEvaluationCourse(int professorId) {
-        List<Course> evaluationCourses = courseRepository.getEvaluationCourse(professorId);
+    public List<Course> getEvaluationCourse(int professorId, String role) {
+        List<Course> evaluationCourses = courseRepository.getEvaluationCourse(professorId, role);
         System.out.println("In service:"+evaluationCourses.toString());
         return evaluationCourses;
     }
