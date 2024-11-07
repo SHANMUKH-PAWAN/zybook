@@ -78,6 +78,12 @@ public class SectionRepository implements ISectionRepository {
         return rowsAffected > 0;
     }
 
+    @Override
+    public Integer countOfSectionsInChapPerTbook(int tbookId, int chapId) {
+        String sql = "SELECT COUNT(*) FROM Section WHERE tbook_id = ? AND chapter_no = ?";
+        return jdbcTemplate.queryForObject(sql, new Object[]{tbookId, chapId}, Integer.class);
+    }
+
     private static class SectionRowMapper implements RowMapper<Section> {
         @Override
         public Section mapRow(ResultSet rs, int rowNum) throws SQLException {

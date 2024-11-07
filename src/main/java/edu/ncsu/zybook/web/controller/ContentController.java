@@ -1,14 +1,12 @@
 package edu.ncsu.zybook.web.controller;
 
 import edu.ncsu.zybook.DTO.ContentReadDTO;
-import edu.ncsu.zybook.domain.model.Content;
-import edu.ncsu.zybook.domain.model.ImageContent;
-import edu.ncsu.zybook.domain.model.TextContent;
-import edu.ncsu.zybook.domain.model.Textbook;
+import edu.ncsu.zybook.domain.model.*;
 import edu.ncsu.zybook.mapper.ContentReadDTOMapper;
 import edu.ncsu.zybook.persistence.repository.UserRepository;
 import edu.ncsu.zybook.security.CustomUserDetails;
 import edu.ncsu.zybook.service.IContentService;
+import edu.ncsu.zybook.service.ISectionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,11 +30,13 @@ public class ContentController {
     private final IContentService contentService;
     private final ContentReadDTOMapper contentReadDTOMapper;
     private final UserRepository userRepository;
+    private final ISectionService sectionService;
 
-    public ContentController(IContentService contentService, ContentReadDTOMapper contentReadDTOMapper, UserRepository userRepository) {
+    public ContentController(IContentService contentService, ContentReadDTOMapper contentReadDTOMapper, UserRepository userRepository, ISectionService sectionService) {
         this.contentService = contentService;
         this.contentReadDTOMapper = contentReadDTOMapper;
         this.userRepository = userRepository;
+        this.sectionService = sectionService;
     }
 
     @GetMapping("/new/text")
@@ -209,6 +209,30 @@ public class ContentController {
         model.addAttribute("chapId", chapId);
         model.addAttribute("tbookId", tbookId);
 
+        model.addAttribute("currentRole",loggedInUserRole);
+        return "content/list";
+    }
+
+    @GetMapping("/perChapter")
+    public String getAllContentByChapter(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                         @RequestParam int chapId,
+                                         @RequestParam int tbookId,
+                                         Model model) {
+
+        List<Section> sections = sectionService.findAllByChapter(chapId, tbookId);
+        List<ContentReadDTO> contentReadDTOS =  new ArrayList<>();
+        sections.forEach(section -> {
+            List<Content> contentList = contentService.getAllContentBySection(section.getSno(), chapId, tbookId);
+            contentReadDTOS.addAll(contentList.stream()
+                    .map(contentReadDTOMapper::toDTO)
+                    .toList());
+        });
+
+        String loggedInUserRole = userRepository.getUserRole(customUserDetails.getId());
+        model.addAttribute("userId", customUserDetails.getId());
+        model.addAttribute("allContents", contentReadDTOS);
+        model.addAttribute("chapId", chapId);
+        model.addAttribute("tbookId", tbookId);
         model.addAttribute("currentRole",loggedInUserRole);
         return "content/list";
     }

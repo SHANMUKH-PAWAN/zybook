@@ -17,4 +17,6 @@ public interface ISectionRepository {
     boolean delete(int tbookId, int chapterNo, int sno);
 
     List<Section> findAllByChapter(int tbookId, int chapterNo);
+
+    Integer countOfSectionsInChapPerTbook(int tbookId, int chapId);
 }

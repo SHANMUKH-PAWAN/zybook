@@ -1,7 +1,10 @@
 package edu.ncsu.zybook.persistence.repository;
 
+import edu.ncsu.zybook.DTO.CourseUserDTO;
 import edu.ncsu.zybook.domain.model.ActiveCourse;
 import edu.ncsu.zybook.domain.model.Course;
+import edu.ncsu.zybook.DTO.ActiveCourseInfoDTO;
+import edu.ncsu.zybook.DTO.CourseWaitingListDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -113,6 +116,56 @@ public class CourseRepository implements ICourseRepository {
     }
 
     @Override
+    public List<CourseUserDTO> findFacultyAndTAsForCourses() {
+        String sql = """
+            SELECT c.title AS course_title,
+                u.fname AS first_name,
+                u.lname AS last_name,
+                u.role_name AS role
+            FROM Course c
+            LEFT JOIN Assigned a ON c.course_id = a.course_id
+            LEFT JOIN User u ON a.user_id = u.user_id AND u.role_name IN ('faculty', 'ta')
+            ORDER BY c.title
+        """;
+
+        return jdbcTemplate.query(sql, courseUserRowMapper());
+    }
+
+    @Override
+    public List<ActiveCourseInfoDTO> findActiveCoursesWithFacultyAndStudentCount() {
+        String sql = """
+            SELECT c.course_id,
+                CONCAT(u.fname, ' ', u.lname) AS faculty_name,
+                COUNT(urc.user_id) AS total_students
+            FROM Course c
+            LEFT JOIN Assigned a ON c.course_id = a.course_id
+            LEFT JOIN User u ON a.user_id = u.user_id AND u.role_name = 'faculty'
+            LEFT JOIN UserRegistersCourse urc ON c.course_id = urc.CourseID AND urc.approval_status = 'Approved'
+            WHERE c.course_type = 'Active'
+            GROUP BY c.course_id, faculty_name
+            ORDER BY c.course_id
+        """;
+
+        return jdbcTemplate.query(sql, activeCourseInfoRowMapper());
+    }
+
+    @Override
+    public Optional<CourseWaitingListDTO> findCourseWithLargestWaitingList() {
+        String sql = """
+            SELECT urc.CourseID AS course_id,
+                COUNT(urc.user_id) AS waiting_list_count
+            FROM UserRegistersCourse urc
+            WHERE urc.approval_status = 'Waiting'
+            GROUP BY urc.CourseID
+            ORDER BY waiting_list_count DESC
+            LIMIT 1
+        """;
+
+        List<CourseWaitingListDTO> result = jdbcTemplate.query(sql, waitingListRowMapper());
+        return result.stream().findFirst();
+    }
+
+    @Override
     public List<Course> getEvaluationCourse(int professorId) {
         String sql = "SELECT * FROM Course WHERE professor_id = ? AND course_type = 'EVALUATION'";
         List<Course> evaluationCourses = jdbcTemplate.query(sql, new Object[]{professorId}, new CourseRowMapper());
@@ -176,4 +229,29 @@ public class CourseRepository implements ICourseRepository {
             System.out.println("No active course found with course_id: " + course.getCourseId());
         }
     }
+
+    private RowMapper<CourseUserDTO> courseUserRowMapper() {
+        return (rs, rowNum) -> new CourseUserDTO(
+                rs.getString("course_title"),
+                rs.getString("first_name"),
+                rs.getString("last_name"),
+                rs.getString("role")
+        );
+    }
+
+    private RowMapper<ActiveCourseInfoDTO> activeCourseInfoRowMapper() {
+        return (rs, rowNum) -> new ActiveCourseInfoDTO(
+                rs.getString("course_id"),
+                rs.getString("faculty_name"),
+                rs.getInt("total_students")
+        );
+    }
+
+    private RowMapper<CourseWaitingListDTO> waitingListRowMapper() {
+        return (rs, rowNum) -> new CourseWaitingListDTO(
+                rs.getString("course_id"),
+                rs.getInt("waiting_list_count")
+        );
+    }
+
 }
