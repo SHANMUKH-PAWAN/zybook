@@ -166,10 +166,20 @@ public class CourseRepository implements ICourseRepository {
     }
 
     @Override
-    public List<Course> getEvaluationCourse(int professorId) {
-        String sql = "SELECT * FROM Course WHERE professor_id = ? AND course_type = 'EVALUATION'";
-        List<Course> evaluationCourses = jdbcTemplate.query(sql, new Object[]{professorId}, new CourseRowMapper());
-        return evaluationCourses;
+    public List<Course> getEvaluationCourse(int professorId, String role) {
+        if(role.equalsIgnoreCase("faculty")){
+            String sql = "SELECT * FROM Course WHERE professor_id = ? AND course_type = 'EVALUATION'";
+            List<Course> evaluationCourses = jdbcTemplate.query(sql, new Object[]{professorId}, new CourseRowMapper());
+            return evaluationCourses;
+        }
+        else if(role.equalsIgnoreCase("ta")){
+            String sql = "SELECT C.course_id course_id, C.title title, C.start_date start_date, C.end_date end_date, C.course_type course_type, C.textbook_id textbook_id, C.professor_id professor_id FROM Assigned A, Course C WHERE A.course_id = C.course_id AND A.user_id=? AND course_type = 'EVALUATION'";
+            List<Course> courses = jdbcTemplate.query(sql, new Object[]{professorId}, new CourseRowMapper());
+            System.out.println("In repository for TA:"+courses.toString());
+            return courses;
+        }
+        return null;
+
     }
 
     @Override

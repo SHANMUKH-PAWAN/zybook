@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -156,4 +157,19 @@ public class UserRegistersCourseController {
 //            return "enrollments/not-found";
 //        }
 //    }
+
+    @GetMapping("/courses")
+    public String getCoursesForStudents(@RequestParam("userId") int userId, Model model) {
+        List<UserRegistersCourse> userRegistersCourses = userRegistersCourseService.findAllByUser(userId);
+        List<Course> enrolledCourses= new ArrayList<>();
+        for(UserRegistersCourse userRegistersCourse : userRegistersCourses){
+            Optional<Course> result = courseService.findById(userRegistersCourse.getCourseId());
+            if(result.isPresent()){
+                enrolledCourses.add(result.get());
+            }
+        }
+        System.out.println("Enrolled courses for student:"+enrolledCourses.toString());
+        model.addAttribute("courses", enrolledCourses);
+        return "course/list";
+    }
 }

@@ -113,7 +113,7 @@ public class CourseController {
     public String getActiveCourse(@RequestParam("userId") int userId, Model model) {
         String role = userService.getUserRole(userId);
         if (role.equals("")) {
-            throw new RuntimeException("No suitbale role found for the user to get courses");
+            throw new RuntimeException("No suitbale role found for the user to get active courses");
         }
         List<ActiveCourse> activeCourses = courseService.getActiveCourses(userId,role);
         System.out.println(activeCourses);
@@ -123,13 +123,25 @@ public class CourseController {
     }
     @GetMapping("/evaluation")
     public String getEvaluationCourse(@RequestParam("userId") int userId, Model model) {
-        List<Course> evalutionCourse = courseService.getEvaluationCourse(userId);
-        model.addAttribute("courses", evalutionCourse);
+        String role = userService.getUserRole(userId);
+        if (role.equals("")) {
+            throw new RuntimeException("No suitable role found for the user to get eval courses");
+        }
+        List<Course> evaluationCourse = courseService.getEvaluationCourse(userId,role);
+        model.addAttribute("courses", evaluationCourse);
         return "course/list";
     }
     @GetMapping("/all")
     public String getAllCoursesForUser(@RequestParam("userId") int userId, Model model) {
-        List<Course> courses = courseService.getAllCoursesForUser(userId);
+//        List<Course> courses = courseService.getAllCoursesForUser(userId);
+        String role = userService.getUserRole(userId);
+        if(role.equalsIgnoreCase("ADMIN")){
+            List<Course> courses = courseService.getAllCoursesForUser(userId);
+            model.addAttribute("courses", courses);
+            return "course/list";
+        }
+        List<Course> courses = courseService.getActiveCourses(userId,role).stream().map(e->(Course)e).collect(Collectors.toList());
+        courses.addAll(courseService.getEvaluationCourse(userId,role));
         model.addAttribute("courses", courses);
         return "course/list";
     }

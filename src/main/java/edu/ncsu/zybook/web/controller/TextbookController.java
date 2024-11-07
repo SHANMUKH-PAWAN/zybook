@@ -65,7 +65,7 @@ public class TextbookController {
     @GetMapping
     public String getAllTextbooks(
             @RequestParam(defaultValue = "0") int offset,
-            @RequestParam(defaultValue = "10") int limit,
+            @RequestParam(defaultValue = "100") int limit,
             @RequestParam(defaultValue = "uid") String sortBy,
             @RequestParam(defaultValue = "ASC") String sortDirection,
             Model model) {

@@ -60,8 +60,9 @@
     <button type="submit">Save Changes</button>
 </form>
 <br>
+    <div sec:authorize="hasAnyRole('ADMIN')">
 <a th:href="@{/users}">Users List</a>
-
+    </div>
 <div sec:authorize="hasAnyRole('ADMIN')">
     <a th:href="@{/landing/admin}">Back</a>
 </div>

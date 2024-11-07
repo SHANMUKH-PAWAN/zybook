@@ -35,7 +35,18 @@ CREATE TABLE Section (
          ON DELETE CASCADE
          ON UPDATE CASCADE
 );
--- Changeset vengatesh:4 Create Course Table
+-- Changeset vengatesh:4 Create User Table
+CREATE TABLE User(
+                     user_id INT UNSIGNED AUTO_INCREMENT,
+                     fname VARCHAR(50) NOT NULL,
+                     lname VARCHAR(50) NOT NULL,
+                     email VARCHAR(50) UNIQUE NOT NULL,
+                     password VARCHAR(200),
+                     role_name VARCHAR(10) CHECK (role_name IN ('admin', 'student', 'faculty', 'ta')),
+                     PRIMARY KEY (user_id)
+);
+
+-- Changeset vengatesh:5 Create Course Table
 CREATE TABLE Course (
     course_id VARCHAR(50),
     title VARCHAR(100) NOT NULL UNIQUE,
@@ -43,15 +54,17 @@ CREATE TABLE Course (
     end_date DATE NOT NULL,
     course_type VARCHAR(15) NOT NULL DEFAULT 'Evaluation',
     textbook_id SMALLINT UNSIGNED NOT NULL UNIQUE,
+    professor_id INT UNSIGNED,
     PRIMARY KEY (course_id),
     FOREIGN KEY (textbook_id) REFERENCES E_Textbook(uid)
         ON DELETE RESTRICT ON UPDATE CASCADE,
+    FOREIGN KEY (professor_id) REFERENCES User(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
     CHECK (course_type IN ('Active', 'Evaluation'))
 );
 
 
 
--- Changeset vengatesh:5 Create ActiveCourse Table
+-- Changeset vengatesh:6 Create ActiveCourse Table
 CREATE TABLE ActiveCourse(
      course_token CHAR(7) NOT NULL UNIQUE,
      course_capacity SMALLINT NOT NULL,
@@ -59,18 +72,6 @@ CREATE TABLE ActiveCourse(
      PRIMARY KEY (course_id),
      FOREIGN KEY (course_id) REFERENCES Course(course_id)
          ON DELETE RESTRICT ON UPDATE CASCADE
-);
-
--- Changeset vengatesh:6 Create User Table
-CREATE TABLE User(
-     user_id INT UNSIGNED AUTO_INCREMENT,
-     fname VARCHAR(50) NOT NULL,
-     lname VARCHAR(50) NOT NULL,
-     email VARCHAR(50) UNIQUE NOT NULL,
-     password VARCHAR(50),
-     role_name VARCHAR(10)
-         CHECK (role_name IN ('admin', 'student', 'faculty', 'ta')),
-     PRIMARY KEY (user_id)
 );
 
 -- Changeset vengatesh:7 Create Notification Table
@@ -110,8 +111,7 @@ CREATE TABLE Permission(
 -- Changeset vengatesh:10 Create Resource Table
 CREATE TABLE Resource(
      resource_id SMALLINT UNSIGNED AUTO_INCREMENT,
-     resource CHAR(20)
-         CHECK (resource IN ('Course', 'Textbook', 'Chapter', 'Section', 'Content', 'Activity')),
+     resource CHAR(20) CHECK (resource IN ('Course', 'Textbook', 'Chapter', 'Section', 'Content', 'Activity')),
      PRIMARY KEY (resource_id)
 );
 
@@ -140,18 +140,7 @@ CREATE TABLE Assigned(
          ON DELETE CASCADE ON UPDATE CASCADE
 );
 
--- Changeset vengatesh:13 Create Teaches Table
-CREATE TABLE Teaches(
-    course_id VARCHAR(50) NOT NULL,
-    user_id INT UNSIGNED NOT NULL,
-    PRIMARY KEY (course_id, user_id),
-    FOREIGN KEY (course_id) REFERENCES Course(course_id)
-        ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES User(user_id)
-        ON DELETE CASCADE ON UPDATE CASCADE
-);
-
--- Changeset vengatesh:14 Create Trigger before_insert_chapter
+-- Changeset vengatesh:13 Create Trigger before_insert_chapter
 CREATE TRIGGER before_insert_chapter
     BEFORE INSERT ON Chapter
     FOR EACH ROW
@@ -159,7 +148,7 @@ BEGIN
     SET NEW.chapter_code = CONCAT('chap', NEW.cno);
 END;
 
--- Changeset vengatesh:15 Create Content Table
+-- Changeset vengatesh:14 Create Content Table
     CREATE TABLE Content (
      content_id SMALLINT UNSIGNED NOT NULL,
      s_id SMALLINT UNSIGNED NOT NULL,
@@ -167,14 +156,14 @@ END;
      t_id SMALLINT UNSIGNED NOT NULL,
      is_hidden TINYINT DEFAULT 0,
      content_type CHAR(10) CHECK (content_type IN ('text','image','activity')),
-     owned_by VARCHAR(15) DEFAULT 'faculty'
-         CHECK (owned_by IN ('faculty', 'ta')),
+     owned_by VARCHAR(15) DEFAULT 'admin'
+         CHECK (owned_by IN ('faculty', 'ta','admin')),
      PRIMARY KEY (content_id, s_id, c_id, t_id),
      FOREIGN KEY (t_id, c_id, s_id) REFERENCES Section(tbook_id, chapter_no, sno)
          ON DELETE CASCADE ON UPDATE CASCADE
     );
 
--- Changeset vengatesh:16 Create TextContent Table
+-- Changeset vengatesh:15 Create TextContent Table
 CREATE TABLE TextContent (
      content_id SMALLINT UNSIGNED NOT NULL,
      s_id SMALLINT UNSIGNED NOT NULL,
@@ -187,7 +176,7 @@ CREATE TABLE TextContent (
          ON DELETE CASCADE ON UPDATE CASCADE
     );
 
--- Changeset vengatesh:17 Create ImageContent Table
+-- Changeset vengatesh:16 Create ImageContent Table
 CREATE TABLE ImageContent (
   content_id SMALLINT UNSIGNED NOT NULL,
   s_id SMALLINT UNSIGNED NOT NULL,
@@ -200,42 +189,23 @@ CREATE TABLE ImageContent (
       ON DELETE CASCADE ON UPDATE CASCADE
     );
 
--- Changeset vengatesh:18 Create Activity Table
+-- Changeset vengatesh:17 Create Activity Table
 CREATE TABLE Activity (
   activity_id SMALLINT UNSIGNED NOT NULL,
   content_id SMALLINT UNSIGNED NOT NULL,
   s_id SMALLINT UNSIGNED NOT NULL,
   c_id SMALLINT UNSIGNED NOT NULL,
   t_id SMALLINT UNSIGNED NOT NULL,
+  isHidden TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (activity_id, content_id, s_id, c_id, t_id),
   FOREIGN KEY (content_id, s_id, c_id, t_id)
       REFERENCES Content(content_id, s_id, c_id, t_id)
       ON DELETE CASCADE ON UPDATE CASCADE
     );
 
--- Changeset vengatesh:19 Create Participation Table
-CREATE TABLE Participation(
-                              user_id INT UNSIGNED,
-                              tbook_id SMALLINT UNSIGNED NOT NULL,
-                              c_id SMALLINT UNSIGNED NOT NULL,
-                              content_id SMALLINT UNSIGNED NOT NULL,
-                              activity_id SMALLINT UNSIGNED NOT NULL,
-                              s_id SMALLINT UNSIGNED NOT NULL,
-                              score SMALLINT,
-                              submitted_at TIMESTAMP,
-                              PRIMARY KEY (user_id, activity_id,content_id,s_id,c_id,tbook_id),
-                              FOREIGN KEY (activity_id,content_id,s_id,c_id,tbook_id)
-                                  REFERENCES Activity(activity_id,content_id, s_id, c_id, t_id)
-                                  ON DELETE CASCADE ON UPDATE CASCADE
-);
--- Changeset vengatesh:20 Dropping Teaches relation
-DROP TABLE IF EXISTS Teaches;
-ALTER TABLE Course
-ADD COLUMN professor_id INT UNSIGNED,
-ADD CONSTRAINT fk_teaches
-FOREIGN KEY (professor_id) REFERENCES User(user_id) ON DELETE CASCADE ON UPDATE CASCADE;
 
--- Changeset vengatesh:21 Creating Question Table
+
+-- Changeset vengatesh:18 Creating Question Table
 CREATE TABLE Question(
  activity_id SMALLINT UNSIGNED NOT NULL,
  content_id SMALLINT UNSIGNED NOT NULL,
@@ -251,7 +221,7 @@ CREATE TABLE Question(
      ON DELETE CASCADE ON UPDATE CASCADE
 );
 
--- Changeset vengatesh:22 Create Answer Table
+-- Changeset vengatesh:19 Create Answer Table
 CREATE TABLE Answer (
     question_id SMALLINT UNSIGNED NOT NULL,
     answer_id SMALLINT UNSIGNED NOT NULL,
@@ -268,11 +238,7 @@ CREATE TABLE Answer (
         ON DELETE CASCADE ON UPDATE CASCADE
 );
 
---Changeset vengatesh:23 Alter Activity Table
-ALTER TABLE Activity
-ADD COLUMN isHidden TINYINT(1) NOT NULL DEFAULT 0;
-
---Changeset vengatesh:24 Create Participation Table
+--Changeset vengatesh:20 Create Participation Table
 CREATE Table User_Participation(
     user_id INT UNSIGNED NOT NULL,
     activity_id SMALLINT UNSIGNED NOT NULL,
@@ -288,6 +254,19 @@ CREATE Table User_Participation(
     FOREIGN KEY (activity_id,content_id,s_id,c_id,t_id,q_id) REFERENCES Question(activity_id,content_id,s_id,c_id,t_id,q_id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
---Changeset vengatesh:25 Modify password length
-ALTER TABLE User
-MODIFY password VARCHAR(200);
+--Changeset vengatesh:21 Trigger endDelimited:/
+CREATE DEFINER=`root`@`localhost` TRIGGER `after_approval_status_update` AFTER UPDATE ON `userregisterscourse`
+FOR EACH ROW
+BEGIN
+-- Check if approval_status is changed to "Approved" or "Rejected"
+IF NEW.approval_status IN ('Approved', 'Rejected') AND OLD.approval_status != NEW.approval_status THEN
+-- Insert a notification with a message based on the approval status
+INSERT INTO Notification (user_id, CourseID, message)
+VALUES (
+    NEW.user_id,
+    NEW.CourseID,
+    CONCAT('Your enrollment status has been',NEW.approval_status,'for course',NEW.CourseID)
+);
+END IF;
+END
+/

@@ -61,7 +61,7 @@ public class UserRegistersCourseRepository implements IUserRegistersCourseReposi
 
     @Override
     public List<UserRegistersCourse> findAllByUser(int userId) {
-        String sql = "SELECT * FROM UserRegisters WHERE user_id = ? ORDER BY enrollment_date DESC";
+        String sql = "SELECT * FROM UserRegistersCourse WHERE user_id = ? ORDER BY enrollment_date DESC";
         return jdbcTemplate.query(sql, new Object[]{userId}, new UserRegistersCourseRepository.UserRegistersCourseRowMapper());
     }
 
@@ -102,7 +102,7 @@ public class UserRegistersCourseRepository implements IUserRegistersCourseReposi
 
     @Override
     public List<User> getAllStudents(String courseId) {
-        String sql = "SELECT u.user_id, u.fname, u.lname, u.email from User u INNER JOIN UserRegistersCourse urc WHERE u.user_id = urc.user_id AND urc.CourseID = ?";
+        String sql = "SELECT u.user_id, u.fname, u.lname, u.email from User u INNER JOIN UserRegistersCourse urc WHERE u.user_id = urc.user_id AND urc.CourseID = ? AND urc.approval_status = 'Approved'";
         return jdbcTemplate.query(sql, new Object[]{courseId}, new UserRegistersCourseRepository.StudentsCourseRowMapper());
     }
 

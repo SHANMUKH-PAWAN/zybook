@@ -66,6 +66,10 @@
 
     <br>
     <button type="submit">Save</button>
+<!--    <a th:href="@{/landing/admin}">Cancel</a>-->
+    <button type="button" th:onclick="|window.location.href='@{/landing/admin}'|">
+        Cancel
+    </button>
 </form>
 <br>
 <a th:href="@{/courses}">Back to List</a>
