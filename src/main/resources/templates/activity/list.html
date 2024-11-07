@@ -21,10 +21,10 @@
     </thead>
     <tbody>
     <!-- Loop through the list of activities -->
-    <tr th:each="activity : ${allActivites}">
+    <tr th:each="activity, activityStat : ${allActivites}">
         <td>
             <a th:href="@{/activity(tbookId=${activity.tbookId}, chapId=${activity.chapId}, sectionId=${activity.sectionId}, contentId=${activity.contentId}, activityId=${activity.activityId})}"
-               th:text="${activity.activityId}"></a>
+               th:text="${activityStat.index+1}"></a>
         </td>
         <td>
             <form th:action="@{/activity(tbookId=${activity.tbookId}, chapId=${activity.chapId}, sectionId=${activity.sectionId}, contentId=${activity.contentId}, activityId=${activity.activityId})}" th:method="delete" style="display:inline;">

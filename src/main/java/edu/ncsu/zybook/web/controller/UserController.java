@@ -87,7 +87,7 @@ public class UserController {
     }
 
     // Allow user to edit their own profile or allow access to admins
-    @PreAuthorize("#id == principal.id or hasRole('ADMIN')")
+    @PreAuthorize("#id == principal.id or hasAnyRole('ADMIN','FACULTY','TA')")
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable int id, Model model) {
         Optional<User> user = userService.findById(id);

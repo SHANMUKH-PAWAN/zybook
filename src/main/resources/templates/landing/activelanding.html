@@ -4,11 +4,13 @@
     <title>Active Course Page</title>
 </head>
 <body>
-<div sec:authorize="hasAnyRole('FACULTY')">
+<div sec:authorize="hasAnyRole('FACULTY','TA')">
     <h1>Active Course Dashboard</h1>
     <nav>
         <ol>
-            <li><a th:href="@{/users/waiting/{courseId}(courseId=${courseId})}">View Worklist/Waitlist</a></li>
+            <div sec:authorize="hasRole('FACULTY')">
+                <li><a th:href="@{/users/waiting/{courseId}(courseId=${courseId})}">View Worklist/Waitlist</a></li>
+            </div>
             <br>
             <li><a th:href="@{/enrollment/students(courseId=${courseId})}">View Students</a></li>
             <br>
@@ -16,7 +18,9 @@
             <br>
             <li><a th:href="@{/textbooks/{id}(id=${tbookId})}">Modify Chapters</a></li>
             <br>
+            <div sec:authorize="hasRole('FACULTY')">
             <li><a th:href="@{/users/newta(courseId=${courseId})}">Add TA</a></li>
+            </div>
             <br>
             <li><a th:href="@{/logout}">Logout</a></li>
         </ol>

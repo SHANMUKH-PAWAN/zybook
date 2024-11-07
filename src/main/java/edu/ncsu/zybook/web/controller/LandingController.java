@@ -64,6 +64,7 @@ public class LandingController {
         model.addAttribute("courseId", courseId);
         int tbookId = courseService.getTbookId(courseId);
         model.addAttribute("tbookId", tbookId);
+        System.out.println("Textbook Id"+tbookId);
         return "landing/activelanding";
     }
 
