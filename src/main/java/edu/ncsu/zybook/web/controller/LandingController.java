@@ -66,4 +66,10 @@ public class LandingController {
         model.addAttribute("tbookId", tbookId);
         return "landing/activelanding";
     }
+
+    @GetMapping("/queries")
+    public String queries(){
+        return "landing/queries";
+    }
+
 }

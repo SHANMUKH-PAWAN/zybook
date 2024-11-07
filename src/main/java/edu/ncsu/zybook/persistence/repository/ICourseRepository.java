@@ -1,7 +1,10 @@
 package edu.ncsu.zybook.persistence.repository;
 
+import edu.ncsu.zybook.DTO.CourseUserDTO;
+import edu.ncsu.zybook.DTO.CourseWaitingListDTO;
 import edu.ncsu.zybook.domain.model.ActiveCourse;
 import edu.ncsu.zybook.domain.model.Course;
+import edu.ncsu.zybook.DTO.ActiveCourseInfoDTO;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,4 +21,7 @@ public interface ICourseRepository {
     List<Course> getEvaluationCourse(int professorId);
     List<Course> getAllCoursesForUser(int userId);
     int getTbookId(String courseId);
+    List<CourseUserDTO> findFacultyAndTAsForCourses();
+    List<ActiveCourseInfoDTO> findActiveCoursesWithFacultyAndStudentCount();
+    Optional<CourseWaitingListDTO> findCourseWithLargestWaitingList();
 }

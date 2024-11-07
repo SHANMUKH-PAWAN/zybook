@@ -93,6 +93,52 @@ public class ActivityController {
         return "activity/not-found";
     }
 
+    @GetMapping("/query")
+    public String activityQuery(@RequestParam("tbookId") int textbookId,
+                                @RequestParam("chapId") int chapterId,
+                                @RequestParam("sectionId") int sectionId,
+                                @RequestParam("contentId") int contentId,
+                                @RequestParam("activityId") int activityId,
+                                Model model) {
+
+        Optional<Activity> activityOptional = iActivityService.findById(activityId, contentId, sectionId, chapterId, textbookId);
+
+        if (activityOptional.isPresent()) {
+            Activity activity = activityOptional.get();
+            ActivityDTO activityDTO = activityDTOMapper.toDTO(activity);
+
+            Optional<Question> questionOptional = iQuestionService.findById(2, activityId, contentId, sectionId, chapterId, textbookId);
+            if (questionOptional.isEmpty()) {
+                return "activity/not-found";
+            }
+
+            Question question = questionOptional.get();
+            QuestionDTO questionDTO = questionDTOMapper.toDTO(question);
+
+            List<Answer> answers = iAnswerService.findAllByQuestion(2, activityId, contentId, sectionId, chapterId, textbookId)
+                    .stream()
+                    .filter(answer -> answer.getAnswerId() != question.getAnswer_id())
+                    .toList();
+
+            List<AnswerDTO> answerDTOs = answers.stream()
+                    .map(answerDTOMapper::toDTO)
+                    .toList();
+
+            questionDTO.setAnswers(answerDTOs.toArray(new AnswerDTO[0]));
+
+            List<QuestionDTO> questionDTOs = new ArrayList<>();
+            questionDTOs.add(questionDTO);
+            activityDTO.setQuestions(questionDTOs);
+
+            model.addAttribute("activity", activityDTO);
+
+            return "activity/activity";
+        }
+
+        return "activity/not-found";
+    }
+
+
     @PreAuthorize("hasAnyRole('FACULTY', 'ADMIN', 'TA')")
     @PostMapping
     public  String createActivity(@ModelAttribute Activity activity) {
