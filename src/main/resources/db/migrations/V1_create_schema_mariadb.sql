@@ -254,19 +254,3 @@ CREATE Table User_Participation(
     FOREIGN KEY (activity_id,content_id,s_id,c_id,t_id,q_id) REFERENCES Question(activity_id,content_id,s_id,c_id,t_id,q_id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
---Changeset vengatesh:21 Trigger endDelimited:/
-CREATE DEFINER=`root`@`localhost` TRIGGER `after_approval_status_update` AFTER UPDATE ON `userregisterscourse`
-FOR EACH ROW
-BEGIN
--- Check if approval_status is changed to "Approved" or "Rejected"
-IF NEW.approval_status IN ('Approved', 'Rejected') AND OLD.approval_status != NEW.approval_status THEN
--- Insert a notification with a message based on the approval status
-INSERT INTO Notification (user_id, CourseID, message)
-VALUES (
-    NEW.user_id,
-    NEW.CourseID,
-    CONCAT('Your enrollment status has been',NEW.approval_status,'for course',NEW.CourseID)
-);
-END IF;
-END
-/

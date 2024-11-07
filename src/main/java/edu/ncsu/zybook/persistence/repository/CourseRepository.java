@@ -118,14 +118,20 @@ public class CourseRepository implements ICourseRepository {
     @Override
     public List<CourseUserDTO> findFacultyAndTAsForCourses() {
         String sql = """
-            SELECT c.title AS course_title,
-                u.fname AS first_name,
-                u.lname AS last_name,
-                u.role_name AS role
-            FROM Course c
-            LEFT JOIN Assigned a ON c.course_id = a.course_id
-            LEFT JOIN User u ON a.user_id = u.user_id AND u.role_name IN ('faculty', 'ta')
-            ORDER BY c.title
+        SELECT c.title AS course_title,
+           u.fname AS first_name,
+           u.lname AS last_name,
+           CASE
+               WHEN u.role_name = 'ta' THEN 'TA'
+               WHEN u.role_name = 'faculty' THEN 'Faculty'
+           END AS role
+        FROM Course c
+        LEFT JOIN Assigned a ON c.course_id = a.course_id
+        LEFT JOIN User u ON (a.user_id = u.user_id AND u.role_name = 'ta')
+            OR (c.professor_id = u.user_id AND u.role_name = 'faculty')
+        WHERE u.role_name IN ('ta', 'faculty')
+        ORDER BY c.title;
+            
         """;
 
         return jdbcTemplate.query(sql, courseUserRowMapper());
@@ -138,8 +144,7 @@ public class CourseRepository implements ICourseRepository {
                 CONCAT(u.fname, ' ', u.lname) AS faculty_name,
                 COUNT(urc.user_id) AS total_students
             FROM Course c
-            LEFT JOIN Assigned a ON c.course_id = a.course_id
-            LEFT JOIN User u ON a.user_id = u.user_id AND u.role_name = 'faculty'
+            LEFT JOIN User u ON c.professor_id  = u.user_id AND u.role_name = 'faculty'
             LEFT JOIN UserRegistersCourse urc ON c.course_id = urc.CourseID AND urc.approval_status = 'Approved'
             WHERE c.course_type = 'Active'
             GROUP BY c.course_id, faculty_name
